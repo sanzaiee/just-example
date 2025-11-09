@@ -27,7 +27,7 @@ if (!function_exists('get_site_name')) {
     function get_site_name()
     {
         $setting = Setting::where('setting_group_slug', 'general-information')->where('attribute', 'site_name')->first();
-        return $setting->value ? $setting->value : 'Please Update Site Name';
+        return $setting?->value ?: 'Please Update Site Name';
     }
 }
 
