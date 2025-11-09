@@ -83,7 +83,7 @@ Route::middleware(['auth'])->prefix('/admin')->group(function () {
         return view('frontend.client.order.tracking');
     })->name('order.tracking');
 
-Route::post('/cancel-order', [App\Http\Controllers\Frontend\FrontendController::class, 'orderCancel'])->name('client.order.cancel');
+    //Route::post('/cancel-order', [App\Http\Controllers\Frontend\FrontendController::class, 'orderCancel'])->name('client.order.cancel');
 
     // Menu
 
