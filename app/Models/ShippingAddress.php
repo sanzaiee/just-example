@@ -21,6 +21,7 @@ class ShippingAddress extends Model
            'house_no',
            'phone',
            'description',
+           'postal_code',
            'active'
     ];
 

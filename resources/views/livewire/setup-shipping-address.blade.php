@@ -22,7 +22,7 @@
                     <form wire:submit="save">
                         <div class="card-body">
                             <div class="row g-3">
-                                @foreach ([
+                                {{-- @foreach ([
                                         ['type','Address Type'],
                                         ['name','Name'],
                                         ['email','Email'],
@@ -39,13 +39,10 @@
                                         'type' => 'text',
                                         'div' => 'col-md-4'
                                     ])
-                                @endforeach
+                                @endforeach --}}
 
                                 @foreach ([
-                                        ['city','City'],
-                                        ['street','Street'],
                                         ['house_no','Apartment Number / Unit'],
-                                        ['description','Description'],
                                     ] as $item)
                                     @include('backend.form.livewire-collection', [
                                         'data' => [
@@ -58,6 +55,28 @@
                                         'div' => 'col-md-4'
                                     ])
                                 @endforeach
+
+                                @foreach ([
+                                        ['address','Address'],
+                                        ['city','City'],
+                                        ['postal_code','Postal Code'],
+                                    ] as $item)
+                                    @include('backend.form.livewire-collection', [
+                                        'data' => [
+                                            'name' => $item[0],
+                                            'label' => $item[1],
+                                        ],
+                                        'required' => true,
+                                        'model' => null,
+                                        'type' => 'text',
+                                        'div' => 'col-md-4'
+                                    ])
+                                @endforeach
+
+                                <div class="col-md-4">
+                                    <label for="province" class="form-label">Province</label>
+                                    <input type="text" id="city" class="form-control" value="Ontario" readonly style="background-color: lightgray">
+                                </div>
                             </div>
                         </div>
 
@@ -98,14 +117,16 @@
                                                 {{ $item->active ? 'Active' : 'Inactive' }}
                                             </span>
                                             <ul class="list-group">
-                                                                                                <li class="list-group-item"><strong>Name:</strong> {{ $item->name }}</li>
+                                                {{-- <li class="list-group-item"><strong>Name:</strong> {{ $item->name }}</li>
                                                 <li class="list-group-item"><strong>Email:</strong> {{ $item->email ?? 'N/A'}}</li>
-                                                <li class="list-group-item"><strong>Phone:</strong> {{ $item->phone ?? 'N/A'}}</li>
+                                                <li class="list-group-item"><strong>Phone:</strong> {{ $item->phone ?? 'N/A'}}</li> --}}
+                                                <li class="list-group-item"><strong>Apt / Unit No:</strong> {{ $item->house_no ?? ''}}</li>
                                                 <li class="list-group-item"><strong>Address:</strong> {{ $item->address }}</li>
                                                 <li class="list-group-item"><strong>City:</strong> {{ $item->city ?? 'N/A'}}</li>
-                                                <li class="list-group-item"><strong>Street:</strong> {{ $item->street ?? 'N/A'}}</li>
-                                                <li class="list-group-item"><strong>House No:</strong> {{ $item->house_no ?? 'N/A'}}</li>
-                                                <li class="list-group-item"><strong>Description:</strong> {{ $item->description ?? 'N/A'}}</li>
+                                                <li class="list-group-item"><strong>Postal Code:</strong> {{ $item->postal_code }}</li>
+                                                {{-- <li class="list-group-item"><strong>Street:</strong> {{ $item->street ?? 'N/A'}}</li> --}}
+                                                <li class="list-group-item"><strong>Province:</strong> Ontario</li>
+                                                {{-- <li class="list-group-item"><strong>Description:</strong> {{ $item->description ?? 'N/A'}}</li> --}}
                                             </ul>
                                         </div>
                                     </div>

@@ -13,14 +13,24 @@ class SetupShippingAddress extends Component
     public $shippingAddress, $authAddresses;
 
     #[Validate('required|min:3|max:80')]
-    public $name, $address, $phone, $type;
+    public $address, $city;
+    // public $name, $address, $phone, $type, $city;
+    #[Validate('nullable|min:1|max:80')]
+    public $name, $phone, $type, $email;
 
-    #[Validate('required|min:3|email|max:80')]
-    public $email;
+    // #[Validate('required|min:3|email|max:80')]
+    // public $email;
 
     #[Validate('nullable|min:1|max:80')]
-    public $city, $street, $house_no, $description;
+    public $street, $house_no, $description;
 
+    // #[Validate('required|regex:/^[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ ]?\\d[ABCEGHJ-NPRSTV-Z]\\d$/i')] #with and without space
+    #[Validate('required|regex:/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z] \d[ABCEGHJ-NPRSTV-Z]\d$/i')] #with space only
+    public $postal_code;
+
+    protected $messages = [
+        'postal_code.regex' => 'The postal code must be in the format A1A 1A1.',
+    ];
 
     public function render()
     {
@@ -37,6 +47,11 @@ class SetupShippingAddress extends Component
     public function action($action)
     {
         $this->actionVal = $action;
+    }
+
+    public function updatedPostalCode()
+    {
+        $this->validateOnly('postal_code');
     }
 
     public function save()
@@ -117,5 +132,6 @@ class SetupShippingAddress extends Component
         $this->house_no =$address->house_no;
         $this->phone =$address->phone;
         $this->description =$address->description;
+        $this->postal_code =$address->postal_code;
     }
 }
