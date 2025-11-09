@@ -65,7 +65,7 @@ class Category extends Component
         $this->menu = 0;
         $this->status = 1;
         $this->parent_id = 0;
-        $this->position = $this->records->count() + 1;
+        $this->position = $this->parents->count() + 1;
     }
 
     public function save(){
