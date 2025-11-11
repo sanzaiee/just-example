@@ -21,6 +21,7 @@ use App\Livewire\Category;
 use App\Livewire\OrderSummary;
 use App\Livewire\ProductSetup;
 use App\Livewire\SetupShippingAddress;
+use App\Livewire\UserManagement;
 use App\Models\Order;
 use App\Models\OrderProductList;
 use App\Models\ShippingAddress;
@@ -39,6 +40,10 @@ use App\Models\Category as ModelsCategory;
 |
 */
 
+route::get('/test',function(){
+    dd(34);
+});
+
 Route::get('/', function () {
     $categories = ModelsCategory::with('product','product.user')->get();
     return view('backend.index',compact('categories'));
@@ -56,6 +61,7 @@ Auth::routes();
 Route::middleware(['auth'])->prefix('/admin')->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('admin.dashboard');
 
+    Route::get('/users',UserManagement::class)->name('user.index');
     Route::get('/category',Category::class)->name('category.index');
     Route::get('/brand',BrandSetup::class)->name('brand.index');
     Route::get('/tag',\App\Livewire\TagSetup::class)->name('tag.index');

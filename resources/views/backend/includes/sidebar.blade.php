@@ -26,6 +26,13 @@
             </a>
         </li>
 
+         <li class="menu-item {{ request()->is('admin/users*') ? 'active' : '' }}">
+            <a href="{{ route('user.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div data-i18n="category">Users</div>
+            </a>
+        </li>
+
         <li class="menu-item {{ request()->is('admin/category*') ? 'active' : '' }}">
             <a href="{{ route('category.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-category"></i>

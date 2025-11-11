@@ -35,6 +35,29 @@
         </div>
         @break
 
+
+    @case('email')
+        <div class="{{ $div ?? 'col-md-6' }}">
+            <label class="form-label" for="{{ $data['name'] }}">{{ $data['label'] }} @if($required) * @endif</label>
+            <input type="email" wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control"  value="{{ old('name',$model->{$data['name']} ?? '')  }}">
+            @error($data['name'])
+            <div class="text-danger small">{{ $message }}</div>
+            @enderror
+
+        </div>
+        @break
+
+    @case('password')
+        <div class="{{ $div ?? 'col-md-6' }}">
+            <label class="form-label" for="{{ $data['name'] }}">{{ $data['label'] }} @if($required) * @endif</label>
+            <input type="password" wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control"  value="{{ old('name',$model->{$data['name']} ?? '')  }}">
+            @error($data['name'])
+            <div class="text-danger small">{{ $message }}</div>
+            @enderror
+
+        </div>
+        @break
+
     @case('number')
         <div class="{{ $div ?? 'col-md-6' }}">
             <label class="form-label" for="{{ $data['name'] }}">{{ $data['label'] }} @if($required) * @endif</label>
