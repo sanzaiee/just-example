@@ -69,9 +69,9 @@
                                     ])
 
 
-                            {{-- @foreach ([
-                                    ['price','Price'],['strike_price','Strike Price'],
-                                    ['delivery_charges','Delivery Charges'],['tax','Tax']
+                            @foreach ([
+                                    ['price','Price'], ['strike_price','Strike Price'],
+                                    // ['delivery_charges','Delivery Charges'],['tax','Tax']
                                 ] as $item)
                                 @include('backend.form.livewire-collection', [
                                     'data' => [
@@ -83,7 +83,7 @@
                                     'type' => 'text',
                                     'div' => 'col-md-4'
                                 ])
-                            @endforeach --}}
+                            @endforeach
 
                             {{-- @foreach ([
                                 ['video_url','Video Url'],
@@ -119,6 +119,18 @@
                                 ])
                             @endforeach --}}
 
+                            @include('backend.form.livewire-collection', [
+                                'data' => [
+                                    'name' => 'tag',
+                                    'label' => 'Tags',
+                                ],
+                                'required' => true,
+                                'model' => $model ?? [],
+                                'secondaryModel' => $tags ?? [],
+                                'type' => 'normal-multiple-select',
+                                'div' => 'col-md-4'
+                            ])
+
                             <div class="col-md-4">
                                 <label class="form-label" for="image">Upload Image</label>
                                 <input type="file" class="form-control" wire:model.live="image">
@@ -153,18 +165,8 @@
                                 @endif
                             </div>
 
-                            @include('backend.form.livewire-collection', [
-                                'data' => [
-                                    'name' => 'tag',
-                                    'label' => 'Tags',
-                                ],
-                                'required' => true,
-                                'model' => $model ?? [],
-                                'secondaryModel' => $tags ?? [],
-                                'type' => 'normal-multiple-select',
-                                'div' => 'col-md-4'
-                            ])
-
+                            <!-- Force next column to start on a new line -->
+                            <div class="w-100 d-none d-md-block"></div>
 
                             @foreach ([['short','Short Description'],['description','Description']] as $item)
                                 @include('backend.form.livewire-collection', [

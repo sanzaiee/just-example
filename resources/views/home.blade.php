@@ -17,8 +17,10 @@
                         <div class="card-body text-center d-flex flex-column">
                             <a href="{{ route('product.show',$item->id) }}"><h5 class="card-title">{{ $item->name }}</h5>
                                 <div>
-                                    <span class="theme-color">Rs. {{ $item->price }}</span> &nbsp;
-                                    <del class="text-danger">Rs. {{ $item->strike_price }}</del>
+                                    <span class="theme-color">$ {{ $item->price }}</span> &nbsp;
+                                    @if($item->strike_price > 0 && $item->strike_price != $item->price)
+                                        <del class="text-danger">$ {{ $item->strike_price }}</del>
+                                    @endif
                                 </div>
                             </a>
                             <hr>
