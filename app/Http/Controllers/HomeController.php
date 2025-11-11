@@ -24,7 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = Product::with('brand','category')->paginate(15);
+        $products = Product::with('brand','category');
+        $products = $products->when(request('query'),function($q){
+            $q->where('name','like','%'.request('query').'%')
+            ->orWhere('slug','like','%'.request('query').'%');
+        });
+
+        $products = $products->paginate(15);
         return view('home',['products' => $products]);
     }
 

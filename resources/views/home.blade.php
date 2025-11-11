@@ -5,6 +5,15 @@
         <h4 class="fw-bold py-3 mb-4">Welcome</h4>
 
         <div class="row g-4">
+            <div class="col-md-12">
+                <form action="{{ route('admin.dashboard') }}" method="get">
+                    <div class="d-flex justify-content-between align-center">
+                        <input type="text" name="query" value="{{ request('query') }}" class="form-control me-3" placeholder="Search..">
+                        <button class="btn btn-primary me-2">Search</button>
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-danger">Clear</a>
+                    </div>
+                </form>
+            </div>
             @foreach ($products as $item)
                 <div class="col-md-3">
                     <div class="card h-100 shadow-sm">
