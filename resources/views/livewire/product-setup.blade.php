@@ -101,7 +101,7 @@
                                 ])
                             @endforeach --}}
 
-                            {{-- @foreach ([
+                            @foreach ([
                                 ['status','Status'],['stock','Stock'],
                                 ['on_sale','On Sale'],['home_delivery','Home  Delivery'],
                                 ['best_rated','Best Rated'],['feature','Feature'],
@@ -117,7 +117,7 @@
                                     'div' => 'col-md-4'
 
                                 ])
-                            @endforeach --}}
+                            @endforeach
 
                             @include('backend.form.livewire-collection', [
                                 'data' => [
