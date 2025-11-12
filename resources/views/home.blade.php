@@ -8,6 +8,12 @@
             <div class="col-md-12">
                 <form action="{{ route('admin.dashboard') }}" method="get">
                     <div class="d-flex justify-content-between align-center">
+                        <select class="form-control me-2" name="category" value="{{ request('category') }}">
+                            <option value="">-- select category --</option>
+                            @foreach ($categories as $index => $item)
+                                <option value="{{ $index}}" @if($index == request('category')) selected @endif>{{ $item }}</option>
+                            @endforeach
+                        </select>
                         <input type="text" name="query" value="{{ request('query') }}" class="form-control me-3" placeholder="Search..">
                         <button class="btn btn-primary me-2">Search</button>
                         <a href="{{ route('admin.dashboard') }}" class="btn btn-danger">Clear</a>

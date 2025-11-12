@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -24,15 +25,31 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $products = Product::with('brand','category');
-        $products = $products->when(request('query'),function($q){
-            $q->where('name','like','%'.request('query').'%')
-            ->orWhere('slug','like','%'.request('query').'%');
-        });
+        $products = Product::with(['brand', 'category'])
+            ->when(request('query'), function ($q) {
+                $search = request('query');
+                $q->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+                });
+            })
+            ->when(request('category'), function ($q) {
+                $category = request('category');
+                $q->whereHas('category', function ($q) use ($category) {
+                    $q->where('name', 'like', "%{$category}%")
+                    ->orWhere('slug', 'like', "%{$category}%");
+                });
+            })
+            ->paginate(15);
 
-        $products = $products->paginate(15);
-        return view('home',['products' => $products]);
+        $categories = Category::pluck('name', 'slug');
+
+        return view('home', [
+            'products' => $products,
+            'categories' => $categories,
+        ]);
     }
+
 
 
      /*Tiny MCE image Upload*/
