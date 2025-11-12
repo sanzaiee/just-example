@@ -33,7 +33,7 @@ class OrderController extends Controller
         $title = "Cancelled Order";
 
         $order = Order::where('cancel_status', 1)->orderBy('id', 'desc')->paginate(20);
-        return view('admin.order.cancel', compact('order', 'title'));
+        return view('backend.order.cancel', compact('order', 'title'));
     }
 
     public function delivery($id)
@@ -77,4 +77,11 @@ class OrderController extends Controller
         return back()->withSuccess('Order Cancelled Successfully!!');
     }
 
+    public function show($pid)
+    {
+        $order = Order::wherePid($pid)->first();
+        $productList = OrderProductList::with('product')->where('order_id', $order->id)->get();
+        $deliveryAddress = ShippingAddress::find($order->shipping_address_id);
+        return view('backend.checkout.orderSuccess', compact('order', 'productList', 'deliveryAddress'));
+    }
 }

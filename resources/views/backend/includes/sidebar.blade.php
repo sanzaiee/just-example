@@ -54,6 +54,13 @@
             </a>
         </li>
 
+        <li class="menu-item {{ request()->is('admin/order*') ? 'active' : '' }}">
+            <a href="{{ route('order.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
+                <div data-i18n="product">Orders</div>
+            </a>
+        </li>
+
         {{-- <li class="menu-item {{ request()->is('admin/blog*') ? 'active' : '' }}">
             <a href="{{ route('blog.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-sharp fa-solid fa-blog"></i>
