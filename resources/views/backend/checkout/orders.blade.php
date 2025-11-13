@@ -15,6 +15,7 @@
                         <table id="example0" class="table table-striped">
                             <thead>
                                 <tr>
+                                    <th class="s-n">S.N</th>
                                     <th class="order-id">Order ID</th>
                                     <th class="order-id">User Name</th>
                                     <th class="product-name">
@@ -44,10 +45,6 @@
                                     </th>
 
                                     <th class="Status">
-                                        Payment Type
-                                    </th>
-
-                                    <th class="Status">
                                         Action
                                     </th>
                                 </tr>
@@ -55,12 +52,13 @@
                             <tbody>
                                 @forelse ($orders as $index => $item)
                                     <tr>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td class="order-id">
                                             {{ $item->pid }}
                                         </td>
 
                                         <td>
-                                            <button type="button" class="btn btn-rounded btn-xs btn-info m-r-5" data-bs-toggle="modal" data-bs-target="#billingInfo{{ $index }}">
+                                            <button type="button" class="btn btn-rounded btn-xs btn-primary m-r-5" data-bs-toggle="modal" data-bs-target="#billingInfo{{ $index }}">
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         </td>
@@ -68,8 +66,8 @@
 
                                         <td class="product-name">
 
-                                            <button type="button" class="btn btn-rounded btn-xs btn-info m-r-5" data-bs-toggle="modal" data-bs-target="#exampleModalLong{{ $index }}">
-                                                <i class="fa fa-eye"></i> Product list
+                                            <button type="button" class="btn btn-rounded btn-xs btn-primary m-r-5" data-bs-toggle="modal" data-bs-target="#exampleModalLong{{ $index }}">
+                                                <i class="fa fa-eye"></i>
                                             </button>
 
                                         </td>
@@ -99,7 +97,7 @@
 
 
                                             @else
-                                                <a href="" class="btn btn-rounded btn-xs btn-info m-r-5" data-toggle="tooltip"
+                                                <a href="" class="btn btn-rounded btn-xs btn-primary m-r-5" data-toggle="tooltip"
                                                 data-original-title="Order Status"
                                                 onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
                                                     Compeleted
@@ -126,7 +124,7 @@
 
 
                                             @else
-                                                <a href="" class="btn btn-rounded btn-xs btn-info m-r-5" data-toggle="tooltip"
+                                                <a href="" class="btn btn-rounded btn-xs btn-primary m-r-5" data-toggle="tooltip"
                                                 data-original-title="Delivery Status"
                                                 onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('delivery-status-form-{{ $item->id }}').submit();">
                                                     Delivered
@@ -150,17 +148,14 @@
                                                 @method('put')
                                                 </form>
                                             @else
-                                                <span class="btn btn-rounded btn-xs btn-info m-r-5">Paid</span>
+                                                <span class="btn btn-rounded btn-xs btn-primary m-r-5">Paid</span>
                                             @endif
                                         </td>
 
-                                        <td>
-                                            <span class="btn btn-rounded btn-xs btn-info m-r-5">Cash On Delivery</span>
-                                        </td>
 
                                         <td>
                                             <a href="{{ route('order.show',$item->pid) }}">
-                                                <span class="btn btn-rounded btn-xs btn-info m-r-5">Show <i class="fa fa-eye"></i></span>
+                                                <span class="btn btn-rounded btn-xs btn-primary m-r-5"><i class="fa fa-eye"></i></span>
                                             </a>
                                         </td>
 

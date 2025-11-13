@@ -77,11 +77,19 @@ class OrderController extends Controller
         return back()->withSuccess('Order Cancelled Successfully!!');
     }
 
+
     public function show($pid)
     {
-        $order = Order::wherePid($pid)->first();
-        $productList = OrderProductList::with('product')->where('order_id', $order->id)->get();
-        $deliveryAddress = ShippingAddress::find($order->shipping_address_id);
-        return view('backend.checkout.orderSuccess', compact('order', 'productList', 'deliveryAddress'));
+        $order = Order::where('pid', $pid)->first();
+        return view('backend.order.show', compact('order'));
     }
+
+
+    // public function show($pid)
+    // {
+    //     $order = Order::wherePid($pid)->first();
+    //     $productList = OrderProductList::with('product')->where('order_id', $order->id)->get();
+    //     $deliveryAddress = ShippingAddress::find($order->shipping_address_id);
+    //     return view('backend.checkout.orderSuccess', compact('order', 'productList', 'deliveryAddress'));
+    // }
 }
