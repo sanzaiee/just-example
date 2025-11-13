@@ -23,7 +23,6 @@ class UserManagement extends Component
     #[Validate('nullable|email|min:5|max:200')]
     public $email = '';
 
-
     #[Validate('required')]
     public $status = 1;
 
@@ -89,14 +88,17 @@ class UserManagement extends Component
         }
 
         $this->resetData();
-
+        $this->dispatch('toastMagic',
+            status: 'success',
+            title: 'Action Success.',
+            message: 'Saved Successfully.'
+        );
     }
 
-      public function update($id){
+    public function update($id){
         $this->updateModelId = $id;
         $user = User::findOrFail($this->updateModelId);
         $this->fill($user->toArray());
-
     }
 
     public function delete($id){
@@ -104,19 +106,27 @@ class UserManagement extends Component
         User::findOrFail($this->updateModelId)->delete();
 
         $this->resetData();
+        $this->dispatch('toastMagic',
+            status: 'success',
+            title: 'Action Success.',
+            message: 'Deleted Successfully.'
+        );
     }
 
-    public $failedUpdateRole = false;
 
     public function makeAdmin($id)
     {
-        if(auth()->user()->is_admin){
+        if(!auth()->user()->is_admin){
             $user = User::findOrFail($id);
             $user->update([
                 'is_admin' => !$user['is_admin']
             ]);
         }else{
-            $this->failedUpdateRole = true;
+            $this->dispatch('toastMagic',
+                status: 'error',
+                title: 'Unauthorize access.',
+                message: 'You are not an admin.'
+            );
         }
     }
 }

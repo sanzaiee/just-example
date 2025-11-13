@@ -10,9 +10,6 @@
                         <small class="text-muted float-end">
                                 List
                         </small>
-                        @if($failedUpdateRole)
-                            <p class="text-danger">Unauthorize access. You are not an admin.</p>
-                        @endif
                     </div>
 
                     <div class="card-body">
