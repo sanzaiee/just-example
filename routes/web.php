@@ -80,6 +80,7 @@ Route::middleware(['auth'])->prefix('/admin')->group(function () {
     Route::put('/pending-status/{id}', [OrderController::class, 'pending'])->name('pending.status');
     Route::put('/pay-status/{id}', [OrderController::class, 'payStatus'])->name('order.pay.status');
     Route::get('/order/{pid}', [OrderController::class, 'show'])->name('order.show');
+    Route::post('/cancel-order', [OrderController::class, 'orderCancel'])->name('client.order.cancel');
 
     Route::get('/invoice/{pid}', function () {
         return view('frontend.client.invoice');
@@ -89,7 +90,6 @@ Route::middleware(['auth'])->prefix('/admin')->group(function () {
         return view('frontend.client.order.tracking');
     })->name('order.tracking');
 
-    //Route::post('/cancel-order', [App\Http\Controllers\Frontend\FrontendController::class, 'orderCancel'])->name('client.order.cancel');
 
     // Menu
 

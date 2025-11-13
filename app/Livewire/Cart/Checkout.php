@@ -122,6 +122,14 @@ class Checkout extends Component
 
     public function checkout()
     {
+        if(auth()->user()->shippingAddress == null){
+            $this->dispatch(
+                'alert',
+                ['type' => 'error',  'message' => 'Please add shipping address first!']
+            );
+            return redirect(route('checkout'));
+        }   
+
         $order = $this->orderStore();
         //re-checking the process
         $order_check = Order::where('pid', $this->pid)->first();

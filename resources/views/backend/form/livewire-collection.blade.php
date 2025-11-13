@@ -61,7 +61,7 @@
     @case('number')
         <div class="{{ $div ?? 'col-md-6' }}">
             <label class="form-label" for="{{ $data['name'] }}">{{ $data['label'] }} @if($required) * @endif</label>
-            <input type="number" wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control"  value="{{ old('name',$model->{$data['name']} ?? 1)  }}">
+            <input type="number" step="0.01" wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control"  value="{{ old('name',$model->{$data['name']} ?? 1)  }}">
             @error($data['name'])
             <div class="text-danger small">{{ $message }}</div>
             @enderror

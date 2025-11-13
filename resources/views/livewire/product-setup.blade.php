@@ -80,7 +80,7 @@
                                     ],
                                     'required' => true,
                                     'model' => $model ?? null,
-                                    'type' => 'text',
+                                    'type' => 'number',
                                     'div' => 'col-md-4'
                                 ])
                             @endforeach

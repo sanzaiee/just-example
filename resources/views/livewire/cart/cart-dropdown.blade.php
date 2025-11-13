@@ -15,52 +15,50 @@
         <li><hr class="dropdown-divider"></li>
 
         @forelse($items as $item)
-            <li class="d-flex align-items-center mb-3">
-                    @php
-                        $product = App\Models\Product::find($item->id);
-                    @endphp
-
-                    {{-- Product Image --}}
-                    <img src="{{ $product->image }}"
-                         alt="{{ $item->name }}"
-                         class="rounded me-3"
-                         style="width: 50px; height: 50px; object-fit: cover;">
-                {{-- Product Info --}}
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong> {{ $item->name }} </strong>
-                            <div class="text-muted small">Rs. {{ $item->price }}</div>
-
-                        </div>
-                        <span wire:click="removeProductCart('{{ $item->rowId }}')" class="btn btn-outline-danger btn-xs">
-                            X
-                        </span>
+        <li class="d-flex align-items-center mb-3">
+            @php
+            $product = App\Models\Product::find($item->id);
+            @endphp
+        
+            {{-- Product Image --}}
+            <img src="{{ $product->image }}" alt="{{ $item->name }}" class="rounded me-3"
+                style="width: 50px; height: 50px; object-fit: cover;">
+            {{-- Product Info --}}
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong> {{ $item->name }} </strong>
+                        <div class="text-muted small">$ {{ $item->price }}</div>
+        
                     </div>
-
-                    {{-- Quantity Controls --}}
-                    <div class="d-flex align-items-center mt-1">
-                        <button wire:click="decrease('{{ $item->rowId }}')"
-                                class="btn btn-xs btn-outline-danger me-1">
-                            <i class="bi bi-dash"></i>
-                        </button>
-                        <span class="px-2">{{ $item->qty }}</span>
-                        <button wire:click="increase('{{ $item->rowId }}')"
-                                class="btn btn-xs btn-outline-success ms-1">
-                            <i class="bi bi-plus"></i>
-                        </button>
-
-                        <span class="ms-auto fw-semibold">Rs. {{ $item->subtotal }}</span>
-                    </div>
+                    <span wire:click="removeProductCart('{{ $item->rowId }}')" class="btn btn-outline-danger btn-xs">
+                        X
+                    </span>
                 </div>
-            </li>
-        <li><hr class="dropdown-divider"></li>
+        
+                {{-- Quantity Controls --}}
+                <div class="d-flex align-items-center mt-1">
+                    <button wire:click="decrease('{{ $item->rowId }}')" class="btn btn-xs btn-outline-danger me-1">
+                        <i class="bi bi-dash"></i>
+                    </button>
+                    <span class="px-2">{{ $item->qty }}</span>
+                    <button wire:click="increase('{{ $item->rowId }}')" class="btn btn-xs btn-outline-success ms-1">
+                        <i class="bi bi-plus"></i>
+                    </button>
+        
+                    <span class="ms-auto fw-semibold">$ {{ $item->subtotal }}</span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
         @empty
-            <li class="text-center text-muted">Cart is empty</li>
+        <li class="text-center text-muted">Cart is empty</li>
         @endforelse
 
         <li class="d-flex justify-content-between">
-            <strong>Total:</strong> <span class="fw-bold">Rs. {{ $total }}</span>
+            <strong>Total:</strong> <span class="fw-bold">$. {{ $total }}</span>
         </li>
 
         <li><hr class="dropdown-divider"></li>

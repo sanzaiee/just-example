@@ -46,7 +46,7 @@ class CartSetup extends Component
                     $this->product->id,
                     $this->product->name,
                     $this->quantity,
-                    (int)$this->product->price,
+                    $this->product->price,
                 );
             }
 

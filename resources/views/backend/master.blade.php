@@ -20,6 +20,8 @@
 
     <meta name="description" content="" />
 
+    @livewireStyles
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ get_logo('fav') }}" />
 
@@ -67,8 +69,7 @@
     <script src="{{ asset('') }}assets/vendor/js/template-customizer.js"></script>
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('') }}assets/js/config.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />    @livewireStyles
-    @livewireStyles
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />    
     @yield('styles')
   </head>
 

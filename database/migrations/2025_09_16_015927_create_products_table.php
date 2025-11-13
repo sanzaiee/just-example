@@ -34,9 +34,10 @@ return new class extends Migration
             $table->text('short')->nullable();
             $table->longText('description')->nullable();
 
-            $table->integer('price')->default(0);
-            $table->integer('strike_price')->default(0);
+            $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('strike_price', 10, 2)->default(0);
             $table->double('tax')->default(0);
+
             $table->integer('delivery_charges')->default(0);
 
             $table->integer('view_count')->default(0);

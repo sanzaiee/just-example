@@ -19,7 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
-            $table->integer('quantity');
+            $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('quantity', 10, 2)->default(0);
+
             $table->longText('notes')->nullable();
 
             $table->tinyInteger('enabled')->default(0);
