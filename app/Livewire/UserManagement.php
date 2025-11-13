@@ -105,4 +105,18 @@ class UserManagement extends Component
 
         $this->resetData();
     }
+
+    public $failedUpdateRole = false;
+
+    public function makeAdmin($id)
+    {
+        if(auth()->user()->is_admin){
+            $user = User::findOrFail($id);
+            $user->update([
+                'is_admin' => !$user['is_admin']
+            ]);
+        }else{
+            $this->failedUpdateRole = true;
+        }
+    }
 }

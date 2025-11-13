@@ -123,7 +123,7 @@
                                                 <li class="list-group-item"><strong>Apt / Unit No:</strong> {{ $item->house_no ?? ''}}</li>
                                                 <li class="list-group-item"><strong>Address:</strong> {{ $item->address }}</li>
                                                 <li class="list-group-item"><strong>City:</strong> {{ $item->city ?? 'N/A'}}</li>
-                                                <li class="list-group-item"><strong>Postal Code:</strong> {{ $item->postal_code }}</li>
+                                                <li class="list-group-item"><strong>Postal Code:</strong> {{ $item->postal_code ?? ''}}</li>
                                                 {{-- <li class="list-group-item"><strong>Street:</strong> {{ $item->street ?? 'N/A'}}</li> --}}
                                                 <li class="list-group-item"><strong>Province:</strong> Ontario</li>
                                                 {{-- <li class="list-group-item"><strong>Description:</strong> {{ $item->description ?? 'N/A'}}</li> --}}

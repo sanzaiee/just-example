@@ -65,7 +65,6 @@
 
 
                                         <td class="product-name">
-
                                             <button type="button" class="btn btn-rounded btn-xs btn-primary m-r-5" data-bs-toggle="modal" data-bs-target="#exampleModalLong{{ $index }}">
                                                 <i class="fa fa-eye"></i>
                                             </button>

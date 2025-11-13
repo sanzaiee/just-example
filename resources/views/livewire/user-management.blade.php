@@ -10,6 +10,9 @@
                         <small class="text-muted float-end">
                                 List
                         </small>
+                        @if($failedUpdateRole)
+                            <p class="text-danger">Unauthorize access. You are not an admin.</p>
+                        @endif
                     </div>
 
                     <div class="card-body">
@@ -60,7 +63,9 @@
                                         </td>
 
                                         <td>
-                                            {{$item->is_admin ? "Admin" : "User"}}
+                                            <span class="btn btn-xs btn-info" wire:confirm="Do you want to change role of selected user?" wire:click="makeAdmin({{ $item->id }})">
+                                                {{$item->is_admin ? "Admin" : "User"}}
+                                            </span>
                                         </td>
 
 
