@@ -76,4 +76,18 @@ class CartDropdown extends Component
 
         $this->refreshCart();
     }
+
+    public function goToCheckoutPage()
+    {
+        if (Cart::count() == 0) {
+            $this->dispatch('alert', [
+                'type' => 'error',
+                'message' => 'Your cart is empty!',
+            ]);
+            return;
+        }
+
+        // return redirect(route('checkout'));
+        return redirect()->route('checkout');
+    }
 }

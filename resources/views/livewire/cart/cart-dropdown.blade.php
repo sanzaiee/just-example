@@ -64,10 +64,12 @@
         <li><hr class="dropdown-divider"></li>
 
         <li class="d-flex justify-content-between mt-2">
-            <a href="{{ route('checkout') }}"
-                    class="btn btn-sm btn-outline-success w-100">
+            <button type="button"
+                    class="btn btn-sm btn-outline-success w-100"
+                    {{ Cart::count() == 0 ? 'disabled' : '' }}
+                    wire:click="goToCheckoutPage">
                 <i class="bi bi-trash"></i> Checkout
-            </a>
+            </button>
         </li>
 
     </ul>
