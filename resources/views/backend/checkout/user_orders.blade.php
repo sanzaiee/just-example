@@ -3,159 +3,128 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card">
-        <div class="title">
-            <h4>My Orders History</h4>
-        </div>
+            <h4 class="card-header">My Orders History</h4>
 
-        <div class="order-contain">
+        <div class="order-contain p-3">
             @forelse ($orders as $index => $item)
-                <div class="order-box dashboard-bg-box">
-                    <div class="order-container">
-                        <div class="order-icon">
-                            <i data-feather="box"></i>
-                        </div>
+                <div class="card border-0 shadow-sm mb-4 rounded-3">
+                    <div class="row g-0 align-items-stretch">
 
-                        <div class="order-detail">
-                            <ul>
-                                <li>
-                                    @if($item->delivery_status == 0)
-                                    <h4>Delivery <span class="success-bg">Pending</span></h4>
-                                    @else
-                                    <h4>Delivered <span class="success-bg">Success</span></h4>
-                                    @endif
-                                </li>
-                                <li>
-                                    <a href="{{ route('invoice',$item->pid) }}">
-                                        <h4><span class="success-bg">Invoice</span></h4>
+                        <div class="col-md-4 bg-primary text-white p-3 rounded-start d-flex flex-column justify-content-between">
+                            <div>
+                                 <div class="mb-2">
+                                    <a href="{{ route('invoice', $item->pid) }}" class="d-block text-white text-decoration-none mb-2">
+                                        <i class="bi bi-receipt me-1"></i> Invoice
                                     </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('order.tracking',$item->pid) }}" target="blank">
-                                        <h4><span class="success-bg">Order Track</span></h4>
+                                    <a href="{{ route('order.tracking', $item->pid) }}" target="_blank" class="d-block text-white text-decoration-none">
+                                        <i class="bi bi-truck me-1"></i> Track Order
                                     </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="product-order-detail">
-
-                        @foreach ($item->orderProductLists as $prod)
-                            <a href="{{ route('product.show',$prod->product->id) }}" class="order-image">
-                                <div class="detail">
-                                    <img src="{{ $prod->product->image }}" width="100px" height="100px" class="blur-up lazyload" alt="">
-                                    <span>{{ $prod->product->name }}  x {{ $prod->quantity }}</span>
-                                    <span>{{ $prod->notes ?? '' }}</span>
                                 </div>
-                            </a>
-                        @endforeach
+                                <ul class="list-unstyled mb-0 small">
+                                    <li class="mb-2">
+                                        @if($item->delivery_status == 0)
+                                            <span class="badge bg-danger">Delivery Pending</span>
+                                        @else
+                                            <span class="badge bg-success">Delivered</span>
+                                        @endif
+                                    </li>
+
+                                    <li class="mb-2">
+                                        @if($item->pay_status == 0)
+                                            <span class="badge bg-danger">Not Paid</span>
+                                        @else
+                                            <span class="badge bg-success">Paid</span>
+                                        @endif
+                                    </li>
+
+                                    <li class="mb-2">
+                                        @if($item->pending_status == 0)
+                                            <span class="badge bg-warning text-dark">Order Pending</span>
+                                        @else
+                                            <span class="badge bg-success">Order Completed</span>
+                                        @endif
+                                    </li>
+                                </ul>
 
 
+                            </div>
 
-                        <div class="order-wrap">
-                            <a href="product-left-thumbnail.html">
-                                <h3>Order Id: {{ $item->pid }}</h3>
-                            </a>
-
-                            <ul class="product-size">
-                                <li>
-                                    <div class="size-box">
-                                        <h6 class="text-content">Price : </h6>
-                                        <h5>Rs. {{$item->amount}}</h5>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <div class="size-box">
-                                        <h6 class="text-content">Orderd Placed On : </h6>
-                                        <h5>{{ $item->created_at->format('Y-m-d') }}</h5>
-                                    </div>
-                                </li>
-
-
-
-                                <li>
-                                    <div class="size-box">
-                                        <h6 class="text-content">Pay Status : </h6>
-                                        <h5 class="text-content">@if($item->pay_status == 0) <span class="text-danger">Not Paid</span> @else <span class="text-success">Paid</span> @endif </h5>
-                                    </div>
-                                </li>
-
-
-
-                                <li>
-                                    <div class="size-box">
-                                        <h6 class="text-content">Order Status : </h6>
-                                        <h5 class="text-content"> @if($item->pending_status == 0) <span class="text-danger">Pending</span>@else<span class="text-success">Compeleted</span> @endif</h5>
-                                    </div>
-                                </li>
-
-
+                            <div class="mt-3">
                                 @if($item->cancel_status == 0)
-                                    <li>
-                                        <div class="size-box">
-                                            <button class="btn deal-button" data-bs-toggle="modal" data-bs-target="#order-box-{{ $item->id }}">
-                                                <i data-feather="zap"></i>
-                                                <span>Cancel Order</span>
-                                            </button>
-                                        </div>
-                                    </li>
+                                    <button class="btn btn-light btn-sm w-100 fw-semibold text-danger" data-bs-toggle="modal" data-bs-target="#order-box-{{ $item->id }}">
+                                        <i class="bi bi-x-circle me-1"></i> Cancel
+                                    </button>
                                 @else
-                                    <li>
-                                        <div class="size-box">
-                                            <h6 class="text-content"> <span class="text-success">Order Cancelled </span></h6>
-                                        </div>
-                                    </li>
+                                    <div class="text-center mt-2 small">
+                                        <span class="badge bg-success px-3 py-2">Order Cancelled</span>
+                                    </div>
                                 @endif
-
-                            </ul>
-                        </div>
-
-                        <div class="modal fade theme-modal deal-modal" id="order-box-{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <div>
-                                            <h5 class="modal-title w-100" id="deal_today">Cacnel Order</h5>
-                                            <p class="mt-1 text-content">Please give strong valid reason to cancel order.</p>
-                                        </div>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="deal-offer-box">
-
-                                            <form action="{{ route('client.order.cancel') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="order_id" value="{{ $item->id }}">
-
-                                                <div class="product-detail p-4">
-                                                    <h4>Reason :</h4>
-                                                    <textarea name="reason" class="form-control" id="" cols="50" rows="10" required></textarea>
-                                                </div>
-                                                <div class="modal-button">
-                                                    <button type="submit"class="btn theme-bg-color view-button icon text-white fw-bold btn-md">
-                                                        Submit
-                                                    </button>
-                                                </div>
-
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
+                        {{-- RIGHT PANEL --}}
+                        <div class="col-md-8 p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0">Order #{{ $item->pid }}</h6>
+                                <span class="text-muted small">{{ $item->created_at->format('Y-m-d') }}</span>
+                            </div>
 
+                            {{-- PRODUCTS --}}
+                            <div class="mb-3">
+                                @foreach ($item->orderProductLists as $prod)
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="{{ $prod->product->image }}" alt="" class="rounded border me-2" width="55" height="55">
+                                        <div>
+                                            <div class="fw-semibold small">{{ $prod->product->name }} <span class="text-muted">× {{ $prod->quantity }}</span></div>
+                                            @if($prod->notes)
+                                                <div class="text-muted small fst-italic">{{ $prod->notes }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div class="border-top pt-2 mt-2">
+                                <div class="d-flex justify-content-between small">
+                                    <span class="text-muted">Total Amount:</span>
+                                    <span class="fw-semibold text-dark">Rs. {{ $item->amount }}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    {{-- CANCEL MODAL --}}
+                    <div class="modal fade" id="order-box-{{ $item->id }}" tabindex="-1" aria-labelledby="cancelOrderLabel{{ $item->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow">
+                                <div class="modal-header bg-danger text-white py-2">
+                                    <h6 class="modal-title" id="cancelOrderLabel{{ $item->id }}">Cancel Order</h6>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ route('client.order.cancel') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="order_id" value="{{ $item->id }}">
+                                    <div class="modal-body">
+                                        <p class="text-muted small mb-2">Please provide your reason for cancelling this order:</p>
+                                        <textarea name="reason" class="form-control form-control-sm" rows="3" required placeholder="Type reason..."></textarea>
+                                    </div>
+                                    <div class="modal-footer py-2">
+                                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-danger btn-sm fw-semibold">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             @empty
-
+                <div class="text-center my-5">
+                    <p class="text-muted fs-6">No orders found.</p>
+                </div>
             @endforelse
-
         </div>
+
     </div>
 </div>
 

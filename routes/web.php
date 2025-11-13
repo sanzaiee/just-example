@@ -83,11 +83,11 @@ Route::middleware(['auth'])->prefix('/admin')->group(function () {
     Route::post('/cancel-order', [OrderController::class, 'orderCancel'])->name('client.order.cancel');
 
     Route::get('/invoice/{pid}', function () {
-        return view('frontend.client.invoice');
+        return view('backend.checkout.invoice');
     })->name('invoice');
 
     Route::get('/order-tracking/{pid}', function () {
-        return view('frontend.client.order.tracking');
+        return view('backend.checkout.tracking');
     })->name('order.tracking');
 
 
