@@ -19,7 +19,11 @@
 
                                     <td class="price">
                                         <h6 class="fw-bold">Price</h6>
-                                        <p>Rs. {{ $prod->price }} <del class="text-danger"> Rs. {{ $prod->strike_price }}</del></p>
+                                        <p>$ {{ $prod->price }} 
+                                        @if($item->strike_price > 0 && $item->strike_price != $item->price)
+                                        <del class="text-danger">$ {{ $item->strike_price }}</del>
+                                        @endif
+                                        </p>
                                     </td>
 
                                     <td class="quantity">
@@ -46,7 +50,7 @@
 
                                     <td class="subtotal">
                                         <h6 class="fw-bold">Sub Total</h6>
-                                        <p>{{ $prod->price * $item->qty }}</p>
+                                        <p>$ {{ $prod->price * $item->qty }}</p>
                                     </td>
 
                                     <td class="save-remove">
@@ -68,7 +72,7 @@
                 <div class="card-body">
                     <td class="subtotal">
                         <h6 class="fw-bold">Total</h6>
-                        <p>Rs. {{ $subTotal }}</p>
+                        <p>$ {{ $subTotal }}</p>
                     </td>
                     <hr>
                     {{-- <td class="subtotal">

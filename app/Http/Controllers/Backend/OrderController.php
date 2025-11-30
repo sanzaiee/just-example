@@ -13,13 +13,15 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('user','orderProductLists','orderProductLists.product','shippingAddress')->where('user_id',auth()->id())->latest()->get();
         if(auth()->user()->is_admin){
+            $orders = Order::with('user','orderProductLists','orderProductLists.product','shippingAddress')->latest()->get();
             return view('backend.checkout.orders',compact('orders'));
-        }
+        }else{
+            $orders = Order::with('user','orderProductLists','orderProductLists.product','shippingAddress')->where('user_id',auth()->id())->latest()->get();
             return view('backend.checkout.user_orders',compact('orders'));
-
+        }
     }
+            
     public function successPage($pid)
     {
         $order = Order::wherePid($pid)->first();

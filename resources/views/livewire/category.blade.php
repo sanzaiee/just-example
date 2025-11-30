@@ -40,7 +40,7 @@
                                     <th>S/N</th>
                                     <th>Name</th>
                                     <th>Status</th>
-                                    <th>Parent</th>
+                                    {{-- <th>Parent</th> --}}
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -59,9 +59,9 @@
                                             @endif
                                         </td>
 
-                                        <td>
+                                        {{-- <td>
                                             {{$item->parent?->name ?? '-'}}
-                                        </td>
+                                        </td> --}}
 
 
 {{--                                        <td>--}}
@@ -127,7 +127,7 @@
                                 @endforeach
 
 
-                                @include('backend.form.livewire-collection', [
+                                {{-- @include('backend.form.livewire-collection', [
                                            'data' => [
                                                'name' =>'parent_id',
                                                'label' => 'Parents',
@@ -136,7 +136,7 @@
                                            'model' => $model ?? null,
                                            'type' => 'dynamic-select',
                                            'arrayData' => $parents
-                                       ])
+                                       ]) --}}
 
 
                                     @foreach ([['position','Position']] as $item)

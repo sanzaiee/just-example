@@ -19,12 +19,12 @@
             </a>
         </li>
 
-        <li class="menu-item {{ request()->is('admin/tag*') ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ request()->is('admin/tag*') ? 'active' : '' }}">
             <a href="{{ route('tag.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-category"></i>
                 <div data-i18n="tag">Tag</div>
             </a>
-        </li>
+        </li> --}}
 
          <li class="menu-item {{ request()->is('admin/users*') ? 'active' : '' }}">
             <a href="{{ route('user.index') }}" class="menu-link">

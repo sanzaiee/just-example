@@ -24,9 +24,12 @@
                 <div class="col-md-3">
                     <div class="card h-100 shadow-sm">
                         <div class="position-relative overflow-hidden p-2" style="height: 200px;">
-                            <img src="{{ $item->image }}"
-                                alt="{{ $item->slug }}"
-                                class="w-100 h-100 object-fit-cover rounded">
+                            @if($item->image)
+                                <img src="{{ $item->image }}" alt="{{ $item->name }}" class="w-100 h-100 object-fit-cover rounded">
+                            @else
+                                <span class="avatar-initial rounded-circle w-100 h-100 bg-label-{{ getAvatarColor($item->name) }} d-flex justify-content-center align-items-center">{{ getAvatarName($item->name) }}</span>
+                            @endif
+                            {{-- <img src="{{ $item->image }}" alt="{{ $item->slug }}" class="w-100 h-100 object-fit-cover rounded"> --}}
                         </div>
 
                         <div class="card-body text-center d-flex flex-column">
