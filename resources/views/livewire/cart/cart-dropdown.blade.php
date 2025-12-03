@@ -1,5 +1,5 @@
 <div class="dropdown" wire:target="increase,decrease,clearCart,removeProductCart">
-    <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button"
+    <button class="btn btn-outline-primary btn-sm dropdown-toggle d-flex align-items-center" type="button"
         data-bs-toggle="dropdown">
         <i class="bi bi-cart me-1"></i>
         <span>Cart ({{ Cart::count() }})</span>

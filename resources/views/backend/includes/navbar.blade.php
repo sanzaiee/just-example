@@ -52,12 +52,19 @@
         </div>
 
 
+
         <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <li class="nav-item">
+                <livewire:cart-dropdown />
+            </li>
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ asset('') }}assets/img/avatars/1.png" alt class="h-auto rounded-circle" />
+                        <span class="avatar-initial rounded-circle bg-label-primary">
+                            {{ auth()->user()->name[0] }}
+                        </span>
+                        {{-- <img src="{{ asset('') }}assets/img/avatars/1.png" alt class="h-auto rounded-circle" /> --}}
                     </div>
                 </a>
 
@@ -67,8 +74,11 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ asset('') }}assets/img/avatars/1.png" alt
-                                            class="h-auto rounded-circle" />
+                                        <span class="avatar-initial rounded-circle bg-label-primary">
+                                            {{ strtoupper(auth()->user()->name[0]) ?? '' }}
+                                        </span>
+                                        {{-- <img src="{{ asset('') }}assets/img/avatars/1.png" alt
+                                            class="h-auto rounded-circle" /> --}}
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -105,7 +115,6 @@
             <!--/ User -->
         </ul>
 
-        <livewire:cart-dropdown />
 
     </div>
 </nav>
