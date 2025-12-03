@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <td class="subtotal">
                         <h6 class="fw-bold">Total</h6>
-                        <p>Rs. {{ $subTotal }}</p>
+                        <p>$ {{ $subTotal }}</p>
                     </td>
                     <hr>
                     {{-- <td class="subtotal">

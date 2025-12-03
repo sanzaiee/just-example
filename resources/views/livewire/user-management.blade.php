@@ -25,7 +25,7 @@
 
                             <div class="col-md-3 m-3">
                                 <div class="col-md-auto">
-                                    <a href="{{route('category.index')}}"
+                                    <a href="{{route('user.index')}}"
                                        class="btn btn-light waves-effect waves-light shadow-none">
                                         <i class="fa fa-refresh"></i>
                                     </a>
