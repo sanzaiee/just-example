@@ -39,7 +39,7 @@
                         <form method="GET" action="{{ url('/') }}" id="searchForm">
                             <div class="row g-3">
                                 <!-- Search Bar -->
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="input-group">
                                         <span class="input-group-text bg-primary text-white">
                                             <i class="fas fa-search"></i>
@@ -89,6 +89,19 @@
                                     </select>
                                 </div>
 
+                                <!-- Page Size Filter -->
+                                <div class="col-md-1">
+                                    <select class="form-select" name="per_page" id="perPageFilter">
+                                        <option value="6" {{ request()->get('per_page') == 6 ? 'selected' : '' }}>6
+                                            per page</option>
+                                        <option value="12" {{ request()->get('per_page') == 12 ? 'selected' : '' }}>12
+                                            per page</option>
+                                        <option value="24" {{ request()->get('per_page') == 24 ? 'selected' : '' }}>24
+                                            per page</option>
+                                        <option value="48" {{ request()->get('per_page') == 48 ? 'selected' : '' }}>48
+                                            per page</option>
+                                    </select>
+                                </div>
                                 <!-- Search Button -->
                                 <div class="col-md-2">
                                     <button type="submit" class="btn btn-primary w-100">
@@ -221,23 +234,14 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            @forelse ($products as $product)
+                            @foreach ($products as $product)
                                 @include('layouts.list', ['product' => $product])
-
-                            @empty
-                                <div class="text-center py-5">
-                                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No products found</h5>
-                                    <p class="text-muted">Try adjusting your search or filters to find what you're looking
-                                        for.
-                                    </p>
-                                </div>
-                            @endforelse
+                            @endforeach
                         </div>
                         <!-- Pagination -->
                         @if ($products->hasPages())
                             <div class="d-flex justify-content-center mt-4">
-                                {{ $products->links() }}
+                                {{ $products->links('pagination::bootstrap-5') }}
                             </div>
                         @endif
                     </div>

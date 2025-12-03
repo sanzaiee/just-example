@@ -13,6 +13,7 @@ class FrontendController extends Controller
         $brand = request()->get('brand', '');
         $sort = request()->get('sort', 'latest');
         $page = request()->get('page', 1);
+        $pageSize = request()->get('per_page', 6);
 
         // Query products directly with relationships for better performance
         $productsQuery = \App\Models\Product::with(['category', 'user', 'brand', 'tieredPrices']);
@@ -46,7 +47,7 @@ class FrontendController extends Controller
         }
 
         // Get paginated products
-        $products = $productsQuery->paginate(12);
+        $products = $productsQuery->paginate($pageSize);
 
         // Get all categories and brands for filters
         $allCategories = ModelsCategory::orderBy('name')->get();
