@@ -8,25 +8,21 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         {{-- <h5 class="mb-0">Category</h5> --}}
                         <small class="text-muted float-end">
-                                List
+                            List
                         </small>
                     </div>
 
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6 m-3">
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Search ..."
-                                    wire:model.live.debounce.500ms="query"
-                                >
+                                <input type="text" class="form-control" placeholder="Search ..."
+                                    wire:model.live.debounce.500ms="query">
                             </div>
 
                             <div class="col-md-3 m-3">
                                 <div class="col-md-auto">
-                                    <a href="{{route('brand.index')}}"
-                                       class="btn btn-light waves-effect waves-light shadow-none">
+                                    <a href="{{ route('brand.index') }}"
+                                        class="btn btn-light waves-effect waves-light shadow-none">
                                         <i class="fa fa-refresh"></i>
                                     </a>
                                 </div>
@@ -36,59 +32,56 @@
                         <div class="table-responsive">
                             <table class="table card-table">
                                 <thead>
-                                <tr>
-                                    <th>S/N</th>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
+                                    <tr>
+                                        <th>S/N</th>
+                                        <th>Image</th>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($records as $index=>$item)
-                                    <tr>
-                                        <td>{{ ++$index }}</td>
+                                        <tr>
+                                            <td>{{ ++$index }}</td>
+                                            <td><img src="{{ $item->image }}" width="50px" height="50px"></td>
 
-                                        <td>{{ $item->name }}</td>
+                                            <td>{{ $item->name }}</td>
 
-                                        <td>
-                                            @if($item->status == 1)
-                                                <span class="btn btn-xs btn-success waves-effect waves-light">Active</span>
-                                            @else
-                                                <span class="btn btn-xs btn-danger waves-effect waves-light">Banned</span>
-                                            @endif
-                                        </td>
+                                            <td>
+                                                @if ($item->status == 1)
+                                                    <span
+                                                        class="btn btn-xs btn-success waves-effect waves-light">Active</span>
+                                                @else
+                                                    <span
+                                                        class="btn btn-xs btn-danger waves-effect waves-light">Banned</span>
+                                                @endif
+                                            </td>
 
+                                            <td>
+                                                <button class="btn btn-sm btn-primary"
+                                                    wire:click="update({{ $item->id }})"><i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger"
+                                                    wire:click="delete({{ $item->id }})"><i
+                                                        class="fa fa-trash-alt"></i> </button>
 
-
-
-{{--                                        <td>--}}
-{{--                                            @if($item->menu == 1)--}}
-{{--                                                <span class="btn btn-xs btn-success waves-effect waves-light">Showed</span>--}}
-{{--                                            @else--}}
-{{--                                                <span class="btn btn-xs btn-danger waves-effect waves-light">Banned</span>--}}
-{{--                                            @endif--}}
-{{--                                        </td>--}}
-
-                                        <td>
-                                            <button class="btn btn-sm btn-primary" wire:click="update({{$item->id}})"><i class="fa fa-edit"></i> </button>
-                                            <button class="btn btn-sm btn-danger" wire:click="delete({{$item->id}})"><i class="fa fa-trash-alt"></i> </button>
-
-                                        </td>
+                                            </td>
 
 
-                                    </tr>
+                                        </tr>
                                     @empty
-                                    <tr>
-                                        <td>Please add some content...</td>
-                                    </tr>
+                                        <tr>
+                                            <td>Please add some content...</td>
+                                        </tr>
                                     @endforelse
 
 
                                 </tbody>
                             </table>
 
-                             <span class="m-3">
-                                 {{$records->withQueryString()->links()}}
+                            <span class="m-3">
+                                {{ $records->withQueryString()->links() }}
                             </span>
 
                         </div>
@@ -103,15 +96,28 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <small class="text-muted float-end">
-                            {{($this->updateModelId == NULL) ? "Create" : "Update ". ucfirst($this->name)}}
+                            {{ $this->updateModelId == null ? 'Create' : 'Update ' . ucfirst($this->name) }}
                         </small>
-                        <button class="btn btn-sm btn-info" wire:click="resetData"><i class="fa fa-refresh"></i> </button>
+                        <button class="btn btn-sm btn-info" wire:click="resetData"><i class="fa fa-refresh"></i>
+                        </button>
                     </div>
 
                     <form wire:submit="save">
                         <div class="card-body">
                             <div class="row g-3">
-                                @foreach ([['name','Name']] as $item)
+
+                                @include('backend.form.livewire-collection', [
+                                    'data' => [
+                                        'name' => 'image',
+                                        'label' => 'Image',
+                                    ],
+                                    'required' => true,
+                                    'model' => $model ?? null,
+                                    'type' => 'file',
+                                ])
+
+
+                                @foreach ([['name', 'Name']] as $item)
                                     @include('backend.form.livewire-collection', [
                                         'data' => [
                                             'name' => $item[0],
@@ -119,37 +125,24 @@
                                         ],
                                         'required' => true,
                                         'model' => $model ?? null,
-                                        'type' => 'text'
+                                        'type' => 'text',
                                     ])
                                 @endforeach
 
 
-                                    @foreach ([['position','Position']] as $item)
-                                        @include('backend.form.livewire-collection', [
-                                            'data' => [
-                                                'name' => $item[0],
-                                                'label' => $item[1],
-                                            ],
-                                            'required' => true,
-                                            'model' => $model ?? null,
-                                            'type' => 'number'
-                                        ])
-                                    @endforeach
+                                @foreach ([['position', 'Position']] as $item)
+                                    @include('backend.form.livewire-collection', [
+                                        'data' => [
+                                            'name' => $item[0],
+                                            'label' => $item[1],
+                                        ],
+                                        'required' => true,
+                                        'model' => $model ?? null,
+                                        'type' => 'number',
+                                    ])
+                                @endforeach
 
-                                    @foreach ([['status','Status'],['menu','Menu']] as $item)
-                                        @include('backend.form.livewire-collection', [
-                                            'data' => [
-                                                'name' => $item[0],
-                                                'label' => $item[1],
-                                            ],
-                                            'required' => false,
-                                            'model' => $model ?? null,
-                                            'type' => 'status'
-                                        ])
-                                    @endforeach
-
-
-                                @foreach ([['description','Description']] as $item)
+                                @foreach ([['status', 'Status'], ['menu', 'Menu']] as $item)
                                     @include('backend.form.livewire-collection', [
                                         'data' => [
                                             'name' => $item[0],
@@ -157,7 +150,20 @@
                                         ],
                                         'required' => false,
                                         'model' => $model ?? null,
-                                        'type' => 'normal-textarea'
+                                        'type' => 'status',
+                                    ])
+                                @endforeach
+
+
+                                @foreach ([['description', 'Description']] as $item)
+                                    @include('backend.form.livewire-collection', [
+                                        'data' => [
+                                            'name' => $item[0],
+                                            'label' => $item[1],
+                                        ],
+                                        'required' => false,
+                                        'model' => $model ?? null,
+                                        'type' => 'normal-textarea',
                                     ])
                                 @endforeach
                             </div>

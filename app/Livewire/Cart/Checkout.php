@@ -4,48 +4,97 @@ namespace App\Livewire\Cart;
 
 use App\Models\Order;
 use App\Models\OrderProductList;
+use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Illuminate\Support\Str;
 
 class Checkout extends Component
 {
-    public $subTotal =0,$cartCount = 0,$discount =0, $total = 0, $pid;
+    public $subTotal = 0;
+
+    public $cartCount = 0;
+
+    public $discount = 0;
+
+    public $total = 0;
+
+    public $pid;
+
     public function render()
     {
-         return view('livewire.cart.checkout',[
+        return view('livewire.cart.checkout', [
             'list' => Cart::content(),
             // 'total' => $this->total,
             'subTotal' => $this->subTotal,
-            'cartCount' =>$this->cartCount
+            'cartCount' => $this->cartCount,
 
         ]);
     }
 
     public function mount()
     {
-        $this->subTotal =  Cart::subtotal();
+        $this->subTotal = Cart::subtotal();
         $this->cartCount = Cart::content()->count();
         // $this->total = Cart::total();
-        $this->pid = "P-id" . "-" . Str::random(5);
+        $this->pid = 'P-id'.'-'.Str::random(5);
 
     }
 
-     #[On('refreshCart')]
+    #[On('refreshCart')]
     public function refreshCart()
     {
-        $this->subTotal =  Cart::subtotal();
+        $this->subTotal = Cart::subtotal();
         $this->cartCount = Cart::content()->count();
         // $this->total = Cart::total();
     }
 
+    /**
+     * Get the appropriate price for a product based on quantity
+     */
+    private function getPriceForQuantity($productId, $quantity)
+    {
+        $product = Product::find($productId);
+        if ($product) {
+            $tieredPrice = $product->tieredPrices()
+                ->where('quantity', '<=', $quantity)
+                ->orderBy('quantity', 'desc')
+                ->first();
+
+            return $tieredPrice ? $tieredPrice->price : $product->price;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Update cart item with new quantity and corresponding price
+     */
+    private function updateCartItemPrice($rowId, $newQuantity)
+    {
+        $cartItem = Cart::get($rowId);
+        if ($cartItem) {
+            $newPrice = $this->getPriceForQuantity($cartItem->id, $newQuantity);
+
+            // Update both quantity and price
+            Cart::update($rowId, [
+                'qty' => $newQuantity,
+                'price' => $newPrice,
+            ]);
+        }
+    }
 
     public function decreaseQty($id, $qty)
     {
         $cartContents = Cart::content();
         $arrayKeys = array_keys($cartContents->toArray());
-        Cart::update($arrayKeys[$id], --$qty);
+        $rowId = $arrayKeys[$id];
+
+        if ($qty > 1) {
+            $newQty = --$qty;
+            $this->updateCartItemPrice($rowId, $newQty);
+        }
 
         $this->refreshCart();
 
@@ -54,13 +103,17 @@ class Checkout extends Component
         $this->dispatch(
             'alert',
             ['type' => 'success',  'message' => 'Item Decreased!']
-        );    }
+        );
+    }
 
     public function increaseQty($id, $qty)
     {
         $cartContents = Cart::content();
         $arrayKeys = array_keys($cartContents->toArray());
-        Cart::update($arrayKeys[$id], ++$qty);
+        $rowId = $arrayKeys[$id];
+
+        $newQty = ++$qty;
+        $this->updateCartItemPrice($rowId, $newQty);
 
         $this->refreshCart();
 
@@ -95,7 +148,7 @@ class Checkout extends Component
         $db['quantity'] = Cart::content()->count();
         $db['user_id'] = auth()->id();
         // $db['amount'] =  $this->total;
-        $db['amount'] =  $this->subTotal;
+        $db['amount'] = $this->subTotal;
         $db['discount'] = $this->discount;
         $db['shipping_address_id'] = auth()->user()->shippingAddress->id;
 
@@ -122,20 +175,21 @@ class Checkout extends Component
 
     public function checkout()
     {
-        if(auth()->user()->shippingAddress == null){
+        if (auth()->user()->shippingAddress == null) {
             $this->dispatch(
                 'alert',
                 ['type' => 'error',  'message' => 'Please add shipping address first!']
             );
+
             return redirect(route('checkout'));
-        }   
+        }
 
         $order = $this->orderStore();
-        //re-checking the process
+        // re-checking the process
         $order_check = Order::where('pid', $this->pid)->first();
         if ($order_check) {
             $order_check->update([
-                'order_status' => 1
+                'order_status' => 1,
             ]);
 
             // $this->sendSMS($order->pid, $order->user->display_name);
@@ -148,6 +202,7 @@ class Checkout extends Component
                 'alert',
                 ['type' => 'success',  'message' => 'Order successfully placed. Please wait for response!!!!']
             );
+
             return redirect(route('success.page', $order_check->pid));
         } else {
 
@@ -155,8 +210,8 @@ class Checkout extends Component
                 'alert',
                 ['type' => 'error',  'message' => 'Order placement Failed!']
             );
+
             return redirect(route('landing.page'));
         }
     }
-
 }

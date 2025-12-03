@@ -1,69 +1,372 @@
 @extends('backend.master')
 @section('content')
 
-<div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">Welcome</h4>
-
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Categories</h5>
-
-            <div class="nav-tabs-shadow nav-align-left">
-                <ul class="nav nav-tabs" role="tablist">
-                    @forelse ($categories as $index => $category)
-                        <li class="nav-item">
-                            <button type="button" class="nav-link @if($index == 0) active @endif" role="tab" data-bs-toggle="tab" data-bs-target="#navs-left-align-{{ $category->slug }}">{{ $category->name }}</button>
-                        </li>
-                    @empty
-                    @endforelse
-                </ul>
-                <div class="tab-content">
-                    @forelse ($categories as $index => $category)
-                        <div class="tab-pane fade  @if($index == 0) show active @endif" id="navs-left-align-{{ $category->slug }}">
-                            <div class="row">
-                                @forelse ($category->product as $candidate)
-                                    <div class="col-md-12 m-3">
-                                        <div class="card mb-3">
-                                            <div class="row g-0">
-                                                <div class="col-md-3">
-                                                    <img class="img-thumbnails card-img-left" src="{{ $candidate->image  }}" alt="Card image" width="100%" height = "200px"/>
-                                                </div>
-                                                <div class="col-md-9">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">
-                                                            {{ $candidate->name }}
-
-                                                        </h5>
-
-
-                                                        <p class="card-text">
-                                                            {{ $candidate->description }}
-                                                        </p>
-                                                        <div class="d-flex justify-content-between">
-                                                            <p class="card-text">
-                                                                <span class=" {{ $candidate->stock ? 'text-success' : 'text-danger' }}">
-                                                                    {{ $candidate->stock ? 'In Stock' : 'Out Of Stuck' }}
-                                                                </span>
-                                                                <small class="text-muted">By {{ $candidate->user->name ?? '' }}</small>
-                                                            </p>
-                                                            <a href="{{ route('product.show', $candidate->id) }}" class="btn btn-primary btn-xs">More</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="fw-bold mb-2">Welcome to Our Store</h1>
+                                <p class="mb-0">Discover amazing products from our curated collection</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-md-end mt-3 mt-md-0">
+                                    <div class="btn btn-primary  p-2 me-2">
+                                        <i class="fas fa-box me-1"></i>
+                                        <span id="totalProducts">{{ $products->total() }}</span>
+                                        Products
                                     </div>
-                                @empty
-
-                                @endforelse
+                                    <div class="btn btn-primary p-2">
+                                        <i class="fas fa-tags me-1"></i>
+                                        <span>{{ $allCategories->count() }}</span> Categories
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    @empty
-                    @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="GET" action="{{ url('/') }}" id="searchForm">
+                            <div class="row g-3">
+                                <!-- Search Bar -->
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-primary text-white">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control" name="search"
+                                            placeholder="Search products..." value="{{ request()->get('search', '') }}"
+                                            id="searchInput">
+                                    </div>
+                                </div>
+
+                                <!-- Category Filter -->
+                                <div class="col-md-2">
+                                    <select class="form-select" name="category" id="categoryFilter">
+                                        <option value="">All Categories</option>
+                                        @foreach ($allCategories as $cat)
+                                            <option value="{{ $cat->id }}"
+                                                {{ request()->get('category') == $cat->id ? 'selected' : '' }}>
+                                                {{ $cat->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Brand Filter -->
+                                <div class="col-md-2">
+                                    <select class="form-select" name="brand" id="brandFilter">
+                                        <option value="">All Brands</option>
+                                        @foreach ($allBrands as $brand)
+                                            <option value="{{ $brand->id }}"
+                                                {{ request()->get('brand') == $brand->id ? 'selected' : '' }}>
+                                                {{ $brand->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Sort Filter -->
+                                <div class="col-md-2">
+                                    <select class="form-select" name="sort" id="sortFilter">
+                                        <option value="latest"
+                                            {{ request()->get('sort', 'latest') == 'latest' ? 'selected' : '' }}>
+                                            Latest First
+                                        </option>
+                                        <option value="oldest" {{ request()->get('sort') == 'oldest' ? 'selected' : '' }}>
+                                            Oldest First
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Search Button -->
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-filter me-2"></i>Apply Filters
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Active Filters Display -->
+                            @if (request()->hasAny(['search', 'category', 'brand', 'sort']))
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <span class="text-muted me-2">Active filters:</span>
+                                            @if (request()->get('search'))
+                                                <span class="badge bg-light text-dark me-2 mb-1">
+                                                    Search: {{ request()->get('search') }}
+                                                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}"
+                                                        class="text-decoration-none ms-1">×</a>
+                                                </span>
+                                            @endif
+                                            @if (request()->get('category'))
+                                                <span class="badge bg-light text-dark me-2 mb-1">
+                                                    Category:
+                                                    {{ $allCategories->find(request()->get('category'))->name ?? '' }}
+                                                    <a href="{{ request()->fullUrlWithQuery(['category' => null]) }}"
+                                                        class="text-decoration-none ms-1">×</a>
+                                                </span>
+                                            @endif
+                                            @if (request()->get('brand'))
+                                                <span class="badge bg-light text-dark me-2 mb-1">
+                                                    Brand: {{ $allBrands->find(request()->get('brand'))->name ?? '' }}
+                                                    <a href="{{ request()->fullUrlWithQuery(['brand' => null]) }}"
+                                                        class="text-decoration-none ms-1">×</a>
+                                                </span>
+                                            @endif
+                                            <a href="{{ url('/') }}"
+                                                class="btn btn-sm btn-outline-secondary ms-2">Clear all</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Products Section -->
+        @if ($products->where('feature', true)->count() > 0)
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="card border-0">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0 text-dark">
+                                <i class="fas fa-star text-warning me-2"></i>Featured Products
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-4" id="featuredProducts">
+                                @foreach ($products->where('feature', true)->take(8) as $product)
+                                    @include('layouts.list', ['product' => $product])
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Best Sellers Section -->
+        @if ($products->where('best_rated', true)->count() > 0)
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                Best Sellers
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3" id="bestSellerProducts">
+                                @foreach ($products->where('best_rated', true)->sortByDesc('view_count')->take(8) as $product)
+                                    @include('layouts.list', ['product' => $product])
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Top Rated Section -->
+        @if ($products->where('best_rated', true)->count() > 0)
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                Top Rated Products
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3" id="topRatedProducts">
+                                @foreach ($products->where('best_rated', true)->sortByDesc('created_at')->take(8) as $product)
+                                    @include('layouts.list', ['product' => $product])
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- All Products -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                All Products
+                                <span class="badge badge-primary ms-2">{{ $products->total() }} products</span>
+                            </h4>
+                            <div class="text-muted">
+                                Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
+                                {{ $products->total() }} products
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @forelse ($products as $product)
+                                @include('layouts.list', ['product' => $product])
+
+                            @empty
+                                <div class="text-center py-5">
+                                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No products found</h5>
+                                    <p class="text-muted">Try adjusting your search or filters to find what you're looking
+                                        for.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+                        <!-- Pagination -->
+                        @if ($products->hasPages())
+                            <div class="d-flex justify-content-center mt-4">
+                                {{ $products->links() }}
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-</div>
+    {{-- <style>
+        .product-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        }
+
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%) !important;
+        }
+
+        .bg-gradient-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+        }
+
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        }
+
+        .category-products {
+            transition: all 0.3s ease;
+        }
+
+        .toggle-category.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style> --}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-submit form on filter change
+            const searchForm = document.getElementById('searchForm');
+            const filterElements = ['categoryFilter', 'brandFilter', 'sortFilter'];
+
+            filterElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', function() {
+                        searchForm.submit();
+                    });
+                }
+            });
+
+            // Debounced search input
+            let searchTimeout;
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        searchForm.submit();
+                    }, 500);
+                });
+            }
+
+            // Toggle category visibility
+            document.querySelectorAll('.toggle-category').forEach(button => {
+                button.addEventListener('click', function() {
+                    const categorySlug = this.dataset.category;
+                    const categoryDiv = document.getElementById('category-' + categorySlug);
+                    const icon = this.querySelector('i');
+
+                    if (categoryDiv.style.display === 'none') {
+                        categoryDiv.style.display = 'flex';
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-chevron-down');
+                        this.classList.remove('collapsed');
+                    } else {
+                        categoryDiv.style.display = 'none';
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-right');
+                        this.classList.add('collapsed');
+                    }
+                });
+            });
+
+            // Lazy loading for images
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src || img.src;
+                            img.classList.remove('lazy');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                    imageObserver.observe(img);
+                });
+            }
+        });
+    </script>
 @endsection

@@ -40,14 +40,17 @@ class ProductController extends Controller
             ] + getRoutes('product'));
     }
 
-    public function show($product)
+    public function show($slug)
     {
         $product = $this->product->with([
             'category','brand',
             'relatedProducts' => function ($query) {
                 $query->limit(4);
             }
-        ])->findOrFail($product);
+        ])->where('slug', $slug)->firstOrFail();
+
+        // Load media collections
+        $product->loadMedia('images');
 
         $cacheKey = 'product_viewed_' . $product->id . '_' . session()->getId();
 
@@ -57,14 +60,15 @@ class ProductController extends Controller
         }
         return view('backend.product.show',compact('product'));
     }
-    public function edit($id)
+    public function edit($slug)
     {
-        return redirect()->route('product.create',['product' => $id]);
+        $product = $this->product->where('slug', $slug)->firstOrFail();
+        return redirect()->route('product.create',['product' => $product->id]);
     }
 
-    public function destroy($id)
+    public function destroy($slug)
     {
-        $product = $this->product->findOrFail($id);
+        $product = $this->product->where('slug', $slug)->firstOrFail();
         $product->clearMediaCollection('image');
 
         $product->delete();

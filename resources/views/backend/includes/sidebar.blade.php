@@ -26,7 +26,14 @@
             </a>
         </li>
 
-         <li class="menu-item {{ request()->is('admin/users*') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->is('admin/brand*') ? 'active' : '' }}">
+            <a href="{{ route('brand.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-list"></i>
+                <div data-i18n="brand">Brands</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ request()->is('admin/users*') ? 'active' : '' }}">
             <a href="{{ route('user.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-users"></i>
                 <div data-i18n="category">Users</div>
@@ -40,6 +47,7 @@
             </a>
         </li>
 
+
         <li class="menu-item {{ request()->is('admin/product*') ? 'active' : '' }}">
             <a href="{{ route('product.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-category"></i>
@@ -47,7 +55,7 @@
             </a>
         </li>
 
-         <li class="menu-item {{ request()->is('admin/shipping-address*') ? 'active' : '' }}">
+        <li class="menu-item {{ request()->is('admin/shipping-address*') ? 'active' : '' }}">
             <a href="{{ route('shipping.address') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-location"></i>
                 <div data-i18n="product">Shipping Addresses</div>
@@ -149,7 +157,7 @@
             </ul>
         </li> --}}
 
-        {{-- @if(auth()->user()->role == App\Models\User::ROLE_SUPERADMIN)
+        {{-- @if (auth()->user()->role == App\Models\User::ROLE_SUPERADMIN)
             <li class="menu-item {{ request()->is('vote-count') ? 'active' : '' }}">
                 <a href="{{ route('votes') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-trophy"></i>

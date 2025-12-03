@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cart;
 
+use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -24,9 +25,10 @@ class CartDropdown extends Component
         $this->total = Cart::total();
         $this->dispatch('refreshCart');
     }
+
     public function render()
     {
-        return view('livewire.cart.cart-dropdown',[
+        return view('livewire.cart.cart-dropdown', [
             'items' => Cart::content(),
             'total' => $this->total,
         ]);
@@ -35,22 +37,41 @@ class CartDropdown extends Component
     public function increase($rowId)
     {
         $item = Cart::get($rowId);
-        Cart::update($rowId, $item->qty + 1);
+        $totalQty = $item->qty + 1;
+
+        $product = Product::find($item->id);
+        $price = $product->getPriceForQuantity($totalQty);
+
+        Cart::update($rowId, [
+            'price' => $price,
+            'qty' => $totalQty,
+        ]);
 
         $this->refreshCart();
 
+        // Keep dropdown open after update
+        $this->dispatch('keepDropdownOpen');
     }
 
     public function decrease($rowId)
     {
         $item = Cart::get($rowId);
         if ($item->qty > 1) {
-            Cart::update($rowId, $item->qty - 1);
+            $totalQty = $item->qty - 1;
+            $product = Product::find($item->id);
+            $price = $product->getPriceForQuantity($totalQty);
+            Cart::update($rowId, [
+                'price' => $price,
+                'qty' => $totalQty,
+            ]);
         } else {
             Cart::remove($rowId);
         }
 
         $this->refreshCart();
+
+        // Keep dropdown open after update
+        $this->dispatch('keepDropdownOpen');
     }
 
     public function clearCart()
@@ -84,6 +105,7 @@ class CartDropdown extends Component
                 'type' => 'error',
                 'message' => 'Your cart is empty!',
             ]);
+
             return;
         }
 

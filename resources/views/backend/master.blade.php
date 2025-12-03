@@ -1,20 +1,12 @@
-
 <!DOCTYPE html>
 
-<html
-  lang="en"
-  class="light-style layout-navbar-fixed layout-menu-fixed"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="/assets/"
-  data-template="vertical-menu-template-starter"
->
-  <head>
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default"
+    data-assets-path="/assets/" data-template="vertical-menu-template-starter">
+
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>{{ get_site_name() }}</title>
 
@@ -29,9 +21,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-      rel="stylesheet"
-    />
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Icons -->
@@ -40,8 +31,10 @@
     <link rel="stylesheet" href="{{ asset('') }}assets/vendor/fonts/flag-icons.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/core.css"
+        class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/theme-default.css"
+        class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('') }}assets/css/demo.css" />
 
     <!-- Vendors CSS -->
@@ -55,8 +48,10 @@
 
     {{-- Datatables --}}
     <link rel="stylesheet" href="{{ asset('') }}assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
-    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
-    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css">
+    <link rel="stylesheet"
+        href="{{ asset('') }}assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+    <link rel="stylesheet"
+        href="{{ asset('') }}assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css">
     <link rel="stylesheet" href="{{ asset('') }}assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
     <!-- Helpers -->
     <script src="{{ asset('') }}assets/vendor/js/helpers.js"></script>
@@ -72,53 +67,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     @yield('styles')
     {!! ToastMagic::styles() !!}
+    @stack('css')
 
-  </head>
+</head>
 
-  <body>
+<body>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
-                <!-- Menu -->
-          @if(auth()->check())
-            @include('backend.includes.sidebar')
-          @endif
+        <div class="layout-container">
+            <!-- Menu -->
+            @if (auth()->check())
+                @include('backend.includes.sidebar')
+            @endif
             <!-- / Menu -->
 
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Navbar -->
-                @if(auth()->check())
+                @if (auth()->check())
                     @include('backend.includes.navbar')
                 @endif
 
                 <!-- / Navbar -->
 
-            <!-- Content wrapper -->
+                <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                        @yield('content')
+                    @yield('content')
 
-                        {{ $slot ?? '' }}
+                    {{ $slot ?? '' }}
                     <!-- / Content -->
 
-                        <!-- Footer -->
+                    <!-- Footer -->
                     @include('backend.includes.footer')
 
-                        <!-- / Footer -->
+                    <!-- / Footer -->
 
                     <div class="content-backdrop fade"></div>
                 </div>
-          <!-- Content wrapper -->
+                <!-- Content wrapper -->
             </div>
-        <!-- / Layout page -->
-      </div>
+            <!-- / Layout page -->
+        </div>
 
-      <!-- Overlay -->
-      <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
 
-      <!-- Drag Target Area To SlideIn Menu On Small Screens -->
-      <div class="drag-target"></div>
+        <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+        <div class="drag-target"></div>
     </div>
     <!-- / Layout wrapper -->
 
@@ -144,21 +140,22 @@
     <script src="{{ asset('') }}assets/js/ui-toasts.js"></script>
 
 
-  <!-- Vendors JS -->
+    <!-- Vendors JS -->
     <script src="{{ asset('') }}assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
 
     <script src="{{ asset('') }}assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
     @include('backend.includes.tinymce')
     @include('backend.includes.fileupload')
 
-    @stack('custom-scripts')
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
     @include('backend.includes.message')
 
+    @stack('custom-scripts')
     @livewireScripts
     {!! ToastMagic::scripts() !!}
 
-  </body>
+</body>
+
 </html>

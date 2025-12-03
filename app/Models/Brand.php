@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Brand extends Model
+class Brand extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, InteractsWithMedia,SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -20,7 +22,12 @@ class Brand extends Model
         'menu',
     ];
 
-      protected static function booted()
+    public function getImageAttribute()
+    {
+        return $this->hasMedia('image') ? $this->getMedia('image')[0]->getFullUrl() : '';
+    }
+
+    protected static function booted()
     {
         static::creating(function ($brand) {
             $slug = Str::slug($brand->name, '-');
@@ -31,7 +38,7 @@ class Brand extends Model
             // Check if the generated slug already exists
             $counter = 1;
             while (in_array($slug, $existingSlugs)) {
-                $slug = Str::slug($brand->name, '-') . '-' . $counter;
+                $slug = Str::slug($brand->name, '-').'-'.$counter;
                 $counter++;
             }
 
@@ -47,7 +54,7 @@ class Brand extends Model
             // Check if the generated slug already exists
             $counter = 1;
             while (in_array($slug, $existingSlugs)) {
-                $slug = Str::slug($brand->name, '-') . '-' . $counter;
+                $slug = Str::slug($brand->name, '-').'-'.$counter;
                 $counter++;
             }
 
@@ -55,6 +62,4 @@ class Brand extends Model
         });
 
     }
-
-
 }

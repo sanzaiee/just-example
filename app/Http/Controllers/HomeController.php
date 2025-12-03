@@ -30,17 +30,33 @@ class HomeController extends Controller
                 $search = request('query');
                 $q->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%");
+                        ->orWhere('slug', 'like', "%{$search}%");
                 });
             })
             ->when(request('category'), function ($q) {
                 $category = request('category');
                 $q->whereHas('category', function ($q) use ($category) {
                     $q->where('name', 'like', "%{$category}%")
-                    ->orWhere('slug', 'like', "%{$category}%");
+                        ->orWhere('slug', 'like', "%{$category}%");
                 });
             })
-            ->paginate(15);
+            ->when(request('brand'), function ($q) {
+                $brand = request('brand');
+                $q->whereHas('brand', function ($q) use ($brand) {
+                    $q->where('name', 'like', "%{$brand}%")
+                        ->orWhere('slug', 'like', "%{$brand}%");
+                });
+            })
+            ->when(request('sort'), function ($q) {
+                $sort = request('sort');
+                $q->orderBy('created_at', $sort);
+            })
+            ->when(request('status'), function ($q) {
+                $status = request('status');
+                $q->where($status, 1);
+            })
+
+            ->paginate(request()->get('per_page') ?? 10);
 
         $categories = Category::pluck('name', 'slug');
 
@@ -50,18 +66,17 @@ class HomeController extends Controller
         ]);
     }
 
+    /* Tiny MCE image Upload */
+    public function uploadImage(Request $request)
+    {
+        $fileName = $request->file('file')->getClientOriginalName();
+        $path = $request->file('file')->storeAs('uploads', $fileName, 'public');
 
+        return response()->json(['location' => "/storage/$path"]);
+    }
 
-     /*Tiny MCE image Upload*/
-     public function uploadImage(Request $request)
-     {
-         $fileName = $request->file('file')->getClientOriginalName();
-         $path = $request->file('file')->storeAs('uploads', $fileName, 'public');
-         return response()->json(['location' => "/storage/$path"]);
-     }
-
-     public function checkout()
-     {
+    public function checkout()
+    {
         return view('backend.checkout.index');
-     }
+    }
 }

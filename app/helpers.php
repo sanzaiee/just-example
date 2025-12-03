@@ -1,84 +1,104 @@
 <?php
 
+use App\Models\Product;
 use App\Models\Setting;
 
-if (!function_exists('get_logo')) {
+function getTieredPrice($productId, $quantity)
+{
+    $product = Product::find($productId);
+    if ($product) {
+        $tieredPrice = $product->tieredPrices()
+            ->where('quantity', '>', $quantity)
+            ->orderBy('quantity', 'asc')
+            ->first();
+
+        return $tieredPrice ? $tieredPrice->price : $product->price;
+        // return $tieredPrice ? 'Rs. '.number_format($tieredPrice->price, 2) : 'Rs. '.number_format($product->price, 2);
+    }
+
+    return $product->price;
+
+    // return 'Rs. '.number_format($product->price, 2);
+}
+
+if (! function_exists('get_logo')) {
     function get_logo($name)
     {
         switch ($name) {
             case 'logo':
                 $setting = Setting::where('attribute', 'logo')->first();
+
                 return $setting->logo ?? '';
                 break;
 
             case 'fav':
                 $setting = Setting::where('attribute', 'fav')->first();
+
                 return $setting->fav ?? '';
                 break;
 
             default:
-                # code...
+                // code...
                 break;
         }
     }
 }
 
-if (!function_exists('get_site_name')) {
+if (! function_exists('get_site_name')) {
     function get_site_name()
     {
         $setting = Setting::where('setting_group_slug', 'general-information')->where('attribute', 'site_name')->first();
+
         return $setting?->value ?: 'Please Update Site Name';
     }
 }
 
-
-if (!function_exists('getRoutes')) {
+if (! function_exists('getRoutes')) {
 
     function getRoutes($model)
     {
         return [
-            'routeCreate' => $model.".create",
-            'routeStore' => $model.".store",
-            'routeUpdate' => $model.".update",
-            'routeList' => $model.".index",
-            'routeEdit' => $model.".edit",
-            'routeDelete' => $model.".destroy",
+            'routeCreate' => $model.'.create',
+            'routeStore' => $model.'.store',
+            'routeUpdate' => $model.'.update',
+            'routeList' => $model.'.index',
+            'routeEdit' => $model.'.edit',
+            'routeDelete' => $model.'.destroy',
         ];
     }
 }
-if (!function_exists('getRoutesWithParams')) {
-    function getRoutesWithParams($model,$params)
+if (! function_exists('getRoutesWithParams')) {
+    function getRoutesWithParams($model, $params)
     {
         return [
-            'routeCreate' => $model.".create",
-            'routeList' => $model.".index",
-            'routeStore' => $model.".store",
-            'routeUpdate' => $model.".update",
-            'routeEdit' => $model.".edit",
-            'routeDelete' => $model.".destroy",
+            'routeCreate' => $model.'.create',
+            'routeList' => $model.'.index',
+            'routeStore' => $model.'.store',
+            'routeUpdate' => $model.'.update',
+            'routeEdit' => $model.'.edit',
+            'routeDelete' => $model.'.destroy',
         ];
     }
 }
 
-
-
-if (!function_exists('getAvatarName')) {
+if (! function_exists('getAvatarName')) {
     function getAvatarName($string): string
     {
         $words = explode(' ', $string);
 
-        $first_letters = array_map(fn($word) => substr($word, 0, 1), array_slice($words, 0, 3));
+        $first_letters = array_map(fn ($word) => substr($word, 0, 1), array_slice($words, 0, 3));
 
         return implode('', $first_letters);
     }
 }
 
-if (!function_exists('getAvatarColor')) {
+if (! function_exists('getAvatarColor')) {
     function getAvatarColor($string): string
     {
-        if (!$string){
+        if (! $string) {
             return 'primary';
         }
+
         return match (strtolower($string[0])) {
             'a', 'b', 'c', 'd' => 'secondary',
             'e', 'f', 'g', 'h' => 'success',

@@ -1,76 +1,83 @@
-<div class="dropdown">
-    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        <i class="bi bi-cart"></i> Cart ({{ Cart::count() }})
+<div class="dropdown" wire:target="increase,decrease,clearCart,removeProductCart">
+    <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button"
+        data-bs-toggle="dropdown">
+        <i class="bi bi-cart me-1"></i>
+        <span>Cart ({{ Cart::count() }})</span>
     </button>
 
-    <ul class="dropdown-menu dropdown-menu-end p-3 shadow" style="min-width: 340px; max-height: 400px; overflow-y: auto;">
-        <li class="d-flex justify-content-between mt-2">
-            <button wire:click="clearCart"
-                    class="btn btn-sm btn-outline-warning w-100"
-                    onclick="event.stopPropagation()">
-                <i class="bi bi-trash"></i> Clear All
+    <div class="dropdown-menu dropdown-menu-end p-0 shadow-lg" style="width: 360px;">
+        {{-- Header with Clear Cart --}}
+        <div class="dropdown-header d-flex justify-content-between align-items-center py-2 px-3 border-bottom">
+            <h6 class="mb-0 fw-semibold">Shopping Cart</h6>
+            <button wire:click="clearCart" class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation()">
+                <i class="bi bi-x-circle"></i>
             </button>
-        </li>
+        </div>
 
-        <li><hr class="dropdown-divider"></li>
+        {{-- Cart Items --}}
+        <div class="dropdown-body" style="max-height: 300px; overflow-y: auto;">
+            @forelse($items as $item)
+                <div class="dropdown-item p-3 border-bottom">
+                    @php
+                        $product = App\Models\Product::find($item->id);
+                    @endphp
 
-        @forelse($items as $item)
-        <li class="d-flex align-items-center mb-3">
-            @php
-            $product = App\Models\Product::find($item->id);
-            @endphp
-        
-            {{-- Product Image --}}
-            <img src="{{ $product->image }}" alt="{{ $item->name }}" class="rounded me-3"
-                style="width: 50px; height: 50px; object-fit: cover;">
-            {{-- Product Info --}}
-            <div class="flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong> {{ $item->name }} </strong>
-                        <div class="text-muted small">$ {{ $item->price }}</div>
-        
+                    <div class="d-flex align-items-start">
+                        {{-- Product Image --}}
+                        <div class="flex-shrink-0">
+                            <img src="{{ $product->image }}" alt="{{ $item->name }}" class="rounded border"
+                                style="width: 60px; height: 60px; object-fit: cover;">
+                        </div>
+
+                        {{-- Product Info --}}
+                        <div class="flex-grow-1 ms-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="me-2">
+                                    <h6 class="mb-1 fw-semibold text-truncate" style="max-width: 180px;">
+                                        {{ $item->name }}</h6>
+                                    <div class="text-muted small">
+                                        <span class="fw-medium">${{ number_format($item->price, 2) }}</span>
+                                        <span class="mx-1">×</span>
+                                        <span>{{ $item->qty }}</span>
+                                    </div>
+                                </div>
+                                <button wire:click="removeProductCart('{{ $item->rowId }}')"
+                                    class="btn btn-sm btn-link text-danger p-0" onclick="event.stopPropagation()"
+                                    title="Remove item">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted">Subtotal:</small>
+                                <span class="fw-bold text-success">${{ number_format($item->subtotal, 2) }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <span wire:click="removeProductCart('{{ $item->rowId }}')" class="btn btn-outline-danger btn-xs">
-                        X
-                    </span>
                 </div>
-        
-                {{-- Quantity Controls --}}
-                <div class="d-flex align-items-center mt-1">
-                    <button wire:click="decrease('{{ $item->rowId }}')" class="btn btn-xs btn-outline-danger me-1">
-                        <i class="bi bi-dash"></i>
+            @empty
+                <div class="dropdown-item text-center py-4">
+                    <i class="bi bi-cart-x display-4 text-muted d-block mb-2"></i>
+                    <p class="text-muted mb-0">Your cart is empty</p>
+                </div>
+            @endforelse
+        </div>
+
+        {{-- Footer with Total and Checkout --}}
+        @if (Cart::count() > 0)
+            <div class="dropdown-footer p-3 border-top bg-light">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 fw-semibold">Total:</h5>
+                    <h5 class="mb-0 fw-bold text-primary">${{ number_format($total, 2) }}</h5>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm" wire:click="goToCheckoutPage"
+                        onclick="event.stopPropagation()">
+                        <i class="bi bi-cart-check me-2"></i> View Cart & Checkout
                     </button>
-                    <span class="px-2">{{ $item->qty }}</span>
-                    <button wire:click="increase('{{ $item->rowId }}')" class="btn btn-xs btn-outline-success ms-1">
-                        <i class="bi bi-plus"></i>
-                    </button>
-        
-                    <span class="ms-auto fw-semibold">$ {{ $item->subtotal }}</span>
                 </div>
             </div>
-        </li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        @empty
-        <li class="text-center text-muted">Cart is empty</li>
-        @endforelse
-
-        <li class="d-flex justify-content-between">
-            <strong>Total:</strong> <span class="fw-bold">$. {{ $total }}</span>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <li class="d-flex justify-content-between mt-2">
-            <button type="button"
-                    class="btn btn-sm btn-outline-success w-100"
-                    {{ Cart::count() == 0 ? 'disabled' : '' }}
-                    wire:click="goToCheckoutPage">
-                <i class="bi bi-trash"></i> Checkout
-            </button>
-        </li>
-
-    </ul>
+        @endif
+    </div>
 </div>

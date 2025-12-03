@@ -37,7 +37,8 @@
                 <div class="row gy-3 mb-4">
                     <div class="col-md-4">
                         <h6 class="text-muted mb-1">NAME</h6>
-                        <p class="mb-0">{{ $order->shippingAddress->name ?? '' }} {{ $order->shippingAddress->lname ?? '' }}</p>
+                        <p class="mb-0">{{ $order->shippingAddress->name ?? '' }}
+                            {{ $order->shippingAddress->lname ?? '' }}</p>
                     </div>
                     <div class="col-md-4">
                         <h6 class="text-muted mb-1">EMAIL</h6>
@@ -86,16 +87,21 @@
                             @forelse ($order->orderProductLists as $item)
                                 <tr>
                                     <td>
-                                        <img src="{{ $item->product->image }}" alt="Product" class="img-thumbnail" style="max-width: 100px;">
+                                        <img src="{{ $item->product->image }}" alt="Product" class="img-thumbnail"
+                                            style="max-width: 100px;">
                                     </td>
                                     <td>{{ $item->product->name }}</td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>Rs. {{ number_format($item->price, 2) }}</td>
-                                    <td class="text-end">Rs. {{ number_format($item->product->price * $item->quantity, 2) }}</td>
+                                    <td>Rs. {{ number_format($item->product->getPriceForQuantity($item->quantity), 2) }}
+                                    </td>
+                                    <td class="text-end">Rs.
+                                        {{ number_format($item->product->getPriceForQuantity($item->quantity) * $item->quantity, 2) }}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">No products found in this order.</td>
+                                    <td colspan="5" class="text-center text-muted py-4">No products found in this order.
+                                    </td>
                                 </tr>
                             @endforelse
                             <tr class="table-active">
@@ -107,7 +113,7 @@
                 </div>
 
                 <!-- Order Cancel Reason -->
-                @if($order->ordercancel)
+                @if ($order->ordercancel)
                     <div class="alert alert-danger mt-4">
                         <strong>Order Cancelled:</strong> {{ $order->ordercancel->reason }}
                     </div>

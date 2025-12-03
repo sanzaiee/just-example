@@ -1,6 +1,5 @@
 @extends('backend.master')
 @section('content')
-
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="card-body">
@@ -18,10 +17,8 @@
             </div>
         </div>
 
-
         <div class="row g-sm-4 g-3 mt-3">
-            <div class="col-xxl-9 col-lg-8">
-
+            <div class="col-xxl-8 col-lg-8 mt-3">
                 <div class="card">
                     <div class="card-title p-2">
                         <code>Products </code>
@@ -31,17 +28,21 @@
                             <tbody>
                                 @forelse ($productList as $item)
                                     <tr>
-                                        <td class="d-flex flex-column">
-                                            <a href="{{ route('product.show',$item->product->id) }}" target="blank">
+                                        <td
+                                            class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap">
+                                            <a href="{{ route('product.show', $item->product->slug) }}" target="blank">
                                                 <img src="{{ $item->product->image }}"
-                                                    class="rounded float-start img-thumbnail blur-up lazyload" alt="" width="100px" height="100px">
+                                                    class="rounded float-start img-thumbnail blur-up lazyload"
+                                                    alt="" width="100px" height="100px">
                                             </a>
-                                            <a href="{{ route('product.show',$item->product->id) }}" class="mt-2" target="blank">{{ $item->product->name }}</a>
+                                            <a href="{{ route('product.show', $item->product->slug) }}"
+                                                class="text-decoration-none text-dark fw-bold mt-2"
+                                                target="blank">{{ $item->product->name }}</a>
                                         </td>
 
                                         <td class="price">
                                             <h6 class="fw-bold">Price</h6>
-                                            <p>Rs. {{ $item->product->price }} <del class="text-danger"> Rs. {{ $item->product->strike_price }}</del></p>
+                                            <p>Rs. {{ $item->product->getPriceForQuantity($item->quantity) }}</p>
                                         </td>
 
                                         <td class="quantity">
@@ -51,11 +52,11 @@
 
                                         <td class="subtotal">
                                             <h6 class="fw-bold">Sub Total</h6>
-                                            <p>{{ $item->product->price * $item->quantity }}</p>
+                                            <p>{{ $item->product->getPriceForQuantity($item->quantity) * $item->quantity }}
+                                            </p>
                                         </td>
                                     </tr>
                                 @empty
-
                                 @endforelse
                             </tbody>
                         </table>
@@ -63,7 +64,7 @@
                 </div>
             </div>
 
-            <div class="col-xxl-3 col-lg-4">
+            <div class="col-xxl-4 col-lg-4 mt-3">
                 <div class="card">
                     <div class="card-body">
                         <div class="row g-4">
@@ -74,7 +75,7 @@
                                     <h6 class="fw-bold"><code>Total (Rs) : {{ $order->amount }}</code></h6>
                                 </td>
 
-                                    {{-- @if($order->coupon_id)
+                                {{-- @if ($order->coupon_id)
                                         <ul class="summery-contain">
                                             <li>
                                                 <h4>Coupon Discount</h4>
@@ -86,13 +87,14 @@
                             </div>
 
                             <div class="col-lg-12 col-sm-6">
-                                    <h5>Shipping Address</h5>
+                                <h5>Shipping Address</h5>
 
-                                    @foreach ([['name','Name'],['email','Email'],['address','Address'],['city','City'],['house_no','House Number'],['street','Street']] as $index => $title)
-                                        @if($deliveryAddress->{$title[0]})
-                                            <div class="fw-bold"> <code>{{ $title[1] }} : </code> <span class="fm-lighter">{{ $deliveryAddress->{$title[0]} }}</span></div>
-                                        @endif
-                                    @endforeach
+                                @foreach ([['name', 'Name'], ['email', 'Email'], ['address', 'Address'], ['city', 'City'], ['house_no', 'House Number'], ['street', 'Street']] as $index => $title)
+                                    @if ($deliveryAddress->{$title[0]})
+                                        <div class="fw-bold"> <code>{{ $title[1] }} : </code> <span
+                                                class="fm-lighter">{{ $deliveryAddress->{$title[0]} }}</span></div>
+                                    @endif
+                                @endforeach
 
                             </div>
 
@@ -103,6 +105,5 @@
         </div>
 
 
-</div>
-
+    </div>
 @endsection
