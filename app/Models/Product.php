@@ -52,7 +52,7 @@ class Product extends Model implements HasMedia
 
     public function getImagesAttribute()
     {
-        return $this->hasMedia('images') ? $this->getMedia('images') : '';
+        return $this->hasMedia('images') ? $this->getMedia('images') : null;
     }
 
     public function tags()

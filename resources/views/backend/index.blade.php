@@ -1,6 +1,5 @@
-@extends('backend.master')
+@extends('frontend.master')
 @section('content')
-
     <div class="container-xxl flex-grow-1 container-p-y">
         <!-- Header Section -->
         <div class="row mb-4">
@@ -9,17 +8,17 @@
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-md-6">
-                                <h1 class="fw-bold mb-2">Welcome to Our Store</h1>
+                                <h1 class="fw-bold mb-2">Welcome</h1>
                                 <p class="mb-0">Discover amazing products from our curated collection</p>
                             </div>
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-md-end mt-3 mt-md-0">
-                                    <div class="btn btn-primary  p-2 me-2">
+                                    <div class="badge bg-primary  p-2 me-2">
                                         <i class="fas fa-box me-1"></i>
                                         <span id="totalProducts">{{ $products->total() }}</span>
                                         Products
                                     </div>
-                                    <div class="btn btn-primary p-2">
+                                    <div class="badge bg-primary p-2">
                                         <i class="fas fa-tags me-1"></i>
                                         <span>{{ $allCategories->count() }}</span> Categories
                                     </div>
@@ -151,7 +150,7 @@
         </div>
 
         <!-- Featured Products Section -->
-        @if ($products->where('feature', true)->count() > 0)
+        @if ($featuredProducts->count() > 0)
             <div class="row mb-5">
                 <div class="col-12">
                     <div class="card border-0">
@@ -162,7 +161,7 @@
                         </div>
                         <div class="card-body p-4">
                             <div class="row g-4" id="featuredProducts">
-                                @foreach ($products->where('feature', true)->take(8) as $product)
+                                @foreach ($featuredProducts as $product)
                                     @include('layouts.list', ['product' => $product])
                                 @endforeach
                             </div>
@@ -173,7 +172,7 @@
         @endif
 
         <!-- Best Sellers Section -->
-        @if ($products->where('best_rated', true)->count() > 0)
+        @if ($bestSellers->count() > 0)
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card">
@@ -184,7 +183,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row g-3" id="bestSellerProducts">
-                                @foreach ($products->where('best_rated', true)->sortByDesc('view_count')->take(8) as $product)
+                                @foreach ($bestSellers as $product)
                                     @include('layouts.list', ['product' => $product])
                                 @endforeach
                             </div>
@@ -194,19 +193,19 @@
             </div>
         @endif
 
-        <!-- Top Rated Section -->
-        @if ($products->where('best_rated', true)->count() > 0)
+        <!-- On Sale Products Section -->
+        @if ($onSaleProducts->count() > 0)
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="mb-0">
-                                Top Rated Products
+                                On Sale Products
                             </h4>
                         </div>
                         <div class="card-body">
-                            <div class="row g-3" id="topRatedProducts">
-                                @foreach ($products->where('best_rated', true)->sortByDesc('created_at')->take(8) as $product)
+                            <div class="row g-3" id="onSaleProducts">
+                                @foreach ($onSaleProducts as $product)
                                     @include('layouts.list', ['product' => $product])
                                 @endforeach
                             </div>
@@ -249,128 +248,73 @@
             </div>
         </div>
     </div>
+    @push('custom-scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Auto-submit form on filter change
+                const searchForm = document.getElementById('searchForm');
+                const filterElements = ['categoryFilter', 'brandFilter', 'sortFilter'];
 
-    {{-- <style>
-        .product-card {
-            transition: all 0.3s ease;
-            border: 1px solid #e9ecef;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .product-image {
-            height: 200px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        .hover-lift {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%) !important;
-        }
-
-        .bg-gradient-warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-        }
-
-        .category-products {
-            transition: all 0.3s ease;
-        }
-
-        .toggle-category.collapsed i {
-            transform: rotate(-90deg);
-        }
-
-        @media (max-width: 768px) {
-            .product-card {
-                margin-bottom: 1rem;
-            }
-        }
-    </style> --}}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-submit form on filter change
-            const searchForm = document.getElementById('searchForm');
-            const filterElements = ['categoryFilter', 'brandFilter', 'sortFilter'];
-
-            filterElements.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('change', function() {
-                        searchForm.submit();
-                    });
-                }
-            });
-
-            // Debounced search input
-            let searchTimeout;
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        searchForm.submit();
-                    }, 500);
-                });
-            }
-
-            // Toggle category visibility
-            document.querySelectorAll('.toggle-category').forEach(button => {
-                button.addEventListener('click', function() {
-                    const categorySlug = this.dataset.category;
-                    const categoryDiv = document.getElementById('category-' + categorySlug);
-                    const icon = this.querySelector('i');
-
-                    if (categoryDiv.style.display === 'none') {
-                        categoryDiv.style.display = 'flex';
-                        icon.classList.remove('fa-chevron-right');
-                        icon.classList.add('fa-chevron-down');
-                        this.classList.remove('collapsed');
-                    } else {
-                        categoryDiv.style.display = 'none';
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-right');
-                        this.classList.add('collapsed');
+                filterElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.addEventListener('change', function() {
+                            searchForm.submit();
+                        });
                     }
                 });
-            });
 
-            // Lazy loading for images
-            if ('IntersectionObserver' in window) {
-                const imageObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            img.src = img.dataset.src || img.src;
-                            img.classList.remove('lazy');
-                            imageObserver.unobserve(img);
+                // Debounced search input
+                let searchTimeout;
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function() {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            searchForm.submit();
+                        }, 500);
+                    });
+                }
+
+                // Toggle category visibility
+                document.querySelectorAll('.toggle-category').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const categorySlug = this.dataset.category;
+                        const categoryDiv = document.getElementById('category-' + categorySlug);
+                        const icon = this.querySelector('i');
+
+                        if (categoryDiv.style.display === 'none') {
+                            categoryDiv.style.display = 'flex';
+                            icon.classList.remove('fa-chevron-right');
+                            icon.classList.add('fa-chevron-down');
+                            this.classList.remove('collapsed');
+                        } else {
+                            categoryDiv.style.display = 'none';
+                            icon.classList.remove('fa-chevron-down');
+                            icon.classList.add('fa-chevron-right');
+                            this.classList.add('collapsed');
                         }
                     });
                 });
 
-                document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-                    imageObserver.observe(img);
-                });
-            }
-        });
-    </script>
+                // Lazy loading for images
+                if ('IntersectionObserver' in window) {
+                    const imageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                img.src = img.dataset.src || img.src;
+                                img.classList.remove('lazy');
+                                imageObserver.unobserve(img);
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                        imageObserver.observe(img);
+                    });
+                }
+            });
+        </script>
+    @endpush
 @endsection

@@ -15,11 +15,18 @@
                         <div id="extra-images">
                             <div class="carousel">
                                 <ul class="carousel_inner">
-                                    @foreach ($product->images as $image)
-                                        <li class="item" style="background-image: url({{ $image->getfullUrl() }});"
-                                            data-url="{{ $image->getfullUrl() }}">
+                                    @if ($product->images)
+                                        @foreach ($product->images as $image)
+                                            <li class="item" style="background-image: url({{ $image->getfullUrl() }});"
+                                                data-url="{{ $image->getfullUrl() }}">
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="item" style="background-image: url({{ $product->image }});"
+                                            data-url="{{ $product->image }}">
                                         </li>
-                                    @endforeach
+                                    @endif
+
                                 </ul>
                             </div>
                         </div>
