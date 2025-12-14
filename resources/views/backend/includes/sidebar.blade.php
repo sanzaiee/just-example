@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="{{ route('admin.dashboard') }}" class="app-brand-link">
+        <a href="{{ route('user.dashboard') }}" class="app-brand-link">
             <span class="app-brand-text demo menu-text fw-bold">{{ get_site_name() }}</span>
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -13,7 +13,7 @@
 
     <ul class="menu-inner py-1">
         <li class="menu-item {{ request()->is('admin') ? 'active' : '' }}">
-            <a href="{{ route('admin.dashboard') }}" class="menu-link">
+            <a href="{{ route('user.dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
                 <div data-i18n="dashboard">Dashboard</div>
             </a>
@@ -26,34 +26,44 @@
             </a>
         </li> --}}
 
-        <li class="menu-item {{ request()->is('admin/brand*') ? 'active' : '' }}">
-            <a href="{{ route('brand.index') }}" class="menu-link">
+        @can('admin-only')
+            <li class="menu-item {{ request()->is('admin/brand*') ? 'active' : '' }}">
+                <a href="{{ route('brand.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-list"></i>
+                    <div data-i18n="brand">Brands</div>
+                </a>
+            </li>
+
+            <li class="menu-item {{ request()->is('admin/users*') ? 'active' : '' }}">
+                <a href="{{ route('user.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users"></i>
+                    <div data-i18n="category">Users</div>
+                </a>
+            </li>
+
+            <li class="menu-item {{ request()->is('admin/category*') ? 'active' : '' }}">
+                <a href="{{ route('category.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-category"></i>
+                    <div data-i18n="category">Categories</div>
+                </a>
+            </li>
+
+
+            <li class="menu-item {{ request()->is('admin/product*') ? 'active' : '' }}">
+                <a href="{{ route('product.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-category"></i>
+                    <div data-i18n="product">Products</div>
+                </a>
+            </li>
+        @endcan
+
+        <li class="menu-item {{ request()->is('system/brands*') ? 'active' : '' }}">
+            <a href="{{ route('brand.list') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-list"></i>
-                <div data-i18n="brand">Brands</div>
+                <div data-i18n="brand">Our Brands</div>
             </a>
         </li>
 
-        <li class="menu-item {{ request()->is('admin/users*') ? 'active' : '' }}">
-            <a href="{{ route('user.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-users"></i>
-                <div data-i18n="category">Users</div>
-            </a>
-        </li>
-
-        <li class="menu-item {{ request()->is('admin/category*') ? 'active' : '' }}">
-            <a href="{{ route('category.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-category"></i>
-                <div data-i18n="category">Categories</div>
-            </a>
-        </li>
-
-
-        <li class="menu-item {{ request()->is('admin/product*') ? 'active' : '' }}">
-            <a href="{{ route('product.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-category"></i>
-                <div data-i18n="product">Products</div>
-            </a>
-        </li>
 
         <li class="menu-item {{ request()->is('admin/shipping-address*') ? 'active' : '' }}">
             <a href="{{ route('shipping.address') }}" class="menu-link">

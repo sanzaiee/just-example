@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Setting;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SettingSeeder extends Seeder
@@ -39,7 +38,6 @@ class SettingSeeder extends Seeder
             'field_name' => 'Site Fav Icon',
             'field_type' => 'file',
         ]);
-
 
         Setting::updateOrCreate([
             'attribute' => 'working_time',

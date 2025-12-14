@@ -87,7 +87,7 @@
                                                 </div>
 
                                                 <div class="card-body d-flex flex-column">
-                                                    <a href="{{ route('product.show', $item->slug) }}">
+                                                    <a href="{{ route('product.detail', $item->slug) }}">
                                                         <h5 class="card-title">{{ $item->name }}</h5>
                                                     </a>
                                                     <p class="text-muted small text-truncate">

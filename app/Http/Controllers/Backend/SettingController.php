@@ -11,12 +11,17 @@ use Throwable;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function view($slug)
     {
         $siteSettings = Setting::where('setting_group_slug', $slug)->get();
+
         return view('backend.setting.setting', compact('siteSettings', 'slug'));
     }
-
 
     public function update(Request $request)
     {
@@ -50,8 +55,6 @@ class SettingController extends Controller
                 $site->addMedia($request->about_banner_image)->toMediaCollection('about_banner_image');
             }
 
-
-
             if ($request->hasFile('about_image_first')) {
                 $site = Setting::where('attribute', 'about_image_first')->first();
                 if ($site->hasMedia('about_image_first')) {
@@ -59,7 +62,6 @@ class SettingController extends Controller
                 }
                 $site->addMedia($request->about_image_first)->toMediaCollection('about_image_first');
             }
-
 
             if ($request->hasFile('about_image_second')) {
                 $site = Setting::where('attribute', 'about_image_second')->first();
@@ -77,8 +79,6 @@ class SettingController extends Controller
                 $site->addMedia($request->about_image_third)->toMediaCollection('about_image_third');
             }
 
-
-
             foreach ($input as $attr => $value) {
                 $siteSettings = Setting::firstOrNew([
                     'attribute' => $attr,
@@ -90,6 +90,7 @@ class SettingController extends Controller
             }
 
             Session::flash('success_message', 'Settings updated successfully !!');
+
             return redirect()->back();
         } catch (Throwable $e) {
             return response()->json($this->generalErrorResponse($e));

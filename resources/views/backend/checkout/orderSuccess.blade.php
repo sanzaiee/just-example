@@ -30,12 +30,12 @@
                                     <tr>
                                         <td
                                             class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap">
-                                            <a href="{{ route('product.show', $item->product->slug) }}" target="blank">
+                                            <a href="{{ route('product.detail', $item->product->slug) }}" target="blank">
                                                 <img src="{{ $item->product->image }}"
                                                     class="rounded float-start img-thumbnail blur-up lazyload"
                                                     alt="" width="100px" height="100px">
                                             </a>
-                                            <a href="{{ route('product.show', $item->product->slug) }}"
+                                            <a href="{{ route('product.detail', $item->product->slug) }}"
                                                 class="text-decoration-none text-dark fw-bold mt-2"
                                                 target="blank">{{ $item->product->name }}</a>
                                         </td>
