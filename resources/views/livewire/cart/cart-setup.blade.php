@@ -41,8 +41,7 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit"
-                class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2 shadow-sm">
+            <button type="submit" @disabled($prices->isEmpty()) class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2 shadow-sm">
                 <i class="fa fa-cart-plus"></i>
             </button>
         </div>

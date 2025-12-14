@@ -1,6 +1,6 @@
 <div>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="py-3 mb-4"><span class="text-muted fw-light">Product/</span> {{ $product ? 'Update' : 'Create' }}
+        <h4 class="py-2"><span class="text-muted fw-light">Product/</span> {{ $product ? 'Update' : 'Create' }}
         </h4>
         <div class="row g-3">
             <div class="card p-2 col-md-12">

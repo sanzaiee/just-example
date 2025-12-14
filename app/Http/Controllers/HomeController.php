@@ -76,6 +76,12 @@ class HomeController extends Controller
         $sort = request()->get('sort', 'latest');
         $pageSize = request()->get('per_page', 8);
 
+        // Hide all products 
+        $hideAllProducts = false;
+        if($query == '' && $category == '' && $brand == '') {
+            $hideAllProducts = true;
+        }
+
         // Base query with relationships
         $baseQuery = Product::select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id')
             ->with(['category', 'user', 'brand', 'tieredPrices']);
@@ -89,16 +95,32 @@ class HomeController extends Controller
             });
         });
 
-        $baseQuery->when($category, fn ($q) => $q->where('category_id', $category));
-        $baseQuery->when($brand, fn ($q) => $q->where('brand_id', $brand));
+        //$baseQuery->when($category, fn ($q) => $q->where('category_id', $category));
+        $baseQuery->when($category, function ($q) use ($category) {
+            $q->whereHas('category', function ($cat) use ($category) {
+                $cat->where('slug', $category);
+            });
+        });
+
+        //$baseQuery->when($brand, fn ($q) => $q->where('brand_id', $brand));
+        $baseQuery->when($brand, function ($q) use ($brand) {
+            $q->whereHas('brand', function ($cat) use ($brand) {
+                $cat->where('slug', $brand);
+            });
+        });
 
         // Sorting
         $baseQuery->orderBy('created_at', $sort === 'oldest' ? 'asc' : 'desc');
 
+        // dd($baseQuery->toSql());
         // Paginated products
-        $products = (clone $baseQuery)
-            ->paginate($pageSize)
-            ->appends(request()->all());
+        if ($hideAllProducts) {
+            $products = [];
+        } else {
+            $products = (clone $baseQuery)
+                ->paginate($pageSize)
+                ->appends(request()->all());
+        }
 
         $featuredProducts = (clone $baseQuery)
             ->where('feature', true)
@@ -125,10 +147,12 @@ class HomeController extends Controller
             'allBrands',
             'featuredProducts',
             'bestSellers',
-            'onSaleProducts'
+            'onSaleProducts',
+            'hideAllProducts'
         ));
     }
 
+    //not in use
     public function products()
     {
         $status = request()->get('status', 'all');
@@ -220,7 +244,7 @@ class HomeController extends Controller
     public function brands()
     {
         $query = request()->get('search', '');
-        $pageSize = request()->get('per_page', 8);
+        $pageSize = request()->get('per_page', 4);
 
         $baseQuery = Brand::query();
 

@@ -175,7 +175,7 @@
 
 
 
-        <ul class="navbar-nav flex-row align-items-center ms-auto">
+        <ul class="navbar-nav flex-row align-items-center ms-auto gap-1">
             <li class="nav-item">
                 <livewire:cart-dropdown />
             </li>

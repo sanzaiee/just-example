@@ -19,7 +19,7 @@
 
                                 <td class="price">
                                     <h6 class="fw-bold">Price</h6>
-                                    <p>Rs. {{ number_format($item['unitPrice'], 2) }}</p>
+                                    <p>$ {{ number_format($item['unitPrice'], 2) }}</p>
                                 </td>
 
                                 <td class="quantity">
@@ -42,7 +42,7 @@
 
                                 <td class="subtotal">
                                     <h6 class="fw-bold">Sub Total</h6>
-                                    <p>Rs. {{ number_format($item['subtotal'], 2) }}</p>
+                                    <p>$ {{ number_format($item['subtotal'], 2) }}</p>
                                 </td>
 
                                 <td class="save-remove">
@@ -77,20 +77,20 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Subtotal:</h6>
-                        <p class="mb-0 fw-bold">Rs. {{ number_format($subTotal, 2) }}</p>
+                        <p class="mb-0 fw-bold">$ {{ number_format($subTotal, 2) }}</p>
                     </div>
 
                     @if ($discount > 0)
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold mb-0">Discount:</h6>
-                            <p class="mb-0 text-danger">-Rs. {{ number_format($discount, 2) }}</p>
+                            <p class="mb-0 text-danger">-$ {{ number_format($discount, 2) }}</p>
                         </div>
 
                         <hr>
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold mb-0">Total:</h6>
-                            <p class="mb-0 fw-bold text-success">Rs. {{ number_format($subTotal - $discount, 2) }}</p>
+                            <p class="mb-0 fw-bold text-success">$ {{ number_format($subTotal - $discount, 2) }}</p>
                         </div>
                     @endif
 

@@ -3,7 +3,7 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
 
-    <h4 class="fw-bold py-3 mb-4">Recently Deleted</h4>
+    <h4 class="fw-bold py-2">Recently Deleted</h4>
     <div class="row mx-0 gy-3 px-lg-5">
         <div class="col-lg mb-md-0 mb-4">
           <div class="card border rounded shadow-none">

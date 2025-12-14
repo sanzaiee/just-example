@@ -15,7 +15,7 @@
         <li class="menu-item {{ request()->is('admin') ? 'active' : '' }}">
             <a href="{{ route('user.dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
-                <div data-i18n="dashboard">Dashboard</div>
+                <div data-i18n="dashboard">Home</div>
             </a>
         </li>
 

@@ -4,7 +4,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         {{-- <div class="row g-4">
             <div class="col-md-3"> --}}
-        <h4 class="py-3 mb-4">
+        <h4 class="py-2">
         <span class="text-muted fw-light">Checkout / </span> </h4>
 
         <div class="card h-90 shadow-sm">

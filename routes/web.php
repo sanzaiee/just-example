@@ -29,10 +29,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::middleware(['auth'])->prefix('/system')->group(function () {
+Route::middleware(['auth'])->prefix('/home')->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('user.dashboard');
     Route::get('/brands', [App\Http\Controllers\HomeController::class, 'brands'])->name('brand.list');
-    Route::get('/products', [App\Http\Controllers\HomeController::class, 'products'])->name('products.list');
+    // Route::get('/products', [App\Http\Controllers\HomeController::class, 'products'])->name('products.list');
     Route::get('/products/{slug}', [App\Http\Controllers\HomeController::class, 'productShow'])->name('product.detail');
 
     Route::get('/shipping-address', SetupShippingAddress::class)->name('shipping.address');
@@ -52,7 +52,7 @@ Route::middleware(['auth'])->prefix('/system')->group(function () {
 
 });
 
-Route::middleware(['auth', 'admin.check'])->prefix('/system')->group(function () {
+Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
     Route::get('/users', UserManagement::class)->name('user.index');
     Route::get('/category', Category::class)->name('category.index');
     Route::get('/brand', BrandSetup::class)->name('brand.index');

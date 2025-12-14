@@ -47,7 +47,7 @@ class Product extends Model implements HasMedia
 
     public function getImageAttribute()
     {
-        return $this->hasMedia('image') ? $this->getMedia('image')[0]->getFullUrl() : '';
+        return $this->hasMedia('image') ? $this->getMedia('image')[0]->getFullUrl() : asset('/default-png-min.png') ;
     }
 
     public function getImagesAttribute()

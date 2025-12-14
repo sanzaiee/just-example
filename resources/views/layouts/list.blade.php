@@ -1,7 +1,7 @@
 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
     <div class="card h-100 border">
         <div class="position-relative">
-            <img src="{{ $product->image ?: asset('images/default-product.jpg') }}" class="card-img-top p-3"
+            <img src="{{ $product->image ?: asset('/default-png-min.png') }}" class="card-img-top p-3"
                 alt="{{ $product->name }}" loading="lazy" style="height: 200px; object-fit: contain;">
 
             <div
@@ -11,13 +11,13 @@
                         <i class="fas fa-star me-1"></i>Featured
                     </span>
                 @endif
-                <span class="badge {{ $product->stock ? 'bg-success' : 'bg-secondary' }}">
+                <span class="badge {{ $product->stock ? 'bg-success' : 'bg-warning' }}">
                     {{ $product->stock ? 'In Stock' : 'Out of Stock' }}
                 </span>
             </div>
         </div>
 
-        <div class="card-body d-flex flex-column p-3">
+        <div class="card-body d-flex flex-column p-3 pt-0">
             <a href="{{ route('product.detail', $product->slug) }}">
                 <h6 class="card-title fw-semibold hover:text-primary hover:underline transition-all duration-300    ">
                     {{ Str::limit($product->name, 50) }}

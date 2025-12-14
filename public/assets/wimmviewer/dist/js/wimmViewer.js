@@ -71,6 +71,16 @@
 
         });
 
+        // find the single active item
+        var $activeItem = $(self).find('.item.active');
+
+        if ($activeItem.length) {
+            var imageUrl = $activeItem.attr('data-url');
+
+            // append or update the style attribute with background-image
+            var currentStyle = $activeItem.attr('style') || '';
+            $activeItem.attr('style', currentStyle + ' background-image: url("' + imageUrl + '");');
+        }
 
         $(nextButton).click(function(){
 

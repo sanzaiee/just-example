@@ -14,7 +14,7 @@
                     </div>
                     <div class="card-body">
                         <form action="{{ route('brand.list') }}" method="get">
-                            <div class="row g-3 align-items-end">
+                            <div class="row g-3">
                                 <div class="col-md-4">
                                     <input type="text" name="search" class="form-control" placeholder="Search brands"
                                         value="{{ $query }}">
@@ -33,7 +33,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-md-3 d-flex align-items-end">
+                                <div class="col-md-3 d-flex align-items-end" style="gap: 1rem;">
                                     <button type="submit" class="btn btn-primary w-100">
                                         <i class="fas fa-filter me-2"></i>
                                     </button>
@@ -56,10 +56,10 @@
                         <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class="card h-100 text-center shadow-sm border-0">
                                 <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                                    <a href="{{ route('products.list', ['brand' => $brand->id]) }}">
+                                    <a href="{{ route('user.dashboard', ['brand' => $brand->slug]) }}">
                                         <div class="rounded-circle overflow-hidden mb-3"
-                                            style="width: 120px; height: 120px;">
-                                            <img src="{{ $brand->image }}" alt="{{ $brand->name }}" class="w-100 h-100"
+                                            style="width: 120px; height: 120px; ">
+                                                <img src="{{ $brand->image ?: asset('/default-png-min.png') }}" alt="{{ $brand->name }}" class="w-100 h-100"
                                                 style="object-fit: cover;" loading="lazy">
                                         </div>
                                     </a>

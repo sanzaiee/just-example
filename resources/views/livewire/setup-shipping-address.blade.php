@@ -1,6 +1,6 @@
 <div>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="py-3 mb-4"><span class="text-muted fw-light">Shipping Address/</span> {{ ($shippingAddress) ? "Update" : "Create" }}
+        <div class="py-2"><span class="text-muted fw-light">Shipping Address/</span> {{ ($shippingAddress) ? "Update" : "Create" }}
             <div class="text-muted float-end">
                 <span wire:click="action('add')" class="btn btn-sm btn-primary">
                     Add

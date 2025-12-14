@@ -1,7 +1,7 @@
 <div>
     {{-- Stop trying to control. --}}
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="py-3 mb-4"><span class="text-muted fw-light">Categories Management </span></h4>
+        <h4 class="py-2"><span class="text-muted fw-light">Categories Management </span></h4>
         <div class="row g-3">
             <div class="col-md-8">
                 <div class="card">

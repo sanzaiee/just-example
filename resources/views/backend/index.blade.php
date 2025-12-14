@@ -38,7 +38,7 @@
                         <form method="GET" action="{{ route('user.dashboard') }}" id="searchForm">
                             <div class="row g-3">
                                 <!-- Search Bar -->
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-text bg-primary text-white">
                                             <i class="fas fa-search"></i>
@@ -50,12 +50,12 @@
                                 </div>
 
                                 <!-- Category Filter -->
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <select class="form-select" name="category" id="categoryFilter">
                                         <option value="">All Categories</option>
                                         @foreach ($allCategories as $cat)
-                                            <option value="{{ $cat->id }}"
-                                                {{ request()->get('category') == $cat->id ? 'selected' : '' }}>
+                                            <option value="{{ $cat->slug }}"
+                                                {{ request()->get('category') == $cat->slug ? 'selected' : '' }}>
                                                 {{ $cat->name }}
                                             </option>
                                         @endforeach
@@ -63,12 +63,12 @@
                                 </div>
 
                                 <!-- Brand Filter -->
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <select class="form-select" name="brand" id="brandFilter">
                                         <option value="">All Brands</option>
                                         @foreach ($allBrands as $brand)
-                                            <option value="{{ $brand->id }}"
-                                                {{ request()->get('brand') == $brand->id ? 'selected' : '' }}>
+                                            <option value="{{ $brand->slug }}"
+                                                {{ request()->get('brand') == $brand->slug ? 'selected' : '' }}>
                                                 {{ $brand->name }}
                                             </option>
                                         @endforeach
@@ -76,7 +76,7 @@
                                 </div>
 
                                 <!-- Sort Filter -->
-                                <div class="col-md-2">
+                                <div style="display: none !important;" class="col-md-2">
                                     <select class="form-select" name="sort" id="sortFilter">
                                         <option value="latest"
                                             {{ request()->get('sort', 'latest') == 'latest' ? 'selected' : '' }}>
@@ -89,7 +89,7 @@
                                 </div>
 
                                 <!-- Page Size Filter -->
-                                <div class="col-md-1">
+                                <div style="display: none !important;" class="col-md-1">
                                     <select class="form-select" name="per_page" id="perPageFilter">
                                         <option value="6" {{ request()->get('per_page') == 6 ? 'selected' : '' }}>6
                                             per page</option>
@@ -102,7 +102,7 @@
                                     </select>
                                 </div>
                                 <!-- Search Button -->
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary w-100">
                                         <i class="fas fa-filter me-2"></i>Apply Filters
                                     </button>
@@ -125,14 +125,14 @@
                                             @if (request()->get('category'))
                                                 <span class="badge bg-light text-dark me-2 mb-1">
                                                     Category:
-                                                    {{ $allCategories->find(request()->get('category'))->name ?? '' }}
+                                                    {{ $allCategories->firstWhere('slug', request()->get('category'))->name ?? '' }}
                                                     <a href="{{ request()->fullUrlWithQuery(['category' => null]) }}"
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
                                             @endif
                                             @if (request()->get('brand'))
                                                 <span class="badge bg-light text-dark me-2 mb-1">
-                                                    Brand: {{ $allBrands->find(request()->get('brand'))->name ?? '' }}
+                                                    Brand: {{ $allBrands->firstWhere('slug', request()->get('brand'))->name ?? '' }}
                                                     <a href="{{ request()->fullUrlWithQuery(['brand' => null]) }}"
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
@@ -160,7 +160,7 @@
                                     <i class="fas fa-star text-warning me-2"></i>Featured Products
                                 </h5>
 
-                                <a href="{{ route('products.list', ['status' => 'feature']) }}"
+                                <a style="display: none !important;" href="{{ route('user.dashboard', ['status' => 'feature']) }}"
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-crown text-success me-2"></i>Best Sellers
                                 </h5>
-                                <a href="{{ route('products.list', ['status' => 'best_rated']) }}"
+                                <a style="display: none !important;" href="{{ route('user.dashboard', ['status' => 'best_rated']) }}"
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
@@ -212,7 +212,7 @@
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-tags text-info me-2"></i>On Sale Products
                                 </h5>
-                                <a href="{{ route('products.list', ['status' => 'on_sale']) }}"
+                                <a style="display: none !important;" href="{{ route('user.dashboard', ['status' => 'on_sale']) }}"
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
@@ -229,6 +229,7 @@
         @endif
 
         <!-- All Products -->
+        @if(!$hideAllProducts)
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -238,7 +239,7 @@
                                 <i class="fas fa-box text-primary me-2"></i>All Products
                                 <span class="badge badge-primary ms-2">{{ $products->total() }} products</span>
                             </h5>
-                            <a href="{{ route('products.list', ['status' => 'all']) }}"
+                            <a style="display: none !important" href="{{ route('user.dashboard', ['status' => 'all']) }}"
                                 class="btn btn-primary btn-sm">View All</a>
                         </div>
                     </div>
@@ -258,6 +259,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
     @push('custom-scripts')
         <script>

@@ -3,20 +3,19 @@
 @section('content')
 
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="py-3 mb-4">
-            <a href="{{ route('admin.dashboard', ['brand' => $product->brand->slug]) }}"><span class="text-muted fw-light">{{ $product->brand->name }}</span></a> / {{ $product->name }}
+        <h4 class="py-2">
+            <a href="{{ route('user.dashboard', ['brand' => $product->brand->slug]) }}"><span class="text-muted fw-light">{{ $product->brand->name }}</span></a> / {{ $product->name }}
         </h4>
         <div class="card h-90 shadow-sm">
             <div class="card-body d-flex flex-column">
                 <div class="row">
                     <div class="col-md-4">
-                        @if ($product->images)
                         <div id="extra-images">
-                            <div class="carousel">
+                            <div class="carousel mt-1">
                                 <ul class="carousel_inner">
                                     @if ($product->images)
                                         @foreach ($product->images as $image)
-                                            <li class="item" style="background-image: url({{ $image->getfullUrl() }});"
+                                            <li class="item" style="background-image: url({{ $image->getfullUrl() }}); "
                                                 data-url="{{ $image->getfullUrl() }}">
                                             </li>
                                         @endforeach
@@ -24,19 +23,12 @@
                                         <li class="item" style="background-image: url({{ $product->image }});"
                                             data-url="{{ $product->image }}">
                                         </li>
-                                        <span class="avatar-initial rounded-circle bg-label-{{ getAvatarColor($item->name) }}">{{ getAvatarName($item->name) }}</span>
+                                        {{-- <span class="avatar-initial rounded-circle bg-label-{{ getAvatarColor($product->name) }}">{{ getAvatarName($product->name) }}</span> --}}
                                     @endif
 
                                 </ul>
                             </div>
                         </div>
-                        @else
-                            <div class="avatar-container mb-3">
-                                <div class="avatar-initial rounded-circle" style="min-height: 200px;display: flex; justify-content: center; align-items: center;">
-                                    <span style="display: inline-flex; justify-content: center; align-items: center; width: 200px; height: 200px; border-radius: 50%;" class="avatar-initial rounded-circle bg-label-{{ getAvatarColor($product->name) }}">{{ getAvatarName($product->name) }}</span>
-                                </div>
-                            </div>
-                        @endif
 
                         {{--
                         <div class="overflow-hidden p-2">
@@ -129,6 +121,18 @@
 @endsection
 @push('css')
     <link rel="stylesheet" href="{{ asset('assets/wimmviewer/dist/css') }}/wimmViewer.css">
+    <style>
+        .carousel_inner .item {
+            /* background-size: contain; */
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    
+        .carousel .next,
+        .carousel .prev {
+            display: none !important;
+        }
+    </style>
 @endpush
 @push('custom-scripts')
     <script src="{{ asset('assets/wimmviewer/dist/js') }}/wimmViewer.js"></script>

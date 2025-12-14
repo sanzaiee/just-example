@@ -22,7 +22,7 @@
                 </div>
 
                 <!-- Order Meta -->
-                <div class="row text-center border-top border-bottom py-3 mb-4">
+                <div class="row text-center border-top border-bottom py-2">
                     <div class="col-md-6">
                         <h6 class="text-muted mb-1">ISSUE DATE</h6>
                         <h5>{{ $order->created_at->diffForHumans() }}</h5>

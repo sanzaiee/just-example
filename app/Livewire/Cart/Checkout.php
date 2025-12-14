@@ -162,6 +162,11 @@ class Checkout extends Component
             return;
         }
 
+        if($qty == 1){
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Minimum quantity reached!']);
+            return;
+        }
+        
         if ($qty > 1) {
             $newQty = --$qty;
             $this->updateCartItemPrice($rowId, $newQty);
