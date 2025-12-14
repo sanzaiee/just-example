@@ -11,22 +11,22 @@
                             <tr class="">
                                 <td
                                     class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap">
-                                    <a href="{{ route('product.show', $item->slug) }}">
+                                    <a href="{{ route('product.show', $prod->slug) }}">
                                         <img src="{{ $prod->image }}"
                                             class="rounded float-start img-thumbnail blur-up lazyload" alt=""
                                             width="100px" height="100px">
                                     </a>
-                                    <a href="{{ route('product.show', $item->slug) }}"
-                                        class="text-decoration-none text-dark fw-bold mt-2">{{ $item->name }}</a>
+                                    <a href="{{ route('product.show', $prod->slug) }}"
+                                        class="text-decoration-none text-dark fw-bold mt-2">{{ $prod->name }}</a>
                                 </td>
 
                                 <td class="price">
                                     <h6 class="fw-bold">Price</h6>
-                                    <p>{{ $prod->getPriceForQuantity($item->qty) }}</p>
+                                    <p>$ {{ $prod->getPriceForQuantity($item->qty) }}</p>
                                 </td>
                                 <td class="quantity">
-                                    <h6 class="table-title text-content">Qty</h6>
-                                    <div class="input-group input-group-sm" style="width: 120px;">
+                                    <h6 class="table-title text-content" style="text-align: center">Qty</h6>
+                                    <div class="input-group input-group-sm">
                                         <button type="button" class="btn btn-outline-primary"
                                             wire:click="decreaseQty({{ $loop->index }},{{ $item->qty }})">
                                             <i class="fa fa-minus"></i>
@@ -45,12 +45,12 @@
 
                                 <td class="subtotal">
                                     <h6 class="fw-bold">Sub Total</h6>
-                                    <p>Rs. {{ number_format($prod->getPriceForQuantity($item->qty) * $item->qty, 2) }}
+                                    <p>$ {{ number_format($prod->getPriceForQuantity($item->qty) * $item->qty, 2) }}
                                     </p>
                                 </td>
 
                                 <td class="save-remove">
-                                    <a class="btn btn-outline-danger btn-xs text-danger"
+                                    <a class="btn btn-outline-danger btn-sm text-danger"
                                         wire:click="removeFromCart({{ $loop->index }})">
                                         <i class="fa fa-trash"></i>
                                     </a>

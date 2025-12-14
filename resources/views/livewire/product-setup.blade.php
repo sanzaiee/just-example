@@ -68,10 +68,10 @@
 
 
                             @foreach ([
-        ['price', 'Price'],
-        ['strike_price', 'Strike Price'],
-        // ['delivery_charges','Delivery Charges'],['tax','Tax']
-    ] as $item)
+                                    //['price', 'Price'],
+                                    ['strike_price', 'Strike Price'],
+                                    // ['delivery_charges','Delivery Charges'],['tax','Tax']
+                                ] as $item)
                                 @include('backend.form.livewire-collection', [
                                     'data' => [
                                         'name' => $item[0],
@@ -84,13 +84,28 @@
                                 ])
                             @endforeach
 
+                            @foreach ([
+                                ['status', 'Status'], 
+                                ] as $item)
+                                @include('backend.form.livewire-collection', [
+                                    'data' => [
+                                        'name' => $item[0],
+                                        'label' => $item[1],
+                                    ],
+                                    'required' => false,
+                                    'model' => $model ?? null,
+                                    'type' => 'status',
+                                    'div' => 'col-md-4',
+                                ])
+                            @endforeach
+
                             <!-- Tiered Pricing Section -->
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0">Tiered Pricing</h6>
-                                        <button type="button" class="btn btn-sm btn-primary" wire:click="addTier">
-                                            <i class="bx bx-plus"></i> Add Tier
+                                        <button type="button" class="btn btn-primary" wire:click="addTier">
+                                            <i class="fa fa-plus me-1"></i>Add Tier
                                         </button>
                                     </div>
                                     <div class="card-body">
@@ -101,23 +116,23 @@
                                         @foreach ($tiered_prices as $index => $tier)
                                             <div class="row g-2 mb-2" wire:key="tier-{{ $index }}">
                                                 <div class="col-md-5">
-                                                    <label class="form-label">Minimum Quantity</label>
-                                                    <input type="number" class="form-control"
+                                                    <label class="form-label" for="min-qty-{{ $index }}">Minimum Quantity</label>
+                                                    <input type="number" id="min-qty-{{ $index }}" class="form-control"
                                                         wire:model.live="tiered_prices.{{ $index }}.quantity"
                                                         placeholder="e.g., 1, 10, 50" min="1">
                                                 </div>
                                                 <div class="col-md-5">
-                                                    <label class="form-label">Price</label>
-                                                    <input type="number" class="form-control"
+                                                    <label class="form-label" for="price-{{ $index }}">Price</label>
+                                                    <input type="number" id="price-{{ $index }}" class="form-control"
                                                         wire:model.live="tiered_prices.{{ $index }}.price"
                                                         placeholder="Price for this quantity" step="0.01"
                                                         min="0">
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <label class="form-label">&nbsp;</label><br>
-                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                    <label class="form-label" for="trash-btn-{{ $index }}">&nbsp;</label><br>
+                                                    <button type="button" class="btn btn-danger" id="trash-btn-{{ $index }}"
                                                         wire:click="removeTier({{ $index }})">
-                                                        <i class="bx bx-trash"></i>
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -125,7 +140,7 @@
 
                                         @if (count($tiered_prices) > 1)
                                             <div class="alert alert-info small mt-2">
-                                                <i class="bx bx-info-circle"></i>
+                                                <i class="fa fa-info-circle"></i>
                                                 Example: If you set quantity 1 = $10, quantity 10 = $8, and quantity 50
                                                 = $6,
                                                 then orders of 1-9 items will be $10 each, 10-49 items will be $8 each,
@@ -150,7 +165,14 @@
                                 ])
                             @endforeach --}}
 
-                            @foreach ([['status', 'Status'], ['stock', 'Stock'], ['on_sale', 'On Sale'], ['home_delivery', 'Home  Delivery'], ['best_rated', 'Best Rated'], ['feature', 'Feature']] as $item)
+                            @foreach ([
+                                // ['status', 'Status'], 
+                                ['stock', 'Stock'], 
+                                ['on_sale', 'On Sale'], 
+                                // ['home_delivery', 'Home  Delivery'], 
+                                ['best_rated', 'Best Rated'], 
+                                // ['feature', 'Feature']
+                                ] as $item)
                                 @include('backend.form.livewire-collection', [
                                     'data' => [
                                         'name' => $item[0],
@@ -163,7 +185,7 @@
                                 ])
                             @endforeach
 
-                            @include('backend.form.livewire-collection', [
+                            {{-- @include('backend.form.livewire-collection', [
                                 'data' => [
                                     'name' => 'tag',
                                     'label' => 'Tags',
@@ -173,7 +195,7 @@
                                 'secondaryModel' => $tags ?? [],
                                 'type' => 'normal-multiple-select',
                                 'div' => 'col-md-4',
-                            ])
+                            ]) --}}
 
                             <!-- Multiple Image Upload Section -->
                             <div class="col-12">

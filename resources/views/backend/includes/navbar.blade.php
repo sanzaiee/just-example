@@ -20,7 +20,7 @@
         @endphp
 
         <div class="navbar-nav align-items-center">
-            <form action="{{ route('admin.dashboard') }}" method="get">
+            <form action="{{ route('admin.dashboard') }}" method="get" class="mt-2 mb-2">
                 <div class="d-flex justify-content-between align-center">
                     <select class="form-control me-2" name="category" value="{{ request('category') }}">
                         <option value="">-- select category --</option>

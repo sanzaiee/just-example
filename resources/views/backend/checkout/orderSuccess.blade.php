@@ -10,7 +10,8 @@
                         <h6><code>{{ $order->pid }}</code></h6>
                     </span>
                     <span>
-                        <code>Cash On Delivery</code><Br>
+                        {{-- <code>Cash On Delivery</code> --}}
+                        <Br>
                         <small>{{ $order->created_at->diffForHumans() }}</small>
                     </span>
                 </div>

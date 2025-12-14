@@ -22,7 +22,6 @@
                 <option value="all" @if (request()->get('status') == 'all') selected @endif>All</option>
                 <option value="best_rated" @if (request()->get('status') == 'best_rated') selected @endif>Best Rated</option>
                 <option value="on_sale" @if (request()->get('status') == 'on_sale') selected @endif>On Sale</option>
-                </option>
             </select>
 
             <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-primary w-1/2">

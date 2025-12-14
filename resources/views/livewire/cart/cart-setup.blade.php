@@ -22,12 +22,12 @@
             </div>
         </form>
     @else --}}
-    <form wire:submit.prevent="cartSelectSubmit" class="d-flex flex-column gap-1">
+    <form wire:submit.prevent="cartSelectSubmit" class="d-flex flex-column gap-.5">
         @if ($selected_quantity)
-            <div class="alert alert-info py-2 px-3 small">
+            <div class="alert alert-info py-1 px-1 small mb-2" style="text-align: center">
                 <i class="bi bi-info-circle me-1"></i>
                 Adding {{ $selected_quantity }} unit(s) @
-                ${{ number_format($product->getPriceForQuantity($selected_quantity), 2) }} each
+                ${{ number_format($product->getPriceForQuantity($selected_quantity), 2) }}
             </div>
         @endif
         <div class="d-flex align-items-center gap-2 justify-content-between">
@@ -37,14 +37,13 @@
                     class="form-select form-select-sm shadow-sm border-0 bg-light">
                     <option value="" disabled selected>-- select quantity --</option>
                     @foreach ($prices as $price)
-                        <option value="{{ $price->quantity }}" class="text-center">
-                            {{ $price->quantity }}+ units @ ${{ number_format($price->price, 2) }} each</option>
+                        <option value="{{ $price->quantity }}" class="text-center">{{ $price->quantity }}+ units @ ${{ number_format($price->price, 2) }} each</option>
                     @endforeach
                 </select>
             </div>
             <button type="submit"
                 class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                <i class="bi bi-cart-plus"></i>
+                <i class="fa fa-cart-plus"></i>
             </button>
         </div>
 

@@ -62,8 +62,8 @@
                         <thead>
                             <tr>
                                 <th class="s-n">S.N</th>
-                                <th class="order-id">Order ID</th>
-                                <th class="order-id">User Name</th>
+                                <th class="order-id">Order</th>
+                                <th class="order-id">User</th>
                                 <th class="product-name">
                                     <span class="text-nowrap">Products</span>
                                 </th>
