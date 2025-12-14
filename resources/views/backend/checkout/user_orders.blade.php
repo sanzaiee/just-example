@@ -6,9 +6,6 @@
         <!-- Filter Form -->
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title mb-3">
-                    <i class="fas fa-filter me-2"></i>Filter Orders
-                </h5>
                 <form method="GET" action="{{ route('order.index') }}">
                     <div class="row g-3">
                         <div class="col-md-3">
@@ -35,10 +32,12 @@
                                 <option value="100" @if (request('per_page') == 100) selected @endif>100</option>
                             </select>
                         </div>
+
+
                         <div class="col-md-2 d-flex align-items-end">
                             <div class="btn-group w-100">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search me-1"></i>
+                                    <i class="fas fa-filter me-2"></i>
                                 </button>
                                 <a href="{{ route('order.index') }}" class="btn btn-outline-danger">
                                     <i class="fas fa-refresh me-1"></i>

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Tag;
-use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -41,28 +40,6 @@ class ProductController extends Controller
             'tags' => $tags,
             'modelName' => 'Product',
         ] + getRoutes('product'));
-    }
-
-    public function show($slug)
-    {
-        $product = $this->product->with([
-            'category', 'brand',
-            'relatedProducts' => function ($query) {
-                $query->limit(4);
-            },
-        ])->where('slug', $slug)->firstOrFail();
-
-        // Load media collections
-        $product->loadMedia('images');
-
-        $cacheKey = 'product_viewed_'.$product->id.'_'.session()->getId();
-
-        if (! Cache::has($cacheKey)) {
-            $product->increment('view_count'); // atomic increment
-            Cache::put($cacheKey, true, now()->addHour());
-        }
-
-        return view('backend.product.show', compact('product'));
     }
 
     public function edit($slug)

@@ -18,16 +18,20 @@
         </div>
 
         <div class="card-body d-flex flex-column p-3">
-            <a href="{{ route('product.show', $product->slug) }}">
-                <h6 class="card-title fw-semibold hover:text-primary transition-all duration-300">
+            <a href="{{ route('product.detail', $product->slug) }}">
+                <h6 class="card-title fw-semibold hover:text-primary hover:underline transition-all duration-300    ">
                     {{ Str::limit($product->name, 50) }}
                 </h6>
                 <p class="card-text text-muted small mt-2 mb-3 flex-grow-1">
                     {{ Str::limit($product->description, 70) }}
                 </p>
             </a>
+
+            <div class="border-top pt-3">
+                <livewire:cart-setup :product="$product" :detail="false" />
+            </div>
             {{-- <div class="mt-auto">
-                <a href="{{ route('product.show', $product->slug) }}"
+                <a href="{{ route('product.detail', $product->slug) }}"
                     class="btn btn-outline-primary w-100">
                     View Details
                 </a>

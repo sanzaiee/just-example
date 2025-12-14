@@ -24,7 +24,7 @@
                 <option value="on_sale" @if (request()->get('status') == 'on_sale') selected @endif>On Sale</option>
             </select>
 
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-primary w-1/2">
+            <a href="{{ route('user.dashboard') }}" class="btn btn-sm btn-outline-primary w-1/2">
                 <i class="bi bi-arrow-repeat"></i>
 
             </a>
@@ -61,7 +61,7 @@
                         <!-- Product Details -->
                         <div class="card-body d-flex flex-column">
                             <div class="flex-grow-1">
-                                <a href="{{ route('product.show', $item->slug) }}" class="text-decoration-none text-dark">
+                                <a href="{{ route('product.detail', $item->slug) }}" class="text-decoration-none text-dark">
                                     <h5 class="card-title fw-semibold mb-2 text-truncate">
                                         {{ $item->name }}
                                     </h5>
@@ -80,7 +80,7 @@
                 </div>
             @endforeach
 
-            <div class="mt-4 ">
+            <div class="mt-4 text-center ">
                 {{ $products->links('pagination::bootstrap-5') }}
             </div>
         </div>
@@ -96,82 +96,6 @@
             </div>
         @endif
     </div>
-
-    <!-- Custom Styles -->
-    <style>
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .product-image-container:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        .product-image-container:hover .hover-overlay {
-            background-color: rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .product-image-container:hover .hover-btn {
-            opacity: 1 !important;
-        }
-
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .hover-lift {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-8px);
-        }
-
-        /* Animation Classes */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate__fadeInDown {
-            animation: fadeInDown 0.6s ease-out;
-        }
-
-        .animate__fadeInUp {
-            animation: fadeInUp 0.6s ease-out 0.2s both;
-        }
-    </style>
 @endsection
 <script>
     updatePerPage = (value) => {

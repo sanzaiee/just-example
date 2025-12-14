@@ -17,9 +17,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Livewire::component('cart-setup',CartSetup::class);
-        Livewire::component('cart-dropdown',CartDropdown::class);
-        Livewire::component('cart-checkout',Checkout::class);
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('Debugbar', \Barryvdh\Debugbar\Facades\Debugbar::class);
+
+        Livewire::component('cart-setup', CartSetup::class);
+        Livewire::component('cart-dropdown', CartDropdown::class);
+        Livewire::component('cart-checkout', Checkout::class);
     }
 
     /**

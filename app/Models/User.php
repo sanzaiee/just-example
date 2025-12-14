@@ -22,7 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
-        'is_admin'
+        'is_admin',
+        'role_id',
     ];
 
     /**
@@ -43,10 +44,64 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_admin' => 'boolean',
+        'status' => 'boolean',
     ];
 
     public function shippingAddress()
     {
-        return $this->hasOne(ShippingAddress::class)->where('active',1);
+        return $this->hasOne(ShippingAddress::class)->where('active', 1);
+    }
+
+    /**
+     * Get the role that owns the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Check if user has a specific role
+     */
+    public function hasRole($role)
+    {
+        if (is_string($role)) {
+            return $this->role?->slug === $role;
+        }
+
+        return $this->role_id === $role;
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->is_admin === true;
+        // return $this->hasRole('admin') || $this->is_admin == 1;
+    }
+
+    /**
+     * Check if user is regular user
+     */
+    public function isRegularUser()
+    {
+        return ! $this->is_admin;
+        // return $this->hasRole('user') && ! $this->isAdmin();
+    }
+
+    /**
+     * Scope a query to only include users with a specific role.
+     */
+    public function scopeWithRole($query, $role)
+    {
+        if (is_string($role)) {
+            return $query->whereHas('role', function ($query) use ($role) {
+                $query->where('slug', $role);
+            });
+        }
+
+        return $query->where('role_id', $role);
     }
 }

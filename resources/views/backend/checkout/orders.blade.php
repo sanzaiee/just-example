@@ -233,7 +233,7 @@
                                                 </div>
                                                 <div class="modal-body p-4">
                                                     @foreach ($item->orderProductLists as $prod)
-                                                        <a href="{{ route('product.show', $prod->product->slug) }}"
+                                                        <a href="{{ route('product.detail', $prod->product->slug) }}"
                                                             target="_blank" class="text-decoration-none">
                                                             <div
                                                                 class="card mb-3 border-0 bg-light hover-shadow transition-all">

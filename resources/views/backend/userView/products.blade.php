@@ -1,41 +1,14 @@
 @extends('backend.master')
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <!-- Header Section -->
-        {{-- <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <h1 class="fw-bold mb-2">Welcome</h1>
-                                <p class="mb-0">Discover amazing products from our curated collection</p>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-md-end mt-3 mt-md-0">
-                                    <div class="badge bg-primary  p-2 me-2">
-                                        <i class="fas fa-box me-1"></i>
-                                        <span id="totalProducts">{{ $products->total() }}</span>
-                                        Products
-                                    </div>
-                                    <div class="badge bg-primary p-2">
-                                        <i class="fas fa-tags me-1"></i>
-                                        <span>{{ $allCategories->count() }}</span> Categories
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
         <!-- Search and Filter Section -->
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <form method="GET" action="{{ route('user.dashboard') }}" id="searchForm">
+                        <form method="GET"
+                            action="{{ route('products.list', ['status' => request()->get('status', 'all')]) }}"
+                            id="searchForm">
                             <div class="row g-3">
                                 <!-- Search Bar -->
                                 <div class="col-md-3">
@@ -47,6 +20,19 @@
                                             placeholder="Search products..." value="{{ request()->get('search', '') }}"
                                             id="searchInput">
                                     </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" name="status" id="statusFilter">
+                                        <option value="all" {{ request()->get('status') == 'all' ? 'selected' : '' }}>All
+                                        </option>
+                                        <option value="feature"
+                                            {{ request()->get('status') == 'feature' ? 'selected' : '' }}>Feature</option>
+                                        <option value="best_rated"
+                                            {{ request()->get('status') == 'best_rated' ? 'selected' : '' }}>Best Rated
+                                        </option>
+                                        <option value="on_sale"
+                                            {{ request()->get('status') == 'on_sale' ? 'selected' : '' }}>On Sale</option>
+                                    </select>
                                 </div>
 
                                 <!-- Category Filter -->
@@ -118,7 +104,7 @@
                                             @if (request()->get('search'))
                                                 <span class="badge bg-light text-dark me-2 mb-1">
                                                     Search: {{ request()->get('search') }}
-                                                    <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}"
+                                                    <a href="{{ route('products.list', ['status' => request()->get('status', 'all'), 'search' => null]) }}"
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
                                             @endif
@@ -126,18 +112,18 @@
                                                 <span class="badge bg-light text-dark me-2 mb-1">
                                                     Category:
                                                     {{ $allCategories->find(request()->get('category'))->name ?? '' }}
-                                                    <a href="{{ request()->fullUrlWithQuery(['category' => null]) }}"
+                                                    <a href="{{ route('products.list', ['status' => request()->get('status', 'all'), 'category' => null]) }}"
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
                                             @endif
                                             @if (request()->get('brand'))
                                                 <span class="badge bg-light text-dark me-2 mb-1">
                                                     Brand: {{ $allBrands->find(request()->get('brand'))->name ?? '' }}
-                                                    <a href="{{ request()->fullUrlWithQuery(['brand' => null]) }}"
+                                                    <a href="{{ route('products.list', ['status' => request()->get('status', 'all'), 'brand' => null]) }}"
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
                                             @endif
-                                            <a href="{{ route('user.dashboard') }}"
+                                            <a href="{{ route('products.list', ['status' => request()->get('status', 'all')]) }}"
                                                 class="btn btn-sm btn-outline-secondary ms-2">Clear all</a>
                                         </div>
                                     </div>
@@ -149,85 +135,6 @@
             </div>
         </div>
 
-        <!-- Featured Products Section -->
-        @if ($featuredProducts->count() > 0)
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="card border-0">
-                        <div class="card-header py-3 ">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-dark">
-                                    <i class="fas fa-star text-warning me-2"></i>Featured Products
-                                </h5>
-
-                                <a href="{{ route('products.list', ['status' => 'feature']) }}"
-                                    class="btn btn-primary btn-sm">View All</a>
-                            </div>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="row g-4" id="featuredProducts">
-                                @foreach ($featuredProducts as $product)
-                                    @include('layouts.list', ['product' => $product])
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <!-- Best Sellers Section -->
-        @if ($bestSellers->count() > 0)
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header py-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-dark">
-                                    <i class="fas fa-crown text-success me-2"></i>Best Sellers
-                                </h5>
-                                <a href="{{ route('products.list', ['status' => 'best_rated']) }}"
-                                    class="btn btn-primary btn-sm">View All</a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3" id="bestSellerProducts">
-                                @foreach ($bestSellers as $product)
-                                    @include('layouts.list', ['product' => $product])
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <!-- On Sale Products Section -->
-        @if ($onSaleProducts->count() > 0)
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-dark">
-                                    <i class="fas fa-tags text-info me-2"></i>On Sale Products
-                                </h5>
-                                <a href="{{ route('products.list', ['status' => 'on_sale']) }}"
-                                    class="btn btn-primary btn-sm">View All</a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row g-3" id="onSaleProducts">
-                                @foreach ($onSaleProducts as $product)
-                                    @include('layouts.list', ['product' => $product])
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
         <!-- All Products -->
         <div class="row">
             <div class="col-12">
@@ -235,11 +142,13 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-dark">
-                                <i class="fas fa-box text-primary me-2"></i>All Products
+                                <i class="fas fa-box text-primary me-2"></i>{{ ucfirst($title) }}
                                 <span class="badge badge-primary ms-2">{{ $products->total() }} products</span>
                             </h5>
-                            <a href="{{ route('products.list', ['status' => 'all']) }}"
-                                class="btn btn-primary btn-sm">View All</a>
+                            <div class="text-muted">
+                                Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
+                                {{ $products->total() }} products
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -264,7 +173,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Auto-submit form on filter change
                 const searchForm = document.getElementById('searchForm');
-                const filterElements = ['categoryFilter', 'brandFilter', 'sortFilter'];
+                const filterElements = ['categoryFilter', 'brandFilter', 'sortFilter', 'statusFilter'];
 
                 filterElements.forEach(id => {
                     const element = document.getElementById(id);
