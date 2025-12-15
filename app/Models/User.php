@@ -24,6 +24,7 @@ class User extends Authenticatable
         'status',
         'is_admin',
         'role_id',
+        'mobile',
     ];
 
     /**
