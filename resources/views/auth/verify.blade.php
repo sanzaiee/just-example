@@ -1,28 +1,40 @@
-@extends('layouts.app')
+@extends('backend.blank')
+
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}" />
+@endsection
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Verify Your Email Address') }}</div>
-
-                <div class="card-body">
-                    @if (session('resent'))
-                        <div class="alert alert-success" role="alert">
-                            {{ __('A fresh verification link has been sent to your email address.') }}
+    <div class="container-xxl">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner py-4">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Logo -->
+                        <div class="app-brand justify-content-center mb-4 mt-2">
+                            <span class="app-brand-text demo text-body fw-bold ms-1">{{ config('app.name') }}</span>
                         </div>
-                    @endif
+                        <!-- /Logo -->
+                        <p class="mb-4">Verify Your Email Address</p>
 
-                    {{ __('Before proceeding, please check your email for a verification link.') }}
-                    {{ __('If you did not receive the email') }},
-                    <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>.
-                    </form>
+                        @if (session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        <form method="POST" action="{{ route('verify.otp.post', $user->email) }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="otp" class="form-label">OTP</label>
+                                <input type="text" class="form-control" id="otp" name="otp" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Verify</button>
+
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

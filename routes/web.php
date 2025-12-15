@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\backend\ProductController;
 use App\Http\Controllers\Backend\SettingController;
@@ -27,6 +28,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/verify-otp/{email}', [LoginController::class, 'verifyOtp'])->name('verify.otp');
+Route::post('/verify-otp/{email}', [LoginController::class, 'verifyOtpPost'])->name('verify.otp.post');
 Auth::routes();
 
 Route::middleware(['auth'])->prefix('/home')->group(function () {

@@ -28,7 +28,7 @@
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="mb-3 form-password-toggle">
+                            {{-- <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
                                     <label class="form-label" for="password">Password</label>
                                     <a href="{{ route('password.request') }}">
@@ -43,13 +43,13 @@
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
-                                <div class="form-check">
+                                {{-- <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="remember-me" />
                                     <label class="form-check-label" for="remember-me"> Remember Me </label>
-                                </div>
-                                <div class="d-flex justify-content-end">
+                                </div> --}}
+                                <div class="form-check">
                                     <a href="{{ route('register') }}" class="text-primary text-decoration-underline">If you
                                         don't have an account, please register</a>
                                 </div>
