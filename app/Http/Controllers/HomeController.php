@@ -122,10 +122,11 @@ class HomeController extends Controller
                 ->appends(request()->all());
         }
 
-        $featuredProducts = (clone $baseQuery)
-            ->where('feature', true)
-            ->limit(8)
-            ->get();
+        // $featuredProducts = (clone $baseQuery)
+        //     ->where('feature', true)
+        //     ->limit(8)
+        //     ->get();
+        $featuredProducts = [];
 
         $bestSellers = (clone $baseQuery)
             ->where('best_rated', true)

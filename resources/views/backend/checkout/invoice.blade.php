@@ -66,8 +66,8 @@
                                                 <div class="fw-semibold">{{ $prod->product->name }}</div>
                                             </td>
                                             <td class="text-center">{{ $prod->quantity }}</td>
-                                            <td class="text-center">Rs {{ number_format($prod->product->price, 2) }}</td>
-                                            <td class="text-end">Rs {{ number_format($prod->product->price * $prod->quantity, 2) }}</td>
+                                            <td class="text-center">$ {{ number_format($prod->price, 2) }}</td>
+                                            <td class="text-end">$ {{ number_format($prod->price * $prod->quantity, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -75,7 +75,7 @@
                                     <tr>
                                         <td colspan="4" class="text-end fw-bold">GRAND TOTAL</td>
                                         <td class="text-end fw-bold text-primary">
-                                            Rs {{ number_format($checkout->invoice(request()->pid)->amount, 2) }}
+                                            $ {{ number_format($checkout->invoice(request()->pid)->amount, 2) }}
                                         </td>
                                     </tr>
                                 </tfoot>

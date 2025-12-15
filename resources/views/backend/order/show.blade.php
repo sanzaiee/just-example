@@ -92,9 +92,9 @@
                                     </td>
                                     <td>{{ $item->product->name }}</td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>Rs. {{ number_format($item->product->getPriceForQuantity($item->quantity), 2) }}
+                                    <td>$ {{ number_format($item->product->getPriceForQuantity($item->quantity), 2) }}
                                     </td>
-                                    <td class="text-end">Rs.
+                                    <td class="text-end">$
                                         {{ number_format($item->product->getPriceForQuantity($item->quantity) * $item->quantity, 2) }}
                                     </td>
                                 </tr>
@@ -106,7 +106,7 @@
                             @endforelse
                             <tr class="table-active">
                                 <td colspan="4" class="text-end fw-bold">GRAND TOTAL</td>
-                                <td class="text-end fw-bold">Rs. {{ number_format($order->amount, 2) }}</td>
+                                <td class="text-end fw-bold">$ {{ number_format($order->amount, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -121,4 +121,10 @@
             </div>
         </div>
     </div>
+<style>
+    table td:not(:first-child),
+    table th:not(:first-child) {
+        text-align: right;
+    }
+</style>
 @endsection

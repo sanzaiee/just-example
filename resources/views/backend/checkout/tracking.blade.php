@@ -120,8 +120,8 @@
                                         </div>
                                     </td>
                                     <td>{{ $prod->quantity }}</td>
-                                    <td>Rs {{ $prod->product->price }}</td>
-                                    <td class="fw-bold text-end">Rs {{ $prod->product->price * $prod->quantity }}
+                                    <td>$ {{ $prod->price }}</td>
+                                    <td class="fw-bold text-end">$ {{ $prod->price * $prod->quantity }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -129,7 +129,7 @@
                         <tfoot class="">
                             <tr>
                                 <td colspan="3" class="text-end fw-bold">Grand Total:</td>
-                                <td class="fw-bold text-primary text-end">Rs {{ $product->amount ?? 0 }}</td>
+                                <td class="fw-bold text-primary text-end">$ {{ $product->amount ?? 0 }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -138,4 +138,10 @@
         </div>
 
     </div>
+<style>
+    table td:not(:first-child),
+    table th:not(:first-child) {
+        text-align: right;
+    }
+</style>
 @endsection

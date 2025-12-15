@@ -150,7 +150,7 @@
         </div>
 
         <!-- Featured Products Section -->
-        @if ($featuredProducts->count() > 0)
+        @if ($featuredProducts)
             <div class="row mb-5">
                 <div class="col-12">
                     <div class="card border-0">

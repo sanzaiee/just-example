@@ -38,8 +38,8 @@
                                 <option value="100" @if (request('per_page') == 100) selected @endif>100</option>
                             </select>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <div class="btn-group w-100">
+                        <div class="col-md-3 d-flex align-items-end" style="gap: 1rem;">
+                            <div class="w-100">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-search me-1"></i>
                                 </button>
@@ -252,8 +252,7 @@
                                                                         </div>
                                                                         <div class="text-end">
                                                                             <span class="badge bg-success fs-6">
-                                                                                Rs.
-                                                                                {{ number_format($prod->product->getPriceForQuantity($prod->quantity) * $prod->quantity, 2) }}
+                                                                                $ {{ number_format($prod->product->getPriceForQuantity($prod->quantity) * $prod->quantity, 2) }}
                                                                             </span>
                                                                         </div>
                                                                     </div>

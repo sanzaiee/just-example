@@ -63,12 +63,12 @@
                                 <div class="mb-4">
                                     <h6 class="text-white small text-uppercase mb-3">Quick Actions</h6>
                                     <div class="d-grid gap-2">
-                                        <a href="{{ route('invoice', $item->pid) }}"
+                                        {{-- <a href="{{ route('invoice', $item->pid) }}"
                                             class="btn btn-outline-secondary btn-sm text-start">
                                             <i class="bi bi-receipt me-2"></i> View Invoice
-                                        </a>
+                                        </a> --}}
                                         <a href="{{ route('order.tracking', $item->pid) }}" target="_blank"
-                                            class="btn btn-outline-secondary btn-sm text-start">
+                                            class="btn bg-secondary btn-sm text-start">
                                             <i class="bi bi-truck me-2"></i> Track Order
                                         </a>
                                     </div>

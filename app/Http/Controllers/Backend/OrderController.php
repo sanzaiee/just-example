@@ -33,7 +33,7 @@ class OrderController extends Controller
             $query->where('user_id', auth()->id());
         }
 
-        $orders = $query->latest()->paginate(request('per_page', 20));
+        $orders = $query->latest()->paginate(request('per_page', 10));
 
         if (auth()->user()->is_admin) {
             return view('backend.checkout.orders', compact('orders'));
