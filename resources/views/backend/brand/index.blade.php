@@ -53,14 +53,15 @@
             <div class="card-body">
                 <div class="row g-4">
                     @foreach ($brands as $brand)
-                        <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                             <div class="card h-100 text-center shadow-sm border-0">
                                 <div class="card-body d-flex flex-column align-items-center justify-content-center">
                                     <a href="{{ route('user.dashboard', ['brand' => $brand->slug]) }}">
                                         <div class="rounded-circle overflow-hidden mb-3"
                                             style="width: 120px; height: 120px; ">
-                                                <img src="{{ $brand->image ?: asset('/default-png-min.png') }}" alt="{{ $brand->name }}" class="w-100 h-100"
-                                                style="object-fit: cover;" loading="lazy">
+                                            <img src="{{ $brand->image ?: asset('/default-png-min.png') }}"
+                                                alt="{{ $brand->name }}" class="w-100 h-100" style="object-fit: cover;"
+                                                loading="lazy">
                                         </div>
                                     </a>
                                     <h6 class="fw-semibold mb-0">{{ $brand->name }}</h6>
