@@ -63,7 +63,6 @@
     <script src="{{ asset('') }}assets/vendor/js/template-customizer.js"></script>
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('') }}assets/js/config.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     @yield('styles')
     {!! ToastMagic::styles() !!}
     @stack('css')
@@ -147,10 +146,6 @@
     {{-- <script src="{{ asset('') }}assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script> --}}
     @include('backend.includes.tinymce')
     @include('backend.includes.fileupload')
-
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-
     @include('backend.includes.message')
 
     @stack('custom-scripts')

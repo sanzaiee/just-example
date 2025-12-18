@@ -59,6 +59,10 @@ class LoginController extends Controller
             return redirect()->back()->with('error', 'Invalid email or password');
         }
 
+        if(!$user->status){
+            return redirect()->back()->with('error', 'You are`t authorized yet. Please contact to administration.');
+        }
+
         $otp = rand(100000, 999999);
         $user->update([
             'otp' => $otp,

@@ -36,12 +36,13 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}"/>
 
     <!-- CSS Variables -->
-    <link rel="stylesheet" href="{{ asset('root.css') }}"/>
+    {{-- <link rel="stylesheet" href="{{ asset('root.css') }}"/> --}}
 
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-' . ($theme['theme'] ?? 'default') . '.css') }}"/>
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/libs/toastr/toastr.css">
 
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}"/>
@@ -53,6 +54,9 @@
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
 
     <script src="{{ asset('assets/js/config.js?' . str()->random()) }}"></script>
+
+    {!! ToastMagic::styles() !!}
+
 </head>
 
 <body>
@@ -67,8 +71,8 @@
 <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-
-<script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/toastr/toastr.js') }}"></script>
+{{-- <script src="{{ asset('assets/vendor/libs/hammer/hammer.js') }}"></script> --}}
 
 <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
 <!-- endbuild -->
@@ -77,8 +81,11 @@
 
 <!-- Main JS -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
+@include('backend.includes.message')
 
 <!-- Page JS -->
-@yield('scripts')
+    @stack('custom-scripts')
+    {!! ToastMagic::scripts() !!}
+
 </body>
 </html>

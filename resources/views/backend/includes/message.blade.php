@@ -24,6 +24,10 @@
     @if(Session::has('warning'))
         toastr.warning("{{ Session::get('warning') }}");
     @endif
+
+     @if(Session::has('status'))
+        toastr.info("{{ Session::get('status') }}");
+    @endif
 </script>
 
 <script>

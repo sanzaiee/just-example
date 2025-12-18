@@ -8,6 +8,12 @@
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner py-4">
+                @if (session('status'))
+                    <div id="alert-message" class="alert alert-info">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 <!-- Login -->
                 <div class="card">
                     <div class="card-body">
@@ -64,6 +70,17 @@
             </div>
         </div>
     </div>
+
+    <script>
+        setTimeout(() => {
+            const alert = document.getElementById('status-alert');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 5000);
+    </script>
 @endsection
 
 {{--

@@ -7,8 +7,10 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
 class RegisterController extends Controller
 {
     /*
@@ -50,9 +52,10 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'mobile' => ['required', 'string', 'unique:users,mobile', 'regex:/^01[0-9]{9}$/'],
+            'lname' => ['required', 'string', 'max:255'],
+            'mobile' => ['required', 'string', 'unique:users,mobile'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            // 'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -65,9 +68,34 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
+            'lname' => $data['lname'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            // 'password' => Hash::make($data['password']),
+            'password' => Hash::make('password'),
             'mobile' => $data['mobile'],
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        // $this->validator($request->all())->validate();
+
+        // event(new Registered($user = $this->create($request->all())));
+
+        // Do NOT auto login
+        // $this->guard()->login($user);
+
+        $message = 'Your account has been created successfully. '
+            . 'Please wait for administrator approval before logging in. '
+            . 'You will be notified once your account is verified.';
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => $message
+            ], 201);
+        }
+
+        return redirect()->route('login')->with('status', $message);
     }
 }
