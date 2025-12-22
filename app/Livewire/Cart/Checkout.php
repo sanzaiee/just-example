@@ -13,13 +13,18 @@ use Livewire\Component;
 class Checkout extends Component
 {
     public $subTotal = 0;
+
     public $cartCount = 0;
+
     public $discount = 0;
+
     public $total = 0;
+
     public $pid;
 
     // Cache product data to avoid repeated queries
     public $products = [];
+
     public $cartItems = [];
 
     public function render()
@@ -55,6 +60,7 @@ class Checkout extends Component
             $this->cartItems = [];
             $this->subTotal = 0;
             $this->cartCount = 0;
+
             return;
         }
 
@@ -74,7 +80,7 @@ class Checkout extends Component
         foreach ($cartContent as $index => $item) {
             $product = $this->products[$item->id] ?? null;
 
-            if (!$product) {
+            if (! $product) {
                 continue;
             }
 
@@ -111,7 +117,7 @@ class Checkout extends Component
 
         $cacheKey = "{$productId}_{$quantity}";
 
-        if (!isset($priceCache[$cacheKey])) {
+        if (! isset($priceCache[$cacheKey])) {
             $product = $this->products[$productId] ?? null;
             if ($product) {
                 $priceCache[$cacheKey] = $product->getPriceForQuantity($quantity);
@@ -129,15 +135,15 @@ class Checkout extends Component
     private function updateCartItemPrice($rowId, $newQuantity)
     {
         $cartItem = Cart::get($rowId);
-        if (!$cartItem) {
+        if (! $cartItem) {
             return;
         }
 
         // Get the product from the database if not in cached products
         $product = $this->products[$cartItem->id] ?? null;
-        if (!$product) {
+        if (! $product) {
             $product = Product::with(['tieredPrices'])->find($cartItem->id);
-            if (!$product) {
+            if (! $product) {
                 return;
             }
         }
@@ -157,16 +163,18 @@ class Checkout extends Component
         logger()->info('decreaseQty called', ['rowId' => $rowId, 'qty' => $qty]);
 
         $cartItem = Cart::get($rowId);
-        if (!$cartItem) {
+        if (! $cartItem) {
             logger()->warning('Cart item not found', ['rowId' => $rowId]);
+
             return;
         }
 
-        if($qty == 1){
+        if ($qty == 1) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Minimum quantity reached!']);
+
             return;
         }
-        
+
         if ($qty > 1) {
             $newQty = --$qty;
             $this->updateCartItemPrice($rowId, $newQty);
@@ -182,8 +190,9 @@ class Checkout extends Component
         logger()->info('increaseQty called', ['rowId' => $rowId, 'qty' => $qty]);
 
         $cartItem = Cart::get($rowId);
-        if (!$cartItem) {
+        if (! $cartItem) {
             logger()->warning('Cart item not found', ['rowId' => $rowId]);
+
             return;
         }
 
@@ -237,6 +246,7 @@ class Checkout extends Component
     {
         if (auth()->user()->shippingAddress == null) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Please add shipping address first!']);
+
             return redirect(route('checkout'));
         }
 
@@ -248,9 +258,11 @@ class Checkout extends Component
             Cart::destroy();
 
             $this->dispatch('alert', ['type' => 'success', 'message' => 'Order successfully placed. Please wait for response!!!!']);
+
             return redirect(route('success.page', $order_check->pid));
         } else {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Order placement Failed!']);
+
             return redirect(route('frontend.index'));
         }
     }
