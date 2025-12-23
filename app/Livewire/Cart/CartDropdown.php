@@ -12,7 +12,9 @@ class CartDropdown extends Component
     protected $listeners = ['cartUpdated' => 'render'];
 
     public $total = 0;
+
     public $cartItems = [];
+
     public $products = [];
 
     public function mount()
@@ -24,7 +26,6 @@ class CartDropdown extends Component
     public function refreshCart()
     {
         $this->loadCartData();
-        $this->dispatch('refreshCart');
     }
 
     /**
@@ -37,6 +38,7 @@ class CartDropdown extends Component
         if ($cartContent->isEmpty()) {
             $this->cartItems = [];
             $this->total = 0;
+
             return;
         }
 
@@ -56,7 +58,7 @@ class CartDropdown extends Component
         foreach ($cartContent as $item) {
             $product = $this->products[$item->id] ?? null;
 
-            if (!$product) {
+            if (! $product) {
                 continue;
             }
 
@@ -69,7 +71,7 @@ class CartDropdown extends Component
                 'qty' => $item->qty,
                 'subtotal' => $item->subtotal,
                 'image' => $product->image,
-                'slug' => $product->slug
+                'slug' => $product->slug,
             ];
 
             $total += $item->subtotal;
@@ -89,7 +91,9 @@ class CartDropdown extends Component
     public function increase($rowId)
     {
         $item = Cart::get($rowId);
-        if (!$item) return;
+        if (! $item) {
+            return;
+        }
 
         $totalQty = $item->qty + 1;
         $product = $this->products[$item->id] ?? Product::find($item->id);
@@ -110,7 +114,9 @@ class CartDropdown extends Component
     public function decrease($rowId)
     {
         $item = Cart::get($rowId);
-        if (!$item) return;
+        if (! $item) {
+            return;
+        }
 
         if ($item->qty > 1) {
             $totalQty = $item->qty - 1;

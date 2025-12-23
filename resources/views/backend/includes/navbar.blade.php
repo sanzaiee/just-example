@@ -175,8 +175,8 @@
 
 
 
-        <ul class="navbar-nav flex-row align-items-center ms-auto gap-1">
-            <li class="nav-item">
+        <ul class="navbar-nav flex-row align-items-center ms-auto gap-0 gap-sm-1">
+            <li class="nav-item d-flex align-items-center">
                 @if (Route::currentRouteName() !== 'checkout')
                     <livewire:cart-dropdown />
                 @endif
