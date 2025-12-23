@@ -22,6 +22,25 @@
                     <form wire:submit="save">
                         <div class="card-body">
                             <div class="row g-3">
+                                @foreach ([
+                                        ['type','Save Address As']
+                                    ] as $item)
+                                    @include('backend.form.livewire-collection', [
+                                        'data' => [
+                                            'name' => $item[0],
+                                            'label' => $item[1],
+                                        ],
+                                        'required' => true,
+                                        'model' => null,
+                                        'type' => 'text',
+                                        'div' => 'col-md-4'
+                                    ])
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
                                 {{-- @foreach ([
                                         ['type','Address Type'],
                                         ['name','Name'],

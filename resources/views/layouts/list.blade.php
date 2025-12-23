@@ -45,7 +45,7 @@
     <div class="card h-100 border">
         <div class="position-relative">
             <img src="{{ $product->image ?: asset('/default-png-min.png') }}" class="card-img-top p-3"
-                alt="{{ $product->name }}" loading="lazy" style="height: 200px; object-fit: contain;">
+                alt="{{ $product->name }}" loading="lazy" style="height: 200px; aspect-ratio: 5 / 6; object-fit: cover;">
 
             <div class="position-absolute top-0 start-0 end-0 m-2 d-flex align-items-center">
                 @if ($product->feature)

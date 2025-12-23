@@ -9,6 +9,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use App\Models\ShippingAddress;
 
 class Checkout extends Component
 {
@@ -26,6 +27,7 @@ class Checkout extends Component
     public $products = [];
 
     public $cartItems = [];
+    public $shippings;
 
     public function render()
     {
@@ -33,6 +35,7 @@ class Checkout extends Component
             'cartItems' => $this->cartItems,
             'subTotal' => $this->subTotal,
             'cartCount' => $this->cartCount,
+            'shippings' => $this->shippings,
         ]);
     }
 
@@ -40,6 +43,8 @@ class Checkout extends Component
     {
         $this->loadCartData();
         $this->pid = 'P-id'.'-'.Str::random(5);
+
+        $this->shippings = ShippingAddress::where('user_id', auth()->id())->get(); //auth()->id();
     }
 
     #[On('refreshCart')]
@@ -157,7 +162,7 @@ class Checkout extends Component
         ]);
     }
 
-    public function decreaseQty($rowId, $qty)
+    public function decreaseQty($rowId, $qty=1)
     {
         // Debug: Log the incoming parameters
         logger()->info('decreaseQty called', ['rowId' => $rowId, 'qty' => $qty]);
@@ -169,14 +174,17 @@ class Checkout extends Component
             return;
         }
 
-        if ($qty == 1) {
+        $step = max(1, (int) $qty);
+        $currentQty = (int) ($cartItem->qty ?? 0);
+
+        if($currentQty == 1){
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Minimum quantity reached!']);
 
             return;
         }
-
-        if ($qty > 1) {
-            $newQty = --$qty;
+        
+        if ($currentQty > 1) {
+            $newQty = $currentQty - $step;
             $this->updateCartItemPrice($rowId, $newQty);
         }
 
@@ -184,10 +192,11 @@ class Checkout extends Component
         $this->dispatch('alert', ['type' => 'success', 'message' => 'Item Decreased!']);
     }
 
-    public function increaseQty($rowId, $qty)
+    public function increaseQty($rowId, $qty = 1)
     {
         // Debug: Log the incoming parameters
-        logger()->info('increaseQty called', ['rowId' => $rowId, 'qty' => $qty]);
+        // logger()->info('increaseQty called', ['rowId' => $rowId, 'qty' => $qty]);
+        logger()->info('increaseQty called', ['rowId' => $rowId]);
 
         $cartItem = Cart::get($rowId);
         if (! $cartItem) {
@@ -196,7 +205,12 @@ class Checkout extends Component
             return;
         }
 
-        $newQty = ++$qty;
+        // Enforce integer and positivity
+        $step = max(1, (int) $qty);
+
+        $currentQty = (int) ($cartItem->qty ?? 0);
+        $newQty = $currentQty + $step;
+        // $newQty = ++$qty;
         $this->updateCartItemPrice($rowId, $newQty);
 
         $this->refreshCart();
@@ -242,8 +256,59 @@ class Checkout extends Component
         return $order;
     }
 
+    public $delivery_method = null; // pickup or delivery
+    public $shipping_id = null; // shipping_id
+
+    public function updatedDeliveryMethod($value)
+    {
+        if ($value === 'pickup') {
+            $this->shipping_id = null;
+        }
+    }
+
+    public function getCanEnableCheckoutButton()
+    {
+        if ($this->delivery_method === 'pickup') {
+            return true;
+        }
+
+        if ($this->delivery_method === 'delivery') {
+            return !empty($this->shipping_id);
+        }
+
+        if ($this->cartCount == 0)
+            return true;
+
+        return false; 
+    }
+
+    public function getShippingDescriptionProperty(): ?string
+    {
+        if (! $this->shipping_id) {
+            return null;
+        }
+
+        $shipping = $this->shippings->firstWhere('id', $this->shipping_id);
+
+        if (! $shipping) {
+            return null;
+        }
+
+        return collect([
+            $shipping->house_no,
+            $shipping->address,
+            $shipping->city,
+            // $shipping->province,
+            $shipping->postal_code
+        ])
+        ->filter()          // remove null / empty values
+        ->implode(', ');
+    }
+
     public function checkout()
     {
+        // @disabled(! $this->canEnableD)
+
         if (auth()->user()->shippingAddress == null) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Please add shipping address first!']);
 

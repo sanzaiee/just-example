@@ -11,9 +11,11 @@
     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
         <h1 style="text-align: center; font-size: 24px; font-weight: bold; color: #000;">Verify Your Email Address</h1>
         <p style="font-size: 16px;">Hello {{ $user->name }},</p>
-        <p style="font-size: 16px;">Your OTP is <b>{{ $otp }}</b></p>
-        <p style="font-size: 16px;">Please use this OTP to verify your email address.</p>
-        <p style="font-size: 16px;">Thank you for using our application.</p>
+        <p style="font-size: 16px;">We have received an access request for your login.</p>
+        <p style="font-size: 16px;"><b>Here is your validation code:</b></p>
+        <p style="font-size: 16px;"><b>{{ $otp }}</b></p>
+        <p style="font-size: 16px;">This code will only be valid for 10 minutes.</p>
+        <p style="font-size: 16px;"></p>
         <p style="font-size: 16px;">Best regards,</p>
         <p style="font-size: 16px;">{{ config('app.name') }} Team</p>
         <a href="{{ $token_url }}"

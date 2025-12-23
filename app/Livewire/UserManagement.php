@@ -15,10 +15,10 @@ class UserManagement extends Component
     use WithPagination;
 
     #[Validate('required|min:3|max:20')]
-    public $name = '';
+    public $name = '', $lname='';
 
     #[Validate('nullable|min:3|max:20')]
-    public $password = '', $confirm = '';
+    public $password = '', $confirm = '', $mobile='';
 
     #[Validate('nullable|email|min:5|max:200')]
     public $email = '';

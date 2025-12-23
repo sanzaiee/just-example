@@ -27,8 +27,8 @@
                         <form id="formAuthentication" class="mb-3" action="{{ route('login') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email or Username</label>
-                                <input type="text" class="form-control @error('email') is-invalid @enderror"
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
                                     id="email" name="email" placeholder="Enter your email" autofocus />
                                 @error('email')
                                     <span class="invalid-feedback">{{ $message }}</span>
