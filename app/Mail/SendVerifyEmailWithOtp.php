@@ -27,7 +27,7 @@ class SendVerifyEmailWithOtp extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Verify Email With Otp',
+            subject: 'Your one-time verification code',
         );
     }
 

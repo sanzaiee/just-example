@@ -13,10 +13,10 @@ class SetupShippingAddress extends Component
     public $shippingAddress, $authAddresses;
 
     #[Validate('required|min:3|max:80')]
-    public $address, $city;
+    public $address, $city, $type;
     // public $name, $address, $phone, $type, $city;
     #[Validate('nullable|min:1|max:80')]
-    public $name, $phone, $type, $email;
+    public $name, $phone, $email;
 
     // #[Validate('required|min:3|email|max:80')]
     // public $email;

@@ -25,9 +25,9 @@
     <form wire:submit.prevent="cartSelectSubmit" class="d-flex flex-column gap-.5">
         @if ($selected_quantity)
             <div class="alert alert-info py-1 px-1 small mb-2" style="text-align: center">
-                <i class="bi bi-info-circle me-1"></i>
+                <p class="mb-0"><i class="bi bi-info-circle me-1"></i>
                 Adding {{ $selected_quantity }} unit(s) @
-                ${{ number_format($product->getPriceForQuantity($selected_quantity), 2) }}
+                ${{ number_format($product->getPriceForQuantity($selected_quantity), 2) }}</p>
             </div>
         @endif
         <div class="d-flex align-items-center gap-2 justify-content-between">

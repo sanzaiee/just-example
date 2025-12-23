@@ -56,7 +56,7 @@ class LoginController extends Controller
         $this->validate($request, ['email' => 'required|email']);
         $user = User::where('email', $request->email)->first();
         if (! $user) {
-            return redirect()->back()->with('error', 'Invalid email or password');
+            return redirect()->back()->with('error', 'Invalid email');
         }
 
         if(!$user->status){

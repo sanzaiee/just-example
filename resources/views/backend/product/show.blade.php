@@ -58,16 +58,16 @@
                             <livewire:cart-setup :product="$product" :detail="true" />
                             <div class="badges">
                                 @if ($product->best_rated)
-                                    <span class="badge bg-warning">Best Rated</span>
+                                    <span class="badge bg-warning mt-2" style="float: right; margin-right: 2px;">Best Rated</span>
                                 @endif
 
                                 @if ($product->on_sale)
-                                    <span class="badge bg-primary">On Sale</span>
+                                    <span class="badge bg-primary mt-2" style="float: right; margin-right: 2px;">On Sale</span>
                                 @endif
                                 {{-- <span
                                     class="badge {{ $product->home_delivery ? 'bg-success' : 'bg-danger' }}">{{ $product->stock ? 'Delivery' : 'No Delivery' }}</span> --}}
                                 <span
-                                    class="badge {{ $product->stock ? 'bg-success' : 'bg-danger' }}">{{ $product->stock ? 'In Stock' : 'Out of Stock' }}</span>
+                                    class="badge {{ $product->stock ? 'bg-success' : 'bg-danger' }} mt-2" style="float: right;margin-right: 2px;">{{ $product->stock ? 'In Stock' : 'Out of Stock' }}</span>
                             </div>
                         </div>
                         <hr>

@@ -8,17 +8,17 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         {{-- <h5 class="mb-0">Category</h5> --}}
                         <small class="text-muted float-end">
-                                List
+                                
                         </small>
                     </div>
 
-                    <div class="card-body">
+                    <div class="">
                         <div class="row g-3">
                             <div class="col-md-6 m-3">
                                 <input
                                     type="text"
                                     class="form-control"
-                                    placeholder="Search ..."
+                                    placeholder="Search By First Name..."
                                     wire:model.live.debounce.500ms="query"
                                 >
                             </div>
@@ -38,7 +38,8 @@
                                 <thead>
                                 <tr>
                                     <th>S/N</th>
-                                    <th>Name</th>
+                                    <th>Full Name</th>
+                                    <th>Phone</th>
                                     <th>Status</th>
                                     <th>Role</th>
                                     <th>Action</th>
@@ -49,7 +50,9 @@
                                     <tr>
                                         <td>{{ ++$index }}</td>
 
-                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->name }}, {{ $item->lname }}</td>
+
+                                        <td>{{ $item->mobile }}</td>
 
                                         <td>
                                             @if($item->status == 1)
@@ -109,7 +112,7 @@
                     <form wire:submit="save">
                         <div class="card-body">
                             <div class="row g-3">
-                                @foreach ([['name','Name']] as $item)
+                                @foreach ([['name','First Name'], ['lname','Last Name']] as $item)
                                     @include('backend.form.livewire-collection', [
                                         'data' => [
                                             'name' => $item[0],
@@ -121,7 +124,17 @@
                                     ])
                                 @endforeach
 
-
+                                @foreach ([['mobile','Phone No:']] as $item)
+                                    @include('backend.form.livewire-collection', [
+                                        'data' => [
+                                            'name' => $item[0],
+                                            'label' => $item[1],
+                                        ],
+                                        'required' => false,
+                                        'model' => $model ?? null,
+                                        'type' => 'text'
+                                    ])
+                                @endforeach
 
                                     @foreach ([['email','Email']] as $item)
                                         @include('backend.form.livewire-collection', [
@@ -135,7 +148,7 @@
                                         ])
                                     @endforeach
 
-                                        @foreach ([['password','Password'],['confirm','Confirm Password']] as $item)
+                                    {{-- @foreach ([['password','Password'],['confirm','Confirm Password']] as $item)
                                         @include('backend.form.livewire-collection', [
                                             'data' => [
                                                 'name' => $item[0],
@@ -145,7 +158,7 @@
                                             'model' => $model ?? null,
                                             'type' => 'password'
                                         ])
-                                    @endforeach
+                                    @endforeach --}}
                                     @if($showPasswordRequired)
                                         <small class="text-danger">Password field is required</small>
                                     @endif

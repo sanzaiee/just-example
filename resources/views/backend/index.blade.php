@@ -181,7 +181,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header py-3">
+                        <div class="card-header px-2 py-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-crown text-success me-2"></i>Best Sellers
@@ -190,7 +190,7 @@
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body px-2">
                             <div class="row g-3" id="bestSellerProducts">
                                 @foreach ($bestSellers as $product)
                                     @include('layouts.list', ['product' => $product])
@@ -207,7 +207,7 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header px-2 py-2 px-md-4">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-tags text-info me-2"></i>On Sale Products
@@ -216,7 +216,7 @@
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body px-2 px-md-4">
                             <div class="row g-3" id="onSaleProducts">
                                 @foreach ($onSaleProducts as $product)
                                     @include('layouts.list', ['product' => $product])
