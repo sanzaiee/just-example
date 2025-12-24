@@ -258,6 +258,10 @@ class Checkout extends Component
 
     public $delivery_method = null; // pickup or delivery
     public $shipping_id = null; // shipping_id
+    public $deliveryNotes = ''; // shipping_id
+    protected $rules = [
+        'deliveryNotes' => 'nullable|string|max:255',
+    ];
 
     public function updatedDeliveryMethod($value)
     {
@@ -307,12 +311,10 @@ class Checkout extends Component
 
     public function checkout()
     {
-        // @disabled(! $this->canEnableD)
+        if(!$this->getCanEnableCheckoutButton()){
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Please select delivery method and shipping address!']);
 
-        if (auth()->user()->shippingAddress == null) {
-            $this->dispatch('alert', ['type' => 'error', 'message' => 'Please add shipping address first!']);
-
-            return redirect(route('checkout'));
+            return;
         }
 
         $order = $this->orderStore();

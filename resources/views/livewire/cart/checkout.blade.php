@@ -110,7 +110,10 @@
 
                     <div class="align-items-center justify-content-center mt-2">
                         <label class="form-label" for="notes">Notes</label>
-                        <textarea wire:model.live="notes" id="notes" class="form-control"></textarea>
+                        <textarea wire:model.live="deliveryNotes" id="notes" maxlength="255" class="form-control"></textarea>
+                        <small class="text-muted">
+                            {{ strlen($deliveryNotes ?? '') }} / 255
+                        </small>
                     </div>
 
                 </div>
