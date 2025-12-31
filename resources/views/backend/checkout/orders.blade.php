@@ -54,11 +54,11 @@
         </div>
 
         <div class="card h-90 shadow-sm">
-            <div class="card-body">
-                <div class="table-responsive mt-4">
+            <div class="p-2">
+                <div class="table-responsive mt-2">
                     {{-- <table id="example0" class="table display"> --}}
 
-                    <table id="example0" class="table table-striped">
+                    <table id="example0" class="table mb-2">
                         <thead>
                             <tr>
                                 <th class="s-n">S.N</th>
@@ -71,19 +71,19 @@
 
                                 <th class="product-price">
                                     <span class="text-nowrap">
-                                        Price
+                                        Amount
                                     </span>
                                 </th>
                                 <th class="Date">
                                     Date
                                 </th>
 
-                                <th class="Status">
-                                    Order Status
+                                <th class="delivery_method">
+                                    Order Type
                                 </th>
 
                                 <th class="Status">
-                                    Delivery Status
+                                    Order Processing ?
                                 </th>
 
                                 <th class="Status">
@@ -91,10 +91,7 @@
                                 </th>
 
                                 <th class="Status">
-                                    Action
-                                </th>
-                                <th class="Status">
-                                    Cancel Order
+                                    Delivery Status
                                 </th>
                             </tr>
                         </thead>
@@ -102,8 +99,14 @@
                             @forelse ($orders as $index => $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td class="order-id">
-                                        {{ $item->pid }}
+                                    <td class="@if($item->cancel_status == 1) cancelled-order @endif @if($item->order_status == 3) complete-order @endif">
+                                        <a href="{{ route('order.show', $item->pid) }}"
+                                            data-bs-toggle="tooltip" 
+                                            @if($item->cancel_status == 1) data-bs-original-title="Cancelled Order" @endif 
+                                            
+                                            @if($item->order_status == 3) data-bs-original-title="Completed Order" @endif
+                                            >{{ $item->pid }}
+                                        </a>
                                     </td>
 
                                     <td>
@@ -124,17 +127,26 @@
 
 
                                     <td class="product-price">
-                                        {{ $item->amount }}
+                                        $ {{ number_format($item->amount, 2) }}
                                     </td>
 
                                     <td class="issue-date">
                                         {{ $item->created_at->format('Y-m-d') }}
                                     </td>
 
+                                    <td class="delivery_method">
+                                        @if ($item->shipping_address_id == getStorePickupShippingId())
+                                            <span class="badge bg-info">Pickup</span>
+                                        @else
+                                            <span class="badge bg-secondary">Delivery</span>
+                                        @endif
+                                    </td>
+
+
                                     <td class="status">
                                         @if ($item->pending_status == 0)
                                             <a href="" class="btn btn-sm rounded-pill btn-danger me-2"
-                                                data-bs-toggle="tooltip" data-bs-original-title="Order Status"
+                                                data-bs-toggle="tooltip" data-bs-original-title=""
                                                 onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
                                                 Pending
                                             </a>
@@ -147,7 +159,7 @@
                                             <a href="" class="btn btn-sm rounded-pill btn-primary me-2"
                                                 data-bs-toggle="tooltip" data-bs-original-title="Order Status"
                                                 onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
-                                                Compeleted
+                                                Processing
                                             </a>
                                             <form id="pending-status-form-{{ $item->id }}"
                                                 action="{{ route('pending.status', $item->id) }}" method="post">
@@ -158,37 +170,11 @@
                                     </td>
 
                                     <td class="status">
-                                        @if ($item->delivery_status == 0)
-                                            <a href="" class="btn btn-sm rounded-pill btn-danger me-2"
-                                                data-bs-toggle="tooltip" data-bs-original-title="Delivery Status"
-                                                onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('delivery-status-form-{{ $item->id }}').submit();">
-                                                Not Delivered
-                                            </a>
-                                            <form id="delivery-status-form-{{ $item->id }}"
-                                                action="{{ route('delivery.status', $item->id) }}" method="post">
-                                                @csrf
-                                                @method('put')
-                                            </form>
-                                        @else
-                                            <a href="" class="btn btn-sm rounded-pill btn-primary me-2"
-                                                data-bs-toggle="tooltip" data-bs-original-title="Delivery Status"
-                                                onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('delivery-status-form-{{ $item->id }}').submit();">
-                                                Delivered
-                                            </a>
-                                            <form id="delivery-status-form-{{ $item->id }}"
-                                                action="{{ route('delivery.status', $item->id) }}" method="post">
-                                                @csrf
-                                                @method('put')
-                                            </form>
-                                        @endif
-                                    </td>
-
-                                    <td class="status">
                                         @if ($item->pay_status == 0)
                                             <a href="" class="btn btn-sm rounded-pill btn-danger me-2"
-                                                data-bs-toggle="tooltip" data-bs-original-title="Order Status"
+                                                data-bs-toggle="tooltip" data-bs-original-title=""
                                                 onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pay-status-form-{{ $item->id }}').submit();">
-                                                UnPaid
+                                                Due
                                             </a>
                                             <form id="pay-status-form-{{ $item->id }}"
                                                 action="{{ route('order.pay.status', $item->id) }}" method="post">
@@ -196,26 +182,37 @@
                                                 @method('put')
                                             </form>
                                         @else
-                                            <span class="btn btn-sm rounded-pill btn-primary me-2">Paid</span>
+                                            <span class="btn btn-sm rounded-pill btn-success me-2">Paid</span>
                                         @endif
                                     </td>
 
-                                    <td>
-                                        <a href="{{ route('order.show', $item->pid) }}">
-                                            <span class="btn btn-sm rounded-pill btn-primary me-2"><i
-                                                    class="fa fa-eye"></i></span>
-                                        </a>
-                                    </td>
-
-                                    <td>
-                                        @if ($item->cancel_status == 0)
-                                            <button type="button" class="btn btn-sm rounded-pill btn-danger me-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#cancelOrderModal{{ $index }}">
-                                                <i class="fa fa-times"></i> Cancel
-                                            </button>
+                                    <td class="status">
+                                        @if($item->shipping_address_id == getStorePickupShippingId())
+                                            <span class="badge bg-info">N/A</span>
                                         @else
-                                            <span class="btn btn-sm rounded-pill btn-secondary me-2">Cancelled</span>
+                                            @if ($item->delivery_status == 0)
+                                                <a href="" class="btn btn-sm rounded-pill btn-danger me-2"
+                                                    data-bs-toggle="tooltip" data-bs-original-title="Delivery Status"
+                                                    onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('delivery-status-form-{{ $item->id }}').submit();">
+                                                    Pending
+                                                </a>
+                                                <form id="delivery-status-form-{{ $item->id }}"
+                                                    action="{{ route('delivery.status', $item->id) }}" method="post">
+                                                    @csrf
+                                                    @method('put')
+                                                </form>
+                                            @else
+                                                <a href="" class="btn btn-sm rounded-pill btn-primary me-2"
+                                                    data-bs-toggle="tooltip" data-bs-original-title="Delivery Status"
+                                                    onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('delivery-status-form-{{ $item->id }}').submit();">
+                                                    Delivered
+                                                </a>
+                                                <form id="delivery-status-form-{{ $item->id }}"
+                                                    action="{{ route('delivery.status', $item->id) }}" method="post">
+                                                    @csrf
+                                                    @method('put')
+                                                </form>
+                                            @endif
                                         @endif
                                     </td>
 
@@ -231,12 +228,30 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
-                                                <div class="modal-body p-4">
+                                                <div class="modal-body px-4 mb-4">
                                                     @foreach ($item->orderProductLists as $prod)
+                                                        <div class="card m-2">
                                                         <a href="{{ route('product.detail', $prod->product->slug) }}"
                                                             target="_blank" class="text-decoration-none">
-                                                            <div
+                                                            <div class="cart-item">
+                                                                <img src="/default-png-min.png" alt="{{ $prod->product->name }}" class="item-image">
+                                                                <div class="item-details">
+                                                                    <h4>{{ $prod->product->name }}</h4>
+                                                                    <div class="item-price">
+                                                                        <span class="price">$ {{ number_format($prod->product->getPriceForQuantity($prod->quantity), 2) }}</span>
+                                                                        <span class="quantity">× {{ $prod->quantity }}</span>
+                                                                    </div>
+                                                                    <div>
+
+                                                                    </div>
+                                                                    <div class="item-subtotal">
+                                                                        {{ Str::limit($prod->product->description, 70) }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {{-- <div
                                                                 class="card mb-3 border-0 bg-light hover-shadow transition-all">
+                                                                <img src="/default-png-min.png" alt="{{$prod->product->name}}" class="item-image">
                                                                 <div class="card-body p-3">
                                                                     <div
                                                                         class="d-flex justify-content-between align-items-center">
@@ -257,8 +272,9 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div> --}}
                                                         </a>
+                                                        </div>
                                                     @endforeach
                                                 </div>
                                             </div>
@@ -270,24 +286,68 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="billingInfo{{ $index }}Title">
-                                                        Shipping Address</h5>
+                                                    <h5 class="modal-title" id="billingInfo{{ $index }}Title"></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="row">
-                                                        @foreach ([['name', 'Name'], ['email', 'Email'], ['address', 'Address'], ['city', 'City'], ['house_no', 'House Number'], ['street', 'Street']] as $index => $title)
-                                                            @if ($item->shippingAddress->{$title[0]})
-                                                                <div class="col-md-6 mb-3">
-                                                                    <code>{{ $title[1] }} : </code>
-                                                                    <p class="mb-0">
-                                                                        {{ $item->shippingAddress->{$title[0]} ?? '' }}
-                                                                    </p>
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
+                                                        <div class="col-md-6 mb-3">
+                                                            <code>First Name : </code>
+                                                            <p class="mb-0">
+                                                                {{ $item->user->name }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <code>Last Name : </code>
+                                                            <p class="mb-0">
+                                                                {{ $item->user->lname }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <code>Phone : </code>
+                                                            <p class="mb-0">
+                                                                {{ $item->user->mobile }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <code>Email : </code>
+                                                            <p class="mb-0">
+                                                                {{ $item->user->email }}
+                                                            </p>
+                                                        </div>
                                                     </div>
+
+                                                    <hr>
+                                                    <h5 class="modal-title">Delivery Method</h5>
+
+                                                    <div class="row">
+                                                        @if ($item->shipping_address_id == getStorePickupShippingId())
+                                                            <div class="fw-bold"> <code>Store Pickup</code> <span class="fm-lighter"></span></div>
+                                                        @else
+                                                            @foreach ([
+                                                                ['house_no', 'House/Apt Number'], 
+                                                                ['address', 'Address'], 
+                                                                // ['name', 'Name'], 
+                                                                // ['email', 'Email'], 
+                                                                ['city', 'City'], 
+                                                                ['postal_code', 'Postal Code']] as $index => $title)
+                                                                @if ($item->shippingAddress->{$title[0]})
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <code>{{ $title[1] }} : </code>
+                                                                        <p class="mb-0">
+                                                                            {{ $item->shippingAddress->{$title[0]} ?? '' }}
+                                                                        </p>
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="modal-body mt-2 pt-0">
+                                                    <h5 class="mb-0">Notes:</h5>
+                                                        <p class="mb-0">{{ $item->notes }}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -309,50 +369,27 @@
         </div>
         {{-- </div>
 </div> --}}
-
-
-        <!-- Cancel Order Modal -->
-        @forelse ($orders as $index => $item)
-            @if ($item->cancel_status == 0)
-                <div class="modal fade" id="cancelOrderModal{{ $index }}" tabindex="-1"
-                    aria-labelledby="cancelOrderModal{{ $index }}Title" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="cancelOrderModal{{ $index }}Title">
-                                    Cancel Order #{{ $item->pid }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form action="{{ route('client.order.cancel') }}" method="post">
-                                @csrf
-                                <div class="modal-body">
-                                    <input type="hidden" name="order_id" value="{{ $item->id }}">
-                                    <div class="mb-3">
-                                        <label for="reason" class="form-label">Cancellation Reason</label>
-                                        <textarea class="form-control" id="reason" name="reason" rows="3" required
-                                            placeholder="Please provide a reason for cancelling this order..."></textarea>
-                                    </div>
-                                    <div class="alert alert-warning">
-                                        <i class="fas fa-exclamation-triangle me-2"></i>
-                                        <strong>Warning:</strong> This action cannot be undone. The order will be marked as
-                                        cancelled.
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-danger">Confirm Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @empty
-        @endforelse
-
-
-
     </div>
 @endsection
+@push('css')
+    <style>
+        .product-price {
+            text-align: center;
+        }
+
+        .cancelled-order {
+            background-color: #ea5455 !important;
+        }
+
+        .cancelled-order a{
+            color: white !important;
+        }
+        .complete-order {
+            background-color: #28c76f !important;
+        }
+
+        .complete-order a {
+            color: white !important;
+        }
+    </style>
+@endpush

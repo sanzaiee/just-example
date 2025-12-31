@@ -60,7 +60,7 @@
                             <!-- Left Status Panel -->
                             <div class="col-lg-3 bg-primary text-white p-4 d-flex flex-column">
                                 <!-- Order Actions -->
-                                <div class="mb-4">
+                                <div class="mb-4" style="display: none">
                                     <h6 class="text-white small text-uppercase mb-3">Quick Actions</h6>
                                     <div class="d-grid gap-2">
                                         {{-- <a href="{{ route('invoice', $item->pid) }}"
@@ -80,42 +80,60 @@
                                     <div class="d-flex flex-column gap-2">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <span class="small">Delivery</span>
-                                            @if ($item->delivery_status == 0)
-                                                <span class="badge bg-danger bg-opacity-75">Pending</span>
+                                            @if ($item->shipping_address_id == getStorePickupShippingId())
+                                                <span class="badge bg-info bg-opacity-75">Pickup</span>
                                             @else
-                                                <span class="badge bg-success bg-opacity-75">Delivered</span>
+                                                @if ($item->delivery_status == 0)
+                                                    <span class="badge bg-danger bg-opacity-75">Pending</span>
+                                                @else
+                                                    <span class="badge bg-success bg-opacity-75">Delivered</span>
+                                                @endif
                                             @endif
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between">
                                             <span class="small">Payment</span>
                                             @if ($item->pay_status == 0)
-                                                <span class="badge bg-danger bg-opacity-75">Unpaid</span>
+                                                <span class="badge bg-danger bg-opacity-75">Due</span>
                                             @else
                                                 <span class="badge bg-success bg-opacity-75">Paid</span>
                                             @endif
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <span class="small">Status</span>
-                                            @if ($item->pending_status == 0)
-                                                <span class="badge bg-warning text-dark bg-opacity-75">Pending</span>
-                                            @else
-                                                <span class="badge bg-success bg-opacity-75">Completed</span>
-                                            @endif
-                                        </div>
+
+                                        @if ($item->cancel_status != 1 && $item->pending_status != 1 && $item->order_status != 3)
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <span class="small">Status</span>
+                                                @if ($item->pending_status == 0)
+                                                    <span class="badge bg-warning text-dark bg-opacity-75">Pending</span>
+                                                @else
+                                                    <span class="badge bg-success bg-opacity-75">Processing</span>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
 
                                 <!-- Cancel Action -->
+
                                 <div class="mt-auto">
-                                    @if ($item->cancel_status == 0)
+                                    @if ($item->cancel_status == 0 && $item->pending_status == 0 && $item->order_status != 3)
                                         <button class="btn btn-danger btn-sm w-100" data-bs-toggle="modal"
                                             data-bs-target="#order-box-{{ $item->id }}">
                                             <i class="bi bi-x-circle me-2"></i> Cancel Order
                                         </button>
-                                    @else
+                                    @endif
+
+                                    @if ($item->cancel_status == 1)
+                                        <div class="text-center">
+                                            <span class="badge bg-warning bg-opacity-75 px-3 py-2">
+                                                <i class="bi bi-c-circle me-1"></i> Cancelled
+                                            </span>
+                                        </div>
+                                    @endif
+
+                                    @if ($item->order_status == 3)
                                         <div class="text-center">
                                             <span class="badge bg-success bg-opacity-75 px-3 py-2">
-                                                <i class="bi bi-check-circle me-1"></i> Cancelled
+                                                <i class="bi bi-check-circle me-1"></i> Completed
                                             </span>
                                         </div>
                                     @endif

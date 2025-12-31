@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Http;
 class LoginController extends Controller
 {
     /*
@@ -53,8 +53,11 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        //$start = microtime(true);
+
         $this->validate($request, ['email' => 'required|email']);
-        $user = User::where('email', $request->email)->first();
+        $email = strtolower($request->email);
+        $user = User::where('email', $email)->first();
         if (! $user) {
             return redirect()->back()->with('error', 'Invalid email');
         }
@@ -68,13 +71,44 @@ class LoginController extends Controller
             'otp' => $otp,
             'expired_at' => now()->addMinutes(10),
         ]);
-        Mail::to($user->email)->send(new SendVerifyEmailWithOtp($user, $otp));
+        //Mail::to($user->email)->send(new SendVerifyEmailWithOtp($user, $otp));
+
+        $response = Http::withHeaders([
+            'api-key' => env('BREVO_API_KEY'),
+            'Content-Type' => 'application/json',
+        ])->post('https://api.brevo.com/v3/smtp/email', [
+            'sender' => [
+                'email' => 'practise.saroj@gmail.com',
+                'name' => 'Practise Saroj',
+            ],
+            'to' => [
+                [
+                    'email' => $user->email,
+                    'name' => $user->name,
+                ],
+            ],
+            'subject' => 'Verify Your Email',
+            'htmlContent' => "
+                <p>Hello {$user->name},</p>
+                <p>Your OTP is:</p>
+                <h2>{$otp}</h2>
+                <p>This OTP will expire soon.</p>
+            ",
+        ]);
+
+        if (! $response->successful()) {
+            dd($response->json());
+        }
+
+        //$executionTime = microtime(true) - $start;
+        // dump('Execution time: ' . $executionTime . ' seconds');
 
         return redirect()->route('verify.otp', $user->email)->with('success', 'OTP sent to your email');
     }
 
-    public function verifyOtp($email)
+    public function verifyOtp($emails)
     {
+        $email = strtolower($emails);
         $user = User::where('email', $email)->first();
         if (! $user) {
             return redirect()->back()->with('error', 'User not found');
@@ -83,8 +117,9 @@ class LoginController extends Controller
         return view('auth.verify', compact('user'));
     }
 
-    public function verifyOtpPost(Request $request, $email)
+    public function verifyOtpPost(Request $request, $emails)
     {
+        $email = strtolower($emails);
         $user = User::where('email', $email)->first();
         if (! $user) {
             return redirect()->back()->with('error', 'User not found');

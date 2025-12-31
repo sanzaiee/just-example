@@ -26,10 +26,6 @@
                                         </option>
                                         <option value="12" {{ request('per_page') == 12 ? 'selected' : '' }}>12 per page
                                         </option>
-                                        <option value="24" {{ request('per_page') == 24 ? 'selected' : '' }}>24 per page
-                                        </option>
-                                        <option value="48" {{ request('per_page') == 48 ? 'selected' : '' }}>48 per page
-                                        </option>
                                     </select>
                                 </div>
 

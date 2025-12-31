@@ -24,7 +24,7 @@
                         <!-- /Logo -->
                         <p class="mb-4">Please sign-in to your account</p>
 
-                        <form id="formAuthentication" class="mb-3" action="{{ route('login') }}" method="POST">
+                        <form id="formAuthentication" class="mb-3" action="{{ route('login') }}" onsubmit="disableButton()" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
@@ -51,17 +51,12 @@
                                 </div>
                             </div> --}}
                             <div class="mb-3">
-                                {{-- <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember-me" />
-                                    <label class="form-check-label" for="remember-me"> Remember Me </label>
-                                </div> --}}
-                                <div class="form-check">
-                                    <a href="{{ route('register') }}" class="text-primary text-decoration-underline">If you
-                                        don't have an account, please register</a>
-                                </div>
+                                <button class="btn btn-primary d-grid w-100" id="loginBtn" type="submit">Sign in</button>
                             </div>
-                            <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                            <hr>
+                            <div class="mb-3 justify-content-center d-flex">
+                                    <a href="{{ route('register') }}" class="text-primary text-decoration-none">
+                                        <button class="btn btn-success d-grid w-100" id="registerBtn" type="button">Register</button></a>
                             </div>
                         </form>
                     </div>
@@ -80,6 +75,15 @@
                 setTimeout(() => alert.remove(), 500);
             }
         }, 5000);
+
+        function disableButton() {
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerText = 'Processing ...';
+
+            const btn2 = document.getElementById('registerBtn');
+            btn2.disabled = true;
+        }
     </script>
 @endsection
 

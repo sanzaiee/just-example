@@ -43,7 +43,7 @@
 
                                         <td class="price">
                                             <h6 class="fw-bold">Price</h6>
-                                            <p>Rs. {{ $item->product->getPriceForQuantity($item->quantity) }}</p>
+                                            <p>$ {{ $item->product->getPriceForQuantity($item->quantity) }}</p>
                                         </td>
 
                                         <td class="quantity">
@@ -53,7 +53,7 @@
 
                                         <td class="subtotal">
                                             <h6 class="fw-bold">Sub Total</h6>
-                                            <p>{{ $item->product->getPriceForQuantity($item->quantity) * $item->quantity }}
+                                            <p>$ {{ $item->product->getPriceForQuantity($item->quantity) * $item->quantity }}
                                             </p>
                                         </td>
                                     </tr>
@@ -70,10 +70,10 @@
                     <div class="card-body">
                         <div class="row g-4">
                             <div class="col-lg-12 col-sm-12">
-                                <h5>Price Details ({{ $productList->count() }} Items)</h5>
+                                <h5>Details ({{ $productList->count() }} Items)</h5>
 
                                 <td class="subtotal">
-                                    <h6 class="fw-bold"><code>Total (Rs) : {{ $order->amount }}</code></h6>
+                                    <h6 class="fw-bold"><code>Total : $ {{ $order->amount }}</code></h6>
                                 </td>
 
                                 {{-- @if ($order->coupon_id)
@@ -84,19 +84,37 @@
                                             </li>
                                         </ul>
                                     @endif --}}
+                            </div>
 
+                            <div class="col-lg-12 col-sm-12">
+                                <h5>Notes:</h5>
+
+                                <td class="subtotal">
+                                    <h6 class="fw-bold"><code>{{ $order->notes }}</code></h6>
+                                </td>
                             </div>
 
                             <div class="col-lg-12 col-sm-6">
+                                @if ($order->shipping_address_id == getStorePickupShippingId())
+                                    <h5>Pickup From Store</h5>
+                                    <div class="fw-bold"> <code>9AM to 9PM</code> <span
+                                            class="fm-lighter"></span></div>
+                                @else
                                 <h5>Shipping Address</h5>
-
-                                @foreach ([['name', 'Name'], ['email', 'Email'], ['address', 'Address'], ['city', 'City'], ['house_no', 'House Number'], ['street', 'Street']] as $index => $title)
+                                    @foreach ([
+                                        ['house_no', 'House/Apt Number'], 
+                                        ['address', 'Address'], 
+                                        // ['name', 'Name'], 
+                                        // ['email', 'Email'], 
+                                        ['city', 'City'], 
+                                        ['postal_code', 'Postal Code']
+                                        ] as $index => $title)
                                     @if ($deliveryAddress->{$title[0]})
                                         <div class="fw-bold"> <code>{{ $title[1] }} : </code> <span
                                                 class="fm-lighter">{{ $deliveryAddress->{$title[0]} }}</span></div>
                                     @endif
                                 @endforeach
-
+                                @endif
                             </div>
 
                         </div>

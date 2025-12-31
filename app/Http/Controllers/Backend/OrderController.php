@@ -93,11 +93,20 @@ class OrderController extends Controller
         $order->update(['cancel_status' => 1]);
         OrderCancel::create([
             'order_id' => $order->id,
-            'user_id' => $order->user_id,
+            'user_id' => auth()->id(),
             'reason' => $request->reason,
         ]);
 
         return back()->withSuccess('Order Cancelled Successfully!!');
+    }
+
+    public function complete($id)
+    {
+        $delivery = Order::findorFail($id);
+        $delivery['order_status'] = 3;
+        $delivery->update();
+
+        return redirect()->route('order.index')->with('success', 'Order Status Changed.');
     }
 
     public function show($pid)

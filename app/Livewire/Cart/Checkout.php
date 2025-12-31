@@ -234,7 +234,14 @@ class Checkout extends Component
         $db['user_id'] = auth()->id();
         $db['amount'] = $this->subTotal;
         $db['discount'] = $this->discount;
-        $db['shipping_address_id'] = auth()->user()->shippingAddress->id;
+
+        if ($this->delivery_method === 'pickup') {
+            $db['shipping_address_id'] = getStorePickupShippingId();
+        } else {
+            $db['shipping_address_id'] = $this->shipping_id;
+        }
+        $db['notes'] = $this->deliveryNotes !== null ? trim($this->deliveryNotes) : null;
+        //$db['shipping_address_id'] = auth()->user()->shippingAddress->id;
 
         $x_order = Order::where('pid', $this->pid)->where('order_status', 0)->first();
         if ($x_order) {

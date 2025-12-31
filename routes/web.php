@@ -63,6 +63,7 @@ Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
     Route::get('/product/create', ProductSetup::class)->name('product.create');
     Route::get('/order-summary', OrderSummary::class)->name('order.summary');
 
+    Route::put('/order-status/{id}', [OrderController::class, 'complete'])->name('order.status');
     Route::put('/delivery-status/{id}', [OrderController::class, 'delivery'])->name('delivery.status');
     Route::put('/pending-status/{id}', [OrderController::class, 'pending'])->name('pending.status');
     Route::put('/pay-status/{id}', [OrderController::class, 'payStatus'])->name('order.pay.status');

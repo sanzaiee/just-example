@@ -41,7 +41,7 @@ class UserManagement extends Component
                 $term = '%'.$search.'%';
                 $query->where('name', 'like', $term);
             })
-            ->orderBy('id')
+            ->orderBy('id', 'desc')
             ->paginate($this->rowPerPage);
 //            ->withQueryString();
 
@@ -80,6 +80,8 @@ class UserManagement extends Component
 
     public function save(){
         $data = $this->validate();
+
+        $data['email'] = strtolower($data['email']);
         unset($data['confirm']);
         if($this->updateModelId != NULL){
             User::findOrFail($this->updateModelId)->update($data);
