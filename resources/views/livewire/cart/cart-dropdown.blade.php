@@ -78,11 +78,11 @@
             gap: 8px;
             padding: 8px 16px;
             background: white;
-            border: 2px solid #685DD8;
+            border: 2px solid #dbdade;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
-            color: #685DD8;
+            color: #dbdade;
             transition: all 0.2s ease;
             position: relative;
         }

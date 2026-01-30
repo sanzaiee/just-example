@@ -2,23 +2,26 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\Order;
+use App\Models\ShippingAddress;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendVerifyEmailWithOtp extends Mailable
+class SendOrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public User $user, public string $otp)
-    {
-        //
+    public function __construct(
+        public Order $order,
+        public $productList,
+        public ?ShippingAddress $deliveryAddress
+    ) {
     }
 
     /**
@@ -27,7 +30,7 @@ class SendVerifyEmailWithOtp extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your one-time verification code',
+            subject: 'Order Confirmation',
         );
     }
 
@@ -37,11 +40,11 @@ class SendVerifyEmailWithOtp extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.verify-email-with-otp',
+            view: 'emails.order-confirmation-email',
             with: [
-                'user' => $this->user,
-                'otp' => $this->otp,
-                'token_url' => route('verify.otp', $this->user->email),
+                'order' => $this->order,
+                'productList' => $this->productList,
+                'deliveryAddress' => $this->deliveryAddress,
             ],
         );
     }

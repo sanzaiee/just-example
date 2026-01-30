@@ -110,3 +110,9 @@ if (! function_exists('getAvatarColor')) {
         };
     }
 }
+
+if (! function_exists('getStorePickupShippingId')) {
+    function getStorePickupShippingId() {
+        return 1;
+    }
+}

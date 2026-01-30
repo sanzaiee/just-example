@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\ShippingAddress;
+use App\Mail\SendOrderConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 class Checkout extends Component
 {
@@ -234,7 +236,14 @@ class Checkout extends Component
         $db['user_id'] = auth()->id();
         $db['amount'] = $this->subTotal;
         $db['discount'] = $this->discount;
-        $db['shipping_address_id'] = auth()->user()->shippingAddress->id;
+
+        if ($this->delivery_method === 'pickup') {
+            $db['shipping_address_id'] = getStorePickupShippingId();
+        } else {
+            $db['shipping_address_id'] = $this->shipping_id;
+        }
+        $db['notes'] = $this->deliveryNotes !== null ? trim($this->deliveryNotes) : null;
+        //$db['shipping_address_id'] = auth()->user()->shippingAddress->id;
 
         $x_order = Order::where('pid', $this->pid)->where('order_status', 0)->first();
         if ($x_order) {
@@ -243,14 +252,25 @@ class Checkout extends Component
         $order = Order::create($db);
 
         if ($order) {
-            foreach ($this->cartItems as $item) {
-                OrderProductList::create([
-                    'order_id' => $order->id,
+            // foreach ($this->cartItems as $item) {
+            //     OrderProductList::create([
+            //         'order_id' => $order->id,
+            //         'product_id' => $item['id'],
+            //         'quantity' => $item['qty'],
+            //         'price' => $item['unitPrice'],
+            //     ]);
+            // }
+            // Alternatively, use bulk insert for better performance
+            OrderProductList::insert(
+                collect($this->cartItems)->map(fn ($item) => [
+                    'order_id'   => $order->id,
                     'product_id' => $item['id'],
-                    'quantity' => $item['qty'],
-                    'price' => $item['unitPrice'],
-                ]);
-            }
+                    'quantity'   => $item['qty'],
+                    'price'      => $item['unitPrice'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])->toArray()
+            );
         }
 
         return $order;
@@ -258,6 +278,10 @@ class Checkout extends Component
 
     public $delivery_method = null; // pickup or delivery
     public $shipping_id = null; // shipping_id
+    public $deliveryNotes = ''; // shipping_id
+    protected $rules = [
+        'deliveryNotes' => 'nullable|string|max:255',
+    ];
 
     public function updatedDeliveryMethod($value)
     {
@@ -305,30 +329,66 @@ class Checkout extends Component
         ->implode(', ');
     }
 
+    public bool $isProcessing = false;
+
     public function checkout()
     {
-        // @disabled(! $this->canEnableD)
+        if ($this->isProcessing) return;
+        $this->isProcessing = true;
 
-        if (auth()->user()->shippingAddress == null) {
-            $this->dispatch('alert', ['type' => 'error', 'message' => 'Please add shipping address first!']);
+        try {
+            if (!$this->getCanEnableCheckoutButton()) {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Please select delivery method and shipping address!']);
 
-            return redirect(route('checkout'));
-        }
+                return;
+            }
 
-        $order = $this->orderStore();
-        $order_check = Order::where('pid', $this->pid)->first();
+            // $order = $this->orderStore();
+            $this->orderStore();
+            $order_check = Order::where('pid', $this->pid)->first();
 
-        if ($order_check) {
-            $order_check->update(['order_status' => 1]);
-            Cart::destroy();
+            if ($order_check) {
+                $order_check->update(['order_status' => 1]);
+                Cart::destroy();
 
-            $this->dispatch('alert', ['type' => 'success', 'message' => 'Order successfully placed. Please wait for response!!!!']);
+                try{
+                    // $order = Order::wherePid($pid)->first();
+                    $productList = OrderProductList::with('product')->where('order_id', $order_check->id)->get();
+                    $deliveryAddress = ShippingAddress::find($order_check->shipping_address_id);
 
-            return redirect(route('success.page', $order_check->pid));
-        } else {
-            $this->dispatch('alert', ['type' => 'error', 'message' => 'Order placement Failed!']);
+                    $email = strtoupper(auth()->user()->email) ?? '';
+                    Mail::to($email)->send(new SendOrderConfirmation($order_check, $productList, $deliveryAddress));
+                                     
+                } catch (Exception $e){
+                    if (config('app.debug')) {
+                        $this->dispatch(
+                            'console-log',
+                            message: 'Checkout error',
+                            data: $e->getMessage()
+                        );
+                    }
+                }
 
-            return redirect(route('frontend.index'));
+                $this->dispatch('alert', ['type' => 'success', 'message' => 'Order successfully placed. Please wait for response!!!!']);
+
+                return redirect(route('success.page', $order_check->pid));
+            } else {
+                $this->dispatch('alert', ['type' => 'error', 'message' => 'Order placement Failed!']);
+
+                return redirect(route('frontend.index'));
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('alert', ['type' => 'error', 'message' => 'Internal Server Error']);
+            if (config('app.debug')) {
+                $this->dispatch(
+                    'console-log',
+                    message: 'Checkout error',
+                    data: $e->getMessage()
+                );
+            }
+            return;
+        } finally {
+            $this->isProcessing = false;
         }
     }
 }

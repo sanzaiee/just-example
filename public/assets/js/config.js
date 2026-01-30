@@ -90,7 +90,7 @@ if (typeof TemplateCustomizer !== 'undefined') {
   window.templateCustomizer = new TemplateCustomizer({
     cssPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
     themesPath: assetsPath + 'vendor/css' + (rtlSupport ? '/rtl' : '') + '/',
-    displayCustomizer: true,
+    displayCustomizer: false,
     // lang: 'fr',
     // defaultTheme: 2,
     // defaultStyle: 'light',
@@ -99,7 +99,7 @@ if (typeof TemplateCustomizer !== 'undefined') {
     // defaultMenuCollapsed: true,
     // defaultNavbarFixed: true,
     // defaultFooterFixed: false
-    defaultShowDropdownOnHover: true
+    defaultShowDropdownOnHover: false
     // controls: [
     //   'rtl',
     //   'style',

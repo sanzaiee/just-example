@@ -31,8 +31,9 @@
     {{-- <link rel="stylesheet" href="{{ asset('') }}assets/vendor/fonts/flag-icons.css" /> --}}
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/core.css"
-        class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('') }}assets/vendor/css/rtl/theme-default.css"
+        class="template-customizer-theme-css" />
 
     <link rel="stylesheet" href="{{ asset('') }}assets/css/demo.css" />
 
@@ -56,7 +57,7 @@
     <script src="{{ asset('') }}assets/vendor/js/helpers.js"></script>
 
     <link rel="stylesheet" href="{{ asset('') }}assets/css/dropify.min.css">
-    <link rel="stylesheet" href="{{ asset('') }}select2/4.0.11/css/select2.min.css">
+    {{-- <link rel="stylesheet" href="{{ asset('') }}select2/4.0.11/css/select2.min.css"> --}}
 
     {{-- <script src="{{ asset('') }}assets/vendor/js/template-customizer.js"></script> --}}
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
@@ -149,6 +150,14 @@
     @stack('custom-scripts')
     @livewireScripts
     {!! ToastMagic::scripts() !!}
+    <script>
+    Livewire.on('console-log', (payload) => {
+        console.error(
+            payload?.message ?? 'No message',
+            payload?.data ?? 'No data'
+        );
+    });
+    </script>
 
 </body>
 

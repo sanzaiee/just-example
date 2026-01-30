@@ -20,7 +20,8 @@ class Order extends Model
         'cancel_status',
         'delivery_status',
         'order_status',
-        'shipping_address_id'
+        'shipping_address_id',
+        'notes'
     ];
 
 

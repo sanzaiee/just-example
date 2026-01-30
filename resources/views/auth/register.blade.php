@@ -83,6 +83,10 @@
                                     </button>
                                 </div>
                             </div>
+                            <br>
+                            <div class="d-flex" style="float: right;">
+                                <a href="{{ route('login') }}" class="text-primary text-decoration-none">Login</a>
+                            </div>
                         </form>
                     </div>
                 </div>

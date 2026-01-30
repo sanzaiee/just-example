@@ -41,7 +41,7 @@
                                     <th>Full Name</th>
                                     <th>Phone</th>
                                     <th>Status</th>
-                                    <th>Role</th>
+                                    {{-- <th>Role</th> --}}
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -62,11 +62,11 @@
                                             @endif
                                         </td>
 
-                                        <td>
+                                        {{-- <td>
                                             <span class="btn btn-xs btn-info" wire:confirm="Do you want to change role of selected user?" wire:click="makeAdmin({{ $item->id }})">
                                                 {{$item->is_admin ? "Admin" : "User"}}
                                             </span>
-                                        </td>
+                                        </td> --}}
 
 
 
@@ -171,7 +171,7 @@
                                                 'name' => $item[0],
                                                 'label' => $item[1],
                                             ],
-                                            'required' => false,
+                                            'required' => true,
                                             'model' => $model ?? null,
                                             'type' => 'status'
                                         ])

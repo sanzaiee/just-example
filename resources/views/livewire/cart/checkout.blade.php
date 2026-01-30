@@ -110,7 +110,8 @@
 
                     <div class="align-items-center justify-content-center mt-2">
                         <label class="form-label" for="notes">Notes</label>
-                        <textarea wire:model.live="notes" id="notes" class="form-control"></textarea>
+                        <textarea wire:model.defer="deliveryNotes" id="notes" maxlength="255" class="form-control"></textarea>
+                        <small class="text-muted" id="notes-count">0 / 255</small>
                     </div>
 
                 </div>
@@ -149,10 +150,18 @@
                     <hr>
 
                     @if ($cartCount > 0)
-                        <button class="btn btn-primary w-100" 
-                            @disabled(! $this->getCanEnableCheckoutButton())
-                            wire:click="checkout">
-                            <i class="fa fa-lock me-2"></i>Proceed to Checkout
+                        <button class="btn btn-primary w-100"
+                                @disabled(! $this->getCanEnableCheckoutButton())
+                                wire:click="checkout"
+                                wire:loading.attr="disabled"
+                                wire:target="checkout">
+                            <i class="fa fa-lock me-2"></i>
+                            <span wire:loading.remove wire:target="checkout">
+                                Proceed to Checkout
+                            </span>
+                            <span wire:loading wire:target="checkout">
+                                Processing...
+                            </span>
                         </button>
                     @else
                         <button class="btn btn-secondary w-100" disabled>
@@ -165,3 +174,25 @@
         </div>
     </div>
 </div>
+
+@push('custom-scripts')
+<script>
+    const textarea = document.getElementById('notes');
+const counter = document.getElementById('notes-count');
+
+textarea.addEventListener('input', () => {
+    const length = textarea.value.length;
+    counter.textContent = `${length} / 255`;
+
+    // Optional: disable the checkout button locally if too long
+    const btn = document.querySelector('button[wire\\:click="checkout"]');
+    if (length > 255) {
+        counter.style.color = 'red';
+        btn.disabled = true;
+    } else {
+        counter.style.color = 'inherit';
+        btn.disabled = false;
+    }
+});
+</script>
+@endpush

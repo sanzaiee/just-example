@@ -79,7 +79,7 @@ class HomeController extends Controller
         // Hide all products
         $hideAllProducts = false;
         if ($query == '' && $category == '' && $brand == '') {
-            $hideAllProducts = true;
+            $hideAllProducts = false;
         }
 
         // Base query with relationships
@@ -110,7 +110,8 @@ class HomeController extends Controller
         });
 
         // Sorting
-        $baseQuery->orderBy('created_at', $sort === 'oldest' ? 'asc' : 'desc');
+        // $baseQuery->orderBy('created_at', $sort === 'oldest' ? 'asc' : 'desc');
+        $baseQuery->orderBy('products.name', 'asc');
 
         // dd($baseQuery->toSql());
         // Paginated products
@@ -253,9 +254,11 @@ class HomeController extends Controller
             $q->where('name', 'like', "%$query%");
         });
 
+        $baseQuery->orderBy('name');
+
         $brands = (clone $baseQuery)
-            ->paginate($pageSize)
-            ->appends(request()->all());
+                ->paginate($pageSize)
+                ->appends(request()->all());
 
         return view('backend.brand.index', compact('brands', 'query'));
     }
