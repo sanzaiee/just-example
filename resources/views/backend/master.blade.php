@@ -58,7 +58,7 @@
     <link rel="stylesheet" href="{{ asset('') }}assets/css/dropify.min.css">
     <link rel="stylesheet" href="{{ asset('') }}select2/4.0.11/css/select2.min.css">
 
-    <script src="{{ asset('') }}assets/vendor/js/template-customizer.js"></script>
+    {{-- <script src="{{ asset('') }}assets/vendor/js/template-customizer.js"></script> --}}
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('') }}assets/js/config.js"></script>
     @yield('styles')
