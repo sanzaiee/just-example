@@ -79,7 +79,7 @@ class HomeController extends Controller
         // Hide all products
         $hideAllProducts = false;
         if ($query == '' && $category == '' && $brand == '') {
-            $hideAllProducts = true;
+            $hideAllProducts = false;
         }
 
         // Base query with relationships

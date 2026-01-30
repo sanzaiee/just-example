@@ -71,34 +71,34 @@ class LoginController extends Controller
             'otp' => $otp,
             'expired_at' => now()->addMinutes(10),
         ]);
-        //Mail::to($user->email)->send(new SendVerifyEmailWithOtp($user, $otp));
+        Mail::to($user->email)->send(new SendVerifyEmailWithOtp($user, $otp));
 
-        $response = Http::withHeaders([
-            'api-key' => env('BREVO_API_KEY'),
-            'Content-Type' => 'application/json',
-        ])->post('https://api.brevo.com/v3/smtp/email', [
-            'sender' => [
-                'email' => 'practise.saroj@gmail.com',
-                'name' => 'Practise Saroj',
-            ],
-            'to' => [
-                [
-                    'email' => $user->email,
-                    'name' => $user->name,
-                ],
-            ],
-            'subject' => 'Verify Your Email',
-            'htmlContent' => "
-                <p>Hello {$user->name},</p>
-                <p>Your OTP is:</p>
-                <h2>{$otp}</h2>
-                <p>This OTP will expire soon.</p>
-            ",
-        ]);
+        // $response = Http::withHeaders([
+        //     'api-key' => env('BREVO_API_KEY'),
+        //     'Content-Type' => 'application/json',
+        // ])->post('https://api.brevo.com/v3/smtp/email', [
+        //     'sender' => [
+        //         'email' => 'practise.saroj@gmail.com',
+        //         'name' => 'Practise Saroj',
+        //     ],
+        //     'to' => [
+        //         [
+        //             'email' => $user->email,
+        //             'name' => $user->name,
+        //         ],
+        //     ],
+        //     'subject' => 'Verify Your Email',
+        //     'htmlContent' => "
+        //         <p>Hello {$user->name},</p>
+        //         <p>Your OTP is:</p>
+        //         <h2>{$otp}</h2>
+        //         <p>This OTP will expire soon.</p>
+        //     ",
+        // ]);
 
-        if (! $response->successful()) {
-            dd($response->json());
-        }
+        // if (! $response->successful()) {
+        //     dd($response->json());
+        // }
 
         //$executionTime = microtime(true) - $start;
         // dump('Execution time: ' . $executionTime . ' seconds');

@@ -150,6 +150,14 @@
     @stack('custom-scripts')
     @livewireScripts
     {!! ToastMagic::scripts() !!}
+    <script>
+    Livewire.on('console-log', (payload) => {
+        console.error(
+            payload?.message ?? 'No message',
+            payload?.data ?? 'No data'
+        );
+    });
+    </script>
 
 </body>
 

@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    //order_status = 0 => item in cart
+    //order_status = 1 => order placed
+    //order_status = 3 => Marked as Completed
+    //order_status = 4 => Shipping in Progress
     public function index(Request $request)
     {
         $query = Order::with('user', 'orderProductLists', 'orderProductLists.product', 'shippingAddress');
@@ -114,6 +118,20 @@ class OrderController extends Controller
         $order = Order::where('pid', $pid)->first();
 
         return view('backend.order.show', compact('order'));
+    }
+
+    public function updateNotes(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+        
+        $order = Order::find($request->order_id);
+        $order->notes = $request->notes;
+        $order->save();
+
+        return back()->with('success', 'Order notes updated successfully.');
     }
 
     // public function show($pid)

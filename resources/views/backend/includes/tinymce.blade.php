@@ -50,7 +50,7 @@
 </script> --}}
 
 
-<script>
+{{-- <script>
 tinymce.init({
   selector: 'textarea.tinymce',
   image_class_list: [{title: 'img-responsive', value: 'img-responsive'}],
@@ -109,7 +109,7 @@ tinymce.init({
     input.click();
   }
 });
-</script>
+</script> --}}
 
 
  {{-- <script>

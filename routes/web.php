@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\OrderController;
-use App\Http\Controllers\backend\ProductController;
+use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Livewire\BrandSetup;
 use App\Livewire\Category;
@@ -12,7 +12,7 @@ use App\Livewire\SetupShippingAddress;
 use App\Livewire\UserManagement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Artisan;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,8 +24,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/run-storage-link', function () {
+    Artisan::call('storage:link');
+});
+
 Route::get('/', function () {
-    return view('auth.login');
+    if (auth()->check()) {
+        return redirect('/home');
+    }
+
+    return redirect('/login');
 });
 
 Route::get('/verify-otp/{email}', [LoginController::class, 'verifyOtp'])->name('verify.otp');
@@ -68,7 +76,8 @@ Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
     Route::put('/pending-status/{id}', [OrderController::class, 'pending'])->name('pending.status');
     Route::put('/pay-status/{id}', [OrderController::class, 'payStatus'])->name('order.pay.status');
     Route::get('/order/{pid}', [OrderController::class, 'show'])->name('order.show');
-
+    Route::put('/update-notes', [OrderController::class, 'updateNotes'])->name('order.notes.update');
+    
     Route::post('/tinymce/upload-image', [App\Http\Controllers\HomeController::class, 'uploadImage'])->name('tinymce.uploadImage');
 
     Route::get('/site/settings/{slug}', [SettingController::class, 'view'])->name('site.view');

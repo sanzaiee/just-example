@@ -83,7 +83,7 @@
                                 </th>
 
                                 <th class="Status">
-                                    Order Processing ?
+                                    Order Processing
                                 </th>
 
                                 <th class="Status">
@@ -218,7 +218,7 @@
 
                                     <div class="modal fade" id="exampleModalLong{{ $index }}" tabindex="-1"
                                         aria-labelledby="exampleModalLong{{ $index }}Title" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-dialog modal-dialog-centered modal-md">
                                             <div class="modal-content border-0 shadow-lg">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title fw-bold"
@@ -228,23 +228,23 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
-                                                <div class="modal-body px-4 mb-4">
+                                                <div class="modal-body px-4 px-sm-1">
                                                     @foreach ($item->orderProductLists as $prod)
                                                         <div class="card m-2">
                                                         <a href="{{ route('product.detail', $prod->product->slug) }}"
-                                                            target="_blank" class="text-decoration-none">
+                                                            target="_blank" class="text-decoration-none text-dark">
                                                             <div class="cart-item">
-                                                                <img src="/default-png-min.png" alt="{{ $prod->product->name }}" class="item-image">
-                                                                <div class="item-details">
-                                                                    <h4>{{ $prod->product->name }}</h4>
-                                                                    <div class="item-price">
+                                                                <img src="/default-png-min.png" style="width: 120px;" alt="{{ $prod->product->name }}" class="img-fluid object-fit-cover">
+                                                                <div class="flex-grow-1 d-flex flex-column justify-content-center">
+                                                                    <h5 class="mb-1">{{ $prod->product->name }}</h5>
+                                                                    <div class="d-flex gap-2 text-muted small">
                                                                         <span class="price">$ {{ number_format($prod->product->getPriceForQuantity($prod->quantity), 2) }}</span>
                                                                         <span class="quantity">× {{ $prod->quantity }}</span>
                                                                     </div>
                                                                     <div>
 
                                                                     </div>
-                                                                    <div class="item-subtotal">
+                                                                    <div class="mt-1 small">
                                                                         {{ Str::limit($prod->product->description, 70) }}
                                                                     </div>
                                                                 </div>
@@ -326,7 +326,7 @@
                                                             <div class="fw-bold"> <code>Store Pickup</code> <span class="fm-lighter"></span></div>
                                                         @else
                                                             @foreach ([
-                                                                ['house_no', 'House/Apt Number'], 
+                                                                ['house_no', 'Apt / Suite / Floor'], 
                                                                 ['address', 'Address'], 
                                                                 // ['name', 'Name'], 
                                                                 // ['email', 'Email'], 
@@ -343,11 +343,12 @@
                                                             @endforeach
                                                         @endif
                                                     </div>
-                                                </div>
-                                                <hr>
-                                                <div class="modal-body mt-2 pt-0">
-                                                    <h5 class="mb-0">Notes:</h5>
+
+                                                    <hr>
+                                                    <div class="row">
+                                                        <h5 class="mb-0">Notes:</h5>
                                                         <p class="mb-0">{{ $item->notes }}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -20,7 +20,7 @@
                         </div>
                     @endif
 
-                    @if ($order->order_status == 1 && $order->cancel_status == 0)
+                    @if ($order->order_status != 3 && $order->cancel_status == 0)
                         <div class="col-md-3">
                             <a href="" onclick="event.preventDefault(); if(confirm('Are You Sure - Mark order as Complete ?')) document.getElementById('delivery-status-form-{{ $order->id }}').submit();">
                                 <button type="button" class="btn btn-success me-2">Mark Complete</button>
@@ -33,13 +33,15 @@
                         </div>
                     @endif
 
-                    @if ($order->shipping_address_id != getStorePickupShippingId() && $order->delivery_status == 0)
+                    @if ($order->shipping_address_id != getStorePickupShippingId() && $order->delivery_status == 0 && $order->order_status !=4 && $order->cancel_status == 0)
                         <div class="col-md-3">
                             <button type="button" class="btn btn-secondary me-2"
                                 data-bs-toggle="modal"
-                                onclick="event.preventDefault(); alert('Info: Delivery will start after integration is done');">
-                                Start Delivery
+                                data-bs-target="#autoSubmitModal">
+                                Review Delivery
                             </button>
+                            @livewire('Delivery.review-delivery',['order'=>$order])
+
                         </div>
                     @endif
                 </div>
@@ -94,7 +96,7 @@
                 @if ($order->shipping_address_id != getStorePickupShippingId())
                 <div class="row gy-3 mb-4">
                     <div class="col-md-3">
-                        <h6 class="text-muted mb-1">Apt/House No:</h6>
+                        <h6 class="text-muted mb-1">Apt / Suite / Floor</h6>
                         <p class="mb-0">{{ $order->shippingAddress->house_no ?? '' }}</p>
                     </div>
                     <div class="col-md-3">
@@ -160,6 +162,44 @@
                         <h6 class="text-muted mb-1">HOUSE NUMBER</h6>
                         <p class="mb-0">{{ $order->shippingAddress->house_no ?? '' }}</p>
                     </div> --}}
+                </div>
+
+                <div class="row gy-3 mb-4">
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-1">Notes</h6>
+                        <p class="mb-0">{{ $order->notes }}</p>
+
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateNotesModel">Update Notes
+                        </button>
+
+                        <div class="modal fade" id="updateNotesModel" tabindex="-1" aria-labelledby="updateNotesModelTitle" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('order.notes.update', $order->id) }}" method="post">
+                                        @csrf
+                                        @method('put')
+                                        <div class="modal-body">
+                                            <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                            <div class="mb-3">
+                                                <label for="notes" class="form-label">Update Notes:</label>
+                                                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="">{{ $order->notes }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Confirm Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
                 <!-- Product Table -->

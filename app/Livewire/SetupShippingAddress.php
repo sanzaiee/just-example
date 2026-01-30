@@ -22,14 +22,35 @@ class SetupShippingAddress extends Component
     // public $email;
 
     #[Validate('nullable|min:1|max:80')]
-    public $street, $house_no, $description;
+    public $street, $description;
 
-    // #[Validate('required|regex:/^[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z][ ]?\\d[ABCEGHJ-NPRSTV-Z]\\d$/i')] #with and without space
+    // #[Validate('nullable|regex:Apt|Suite|Floor|Unit [A-Za-z0-9-]+')]
+    public $house_no;
+    public function rules(): array
+    {
+        return [
+            'house_no' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if (!empty($value) && !preg_match('/^(apt|suite|floor|unit) [A-Za-z0-9-]+$/i', $value)) {
+                        $fail("Must start with apt, suite, floor, or unit.");
+                    }
+                }
+            ],
+        ];
+    }
+
+    public function updatedHouseNo($value)
+    {
+        $this->validateOnly('house_no');
+    }
+
     #[Validate('required|regex:/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z] \d[ABCEGHJ-NPRSTV-Z]\d$/i')] #with space only
     public $postal_code;
 
     protected $messages = [
         'postal_code.regex' => 'The postal code must be in the format A1A 1A1.',
+        'house_no.regex' => 'The house number must be in the format Apt 101, Suite 202, Floor 3, Unit 4.',
     ];
 
     public function render()
@@ -68,7 +89,7 @@ class SetupShippingAddress extends Component
 
         }else{
             $count = $this->authAddresses->count();
-            if($count < 3){
+            if($count < 5){
                 ShippingAddress::create($data);
 
                 $this->dispatch('alert', [
@@ -79,7 +100,7 @@ class SetupShippingAddress extends Component
             }else{
                  $this->dispatch('alert', [
                     'type' => 'danger',
-                    'message' => 'Shipping address exceed not more than 3!',
+                    'message' => 'Shipping address exceed not more than 5!',
                 ]);
             }
         }
@@ -90,8 +111,15 @@ class SetupShippingAddress extends Component
     public function removeAddress($id)
     {
         $address = ShippingAddress::find($id);
-        $address->delete();
+        if (! $address) {
+            $this->dispatch('alert', [
+                'type' => 'warning',
+                'message' => 'Address not found or already removed.',
+            ]);
+            return;
+        }
 
+        $address->delete();
         $this->dispatch('alert', [
             'type' => 'danger',
             'message' => 'Shipping address removed!',

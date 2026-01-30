@@ -53,10 +53,9 @@
                             <div class="mb-3">
                                 <button class="btn btn-primary d-grid w-100" id="loginBtn" type="submit">Sign in</button>
                             </div>
-                            <hr>
-                            <div class="mb-3 justify-content-center d-flex">
-                                    <a href="{{ route('register') }}" class="text-primary text-decoration-none">
-                                        <button class="btn btn-success d-grid w-100" id="registerBtn" type="button">Register</button></a>
+                            <br>
+                            <div class="d-flex" style="float: right;">
+                                <a href="{{ route('register') }}" class="text-primary text-decoration-none">Register</a>
                             </div>
                         </form>
                     </div>

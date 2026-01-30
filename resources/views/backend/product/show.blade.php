@@ -14,6 +14,12 @@
                             <div class="carousel mt-1">
                                 <ul class="carousel_inner">
                                     @if ($product->images)
+                                        @if ($product->image)
+                                            <li class="item" style="background-image: url({{ $product->image }});"
+                                                data-url="{{ $product->image }}">
+                                            </li>
+                                        @endif
+
                                         @foreach ($product->images as $image)
                                             <li class="item" style="background-image: url({{ $image->getfullUrl() }}); "
                                                 data-url="{{ $image->getfullUrl() }}">

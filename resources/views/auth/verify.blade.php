@@ -29,9 +29,14 @@
                                 <label for="otp" class="form-label">OTP</label>
                                 <input type="text" class="form-control" id="otp" name="otp" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Verify</button>
-
+                            <button type="submit" class="btn btn-primary"
+                                onclick="this.disabled=true; this.form.submit();"
+                            >Verify</button>
                         </form>
+                        <br>
+                        <div class="d-flex" style="float: right;">
+                            <a href="{{ route('login') }}" class="text-primary text-decoration-none">Back to Login</a>
+                        </div>
                     </div>
                 </div>
             </div>

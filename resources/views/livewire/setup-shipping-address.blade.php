@@ -1,6 +1,14 @@
 <div>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="py-2"><span class="text-muted fw-light">Shipping Address/</span> {{ ($shippingAddress) ? "Update" : "Create" }}
+        <div class="py-2"><span class="text-muted fw-light">Shipping Address /</span>
+            @if($actionVal == "list")
+                List
+            @elseif($actionVal == "add")
+                Create
+            @else
+                In Valid   
+            @endif
+            
             <div class="text-muted float-end">
                 <span wire:click="action('add')" class="btn btn-sm btn-primary">
                     Add
@@ -11,7 +19,7 @@
             </div>
         </div>
 
-        <div class="row g-3">
+        <div class="m-1 row g-3">
             @if($actionVal == "add")
                 <div class="card p-2 col-md-12">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -61,12 +69,13 @@
                                 @endforeach --}}
 
                                 @foreach ([
-                                        ['house_no','Apartment Number / Unit'],
+                                        ['house_no','Apt / Suite / Floor / Unit'],
                                     ] as $item)
                                     @include('backend.form.livewire-collection', [
                                         'data' => [
                                             'name' => $item[0],
                                             'label' => $item[1],
+                                            'placeholder' => 'E.g. apt 101, suite 202'
                                         ],
                                         'required' => false,
                                         'model' => null,
@@ -116,7 +125,7 @@
                     <div class="card-body">
                         <div class="row">
                             @forelse ($authAddresses as $item)
-                               <div class="col-md-4 mb-3">
+                               <div class="col-md-4 mb-3 col-sm-6">
                                     <div class="card shadow-sm">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <span class="fw-bold"> {{ ucfirst($item->type) }}</span>
@@ -124,9 +133,24 @@
                                                 <button wire:click="editAddress('{{ $item->id }}')" class="btn btn-sm btn-outline-primary">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
-                                                <button wire:click="removeAddress('{{ $item->id }}')" class="btn btn-sm btn-outline-danger">
+                                                {{-- <button wire:click="removeAddress('{{ $item->id }}')" class="btn btn-sm btn-outline-danger">
                                                     <i class="fa fa-trash"></i>
+                                                </button> --}}
+                                                <button
+                                                    wire:click="removeAddress('{{ $item->id }}')"
+                                                    wire:loading.attr="disabled"
+                                                    wire:target="removeAddress('{{ $item->id }}')"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                >
+                                                    <span wire:loading.remove wire:target="removeAddress('{{ $item->id }}')">
+                                                        <i class="fa fa-trash"></i>
+                                                    </span>
+
+                                                    <span wire:loading wire:target="removeAddress('{{ $item->id }}')">
+                                                        <i class="fa fa-spinner fa-spin"></i>
+                                                    </span>
                                                 </button>
+
                                             </div>
                                         </div>
 
@@ -139,7 +163,7 @@
                                                 {{-- <li class="list-group-item"><strong>Name:</strong> {{ $item->name }}</li>
                                                 <li class="list-group-item"><strong>Email:</strong> {{ $item->email ?? 'N/A'}}</li>
                                                 <li class="list-group-item"><strong>Phone:</strong> {{ $item->phone ?? 'N/A'}}</li> --}}
-                                                <li class="list-group-item"><strong>Apt / Unit No:</strong> {{ $item->house_no ?? ''}}</li>
+                                                <li class="list-group-item"><strong>Apt / Suite / Floor:</strong> {{ $item->house_no ?? ''}}</li>
                                                 <li class="list-group-item"><strong>Address:</strong> {{ $item->address }}</li>
                                                 <li class="list-group-item"><strong>City:</strong> {{ $item->city ?? 'N/A'}}</li>
                                                 <li class="list-group-item"><strong>Postal Code:</strong> {{ $item->postal_code ?? ''}}</li>
@@ -150,8 +174,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             @empty
                                 <p>Please add your shipping address</p>
                             @endforelse

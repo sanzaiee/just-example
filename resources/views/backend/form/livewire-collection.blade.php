@@ -27,7 +27,7 @@
     @case('text')
         <div class="{{ $div ?? 'col-md-6' }}">
             <label class="form-label" for="{{ $data['name'] }}">{{ $data['label'] }} @if($required) * @endif</label>
-            <input type="text" wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control"  value="{{ old('name',$model->{$data['name']} ?? '')  }}">
+            <input type="text" @isset($data['placeholder']) placeholder="{{ $data['placeholder'] }}" @endisset wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control"  value="{{ old('name',$model->{$data['name']} ?? '')  }}">
             @error($data['name'])
             <div class="text-danger small">{{ $message }}</div>
             @enderror

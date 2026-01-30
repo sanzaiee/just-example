@@ -150,10 +150,18 @@
                     <hr>
 
                     @if ($cartCount > 0)
-                        <button class="btn btn-primary w-100" 
-                            @disabled(! $this->getCanEnableCheckoutButton())
-                            wire:click="checkout">
-                            <i class="fa fa-lock me-2"></i>Proceed to Checkout
+                        <button class="btn btn-primary w-100"
+                                @disabled(! $this->getCanEnableCheckoutButton())
+                                wire:click="checkout"
+                                wire:loading.attr="disabled"
+                                wire:target="checkout">
+                            <i class="fa fa-lock me-2"></i>
+                            <span wire:loading.remove wire:target="checkout">
+                                Proceed to Checkout
+                            </span>
+                            <span wire:loading wire:target="checkout">
+                                Processing...
+                            </span>
                         </button>
                     @else
                         <button class="btn btn-secondary w-100" disabled>

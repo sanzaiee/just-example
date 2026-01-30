@@ -102,7 +102,7 @@
                                 @else
                                 <h5>Shipping Address</h5>
                                     @foreach ([
-                                        ['house_no', 'House/Apt Number'], 
+                                        ['house_no', 'Apt / Suite / Floor'], 
                                         ['address', 'Address'], 
                                         // ['name', 'Name'], 
                                         // ['email', 'Email'], 
