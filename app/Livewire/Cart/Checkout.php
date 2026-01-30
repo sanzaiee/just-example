@@ -2,16 +2,18 @@
 
 namespace App\Livewire\Cart;
 
+use App\Mail\SendOrderConfirmation;
 use App\Models\Order;
+use App\Models\OrderDeliveryAddress;
 use App\Models\OrderProductList;
 use App\Models\Product;
+use App\Models\ShippingAddress;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use App\Models\ShippingAddress;
-use App\Mail\SendOrderConfirmation;
-use Illuminate\Support\Facades\Mail;
 
 class Checkout extends Component
 {
@@ -29,6 +31,7 @@ class Checkout extends Component
     public $products = [];
 
     public $cartItems = [];
+
     public $shippings;
 
     public function render()
@@ -46,7 +49,7 @@ class Checkout extends Component
         $this->loadCartData();
         $this->pid = 'P-id'.'-'.Str::random(5);
 
-        $this->shippings = ShippingAddress::where('user_id', auth()->id())->get(); //auth()->id();
+        $this->shippings = ShippingAddress::where('user_id', auth()->id())->get(); // auth()->id();
     }
 
     #[On('refreshCart')]
@@ -164,7 +167,7 @@ class Checkout extends Component
         ]);
     }
 
-    public function decreaseQty($rowId, $qty=1)
+    public function decreaseQty($rowId, $qty = 1)
     {
         // Debug: Log the incoming parameters
         logger()->info('decreaseQty called', ['rowId' => $rowId, 'qty' => $qty]);
@@ -179,12 +182,12 @@ class Checkout extends Component
         $step = max(1, (int) $qty);
         $currentQty = (int) ($cartItem->qty ?? 0);
 
-        if($currentQty == 1){
+        if ($currentQty == 1) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Minimum quantity reached!']);
 
             return;
         }
-        
+
         if ($currentQty > 1) {
             $newQty = $currentQty - $step;
             $this->updateCartItemPrice($rowId, $newQty);
@@ -231,54 +234,62 @@ class Checkout extends Component
 
     public function orderStore()
     {
-        $db['pid'] = $this->pid;
-        $db['quantity'] = $this->cartCount;
-        $db['user_id'] = auth()->id();
-        $db['amount'] = $this->subTotal;
-        $db['discount'] = $this->discount;
+        $effectiveShippingId = $this->delivery_method === 'pickup'
+            ? getStorePickupShippingId()
+            : $this->shipping_id;
 
-        if ($this->delivery_method === 'pickup') {
-            $db['shipping_address_id'] = getStorePickupShippingId();
-        } else {
-            $db['shipping_address_id'] = $this->shipping_id;
-        }
-        $db['notes'] = $this->deliveryNotes !== null ? trim($this->deliveryNotes) : null;
-        //$db['shipping_address_id'] = auth()->user()->shippingAddress->id;
+        $orderData = [
+            'pid' => $this->pid,
+            'quantity' => $this->cartCount,
+            'user_id' => auth()->id(),
+            'amount' => $this->subTotal,
+            'discount' => $this->discount,
+            'shipping_address_id' => $effectiveShippingId,
+            'notes' => $this->deliveryNotes !== null ? trim($this->deliveryNotes) : null,
+        ];
 
-        $x_order = Order::where('pid', $this->pid)->where('order_status', 0)->first();
-        if ($x_order) {
-            $x_order->forceDelete();
-        }
-        $order = Order::create($db);
+        $order = DB::transaction(function () use ($orderData, $effectiveShippingId) {
+            Order::where('pid', $this->pid)->where('order_status', 0)->delete();
 
-        if ($order) {
-            // foreach ($this->cartItems as $item) {
-            //     OrderProductList::create([
-            //         'order_id' => $order->id,
-            //         'product_id' => $item['id'],
-            //         'quantity' => $item['qty'],
-            //         'price' => $item['unitPrice'],
-            //     ]);
-            // }
-            // Alternatively, use bulk insert for better performance
+            $order = Order::create($orderData);
+
             OrderProductList::insert(
                 collect($this->cartItems)->map(fn ($item) => [
-                    'order_id'   => $order->id,
+                    'order_id' => $order->id,
                     'product_id' => $item['id'],
-                    'quantity'   => $item['qty'],
-                    'price'      => $item['unitPrice'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'quantity' => $item['qty'],
+                    'price' => $item['unitPrice'],
                 ])->toArray()
             );
-        }
+
+            $shippingAddress = $effectiveShippingId ? ShippingAddress::find($effectiveShippingId) : null;
+            if ($shippingAddress) {
+                OrderDeliveryAddress::create([
+                    'order_id' => $order->id,
+                    'name' => $shippingAddress->name,
+                    'email' => $shippingAddress->email,
+                    'address' => $shippingAddress->address,
+                    'street' => $shippingAddress->street,
+                    'city' => $shippingAddress->city,
+                    'tole' => $shippingAddress->tole,
+                    'house_no' => $shippingAddress->house_no,
+                    'phone' => $shippingAddress->phone,
+                    'description' => $shippingAddress->description,
+                ]);
+            }
+
+            return $order;
+        });
 
         return $order;
     }
 
     public $delivery_method = null; // pickup or delivery
+
     public $shipping_id = null; // shipping_id
+
     public $deliveryNotes = ''; // shipping_id
+
     protected $rules = [
         'deliveryNotes' => 'nullable|string|max:255',
     ];
@@ -297,13 +308,14 @@ class Checkout extends Component
         }
 
         if ($this->delivery_method === 'delivery') {
-            return !empty($this->shipping_id);
+            return ! empty($this->shipping_id);
         }
 
-        if ($this->cartCount == 0)
+        if ($this->cartCount == 0) {
             return true;
+        }
 
-        return false; 
+        return false;
     }
 
     public function getShippingDescriptionProperty(): ?string
@@ -323,21 +335,23 @@ class Checkout extends Component
             $shipping->address,
             $shipping->city,
             // $shipping->province,
-            $shipping->postal_code
+            $shipping->postal_code,
         ])
-        ->filter()          // remove null / empty values
-        ->implode(', ');
+            ->filter()          // remove null / empty values
+            ->implode(', ');
     }
 
     public bool $isProcessing = false;
 
     public function checkout()
     {
-        if ($this->isProcessing) return;
+        if ($this->isProcessing) {
+            return;
+        }
         $this->isProcessing = true;
 
         try {
-            if (!$this->getCanEnableCheckoutButton()) {
+            if (! $this->getCanEnableCheckoutButton()) {
                 $this->dispatch('alert', ['type' => 'error', 'message' => 'Please select delivery method and shipping address!']);
 
                 return;
@@ -351,15 +365,15 @@ class Checkout extends Component
                 $order_check->update(['order_status' => 1]);
                 Cart::destroy();
 
-                try{
+                try {
                     // $order = Order::wherePid($pid)->first();
                     $productList = OrderProductList::with('product')->where('order_id', $order_check->id)->get();
                     $deliveryAddress = ShippingAddress::find($order_check->shipping_address_id);
 
                     $email = strtoupper(auth()->user()->email) ?? '';
                     Mail::to($email)->send(new SendOrderConfirmation($order_check, $productList, $deliveryAddress));
-                                     
-                } catch (Exception $e){
+
+                } catch (Exception $e) {
                     if (config('app.debug')) {
                         $this->dispatch(
                             'console-log',
@@ -386,6 +400,7 @@ class Checkout extends Component
                     data: $e->getMessage()
                 );
             }
+
             return;
         } finally {
             $this->isProcessing = false;
