@@ -20,11 +20,17 @@ class OrderDeliveryAddress extends Model
         'house_no',
         'phone',
         'description',
+        'postal_code',
         'status',
     ];
 
+    // public function order()
+    // {
+    //     return $this->belongsTo(Order::class);
+    // }
+
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 }

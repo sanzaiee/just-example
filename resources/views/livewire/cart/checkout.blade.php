@@ -1,5 +1,12 @@
 <div>
     <div class="row g-3">
+        @if ($cartCount == 0 || $subTotal == 0 )
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Note:</strong> Items in cart does not look right.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
         <div class="col-md-8">
             <div class="table-responsive">
                 <table class="table">
@@ -178,21 +185,19 @@
 @push('custom-scripts')
 <script>
     const textarea = document.getElementById('notes');
-const counter = document.getElementById('notes-count');
+    const counter = document.getElementById('notes-count');
 
-textarea.addEventListener('input', () => {
-    const length = textarea.value.length;
-    counter.textContent = `${length} / 255`;
+    textarea.addEventListener('change', () => {
+        const length = textarea.value.length;   
+        counter.textContent = `${length} / 255`;
 
-    // Optional: disable the checkout button locally if too long
-    const btn = document.querySelector('button[wire\\:click="checkout"]');
-    if (length > 255) {
-        counter.style.color = 'red';
-        btn.disabled = true;
-    } else {
-        counter.style.color = 'inherit';
-        btn.disabled = false;
-    }
-});
+        // Optional: disable the checkout button locally if too long
+        const btn = document.querySelector('button[wire\\:click="checkout"]');
+        if (length > 255) {
+            counter.style.color = 'red';
+        } else {
+            counter.style.color = 'inherit';
+        }
+    });
 </script>
 @endpush

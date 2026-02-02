@@ -1,51 +1,54 @@
 @extends('backend.master')
 @section('content')
-    <div class="container my-5">
+    <div class="container-xxl flex-grow-1 container-p-y">
         @if ($order->order_status == 3)
-            <div class="alert alert-success mt-4">
+            <div class="alert alert-success">
                 <strong>Order Complete</strong>
             </div>
         @endif
-        
-        <div class="card">
-            <div class="card-body">
-                <div class="row gy-3">
-                    @if ($order->cancel_status == 0 && $order->order_status != 3)
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-danger me-2"
-                                data-bs-toggle="modal"
-                                data-bs-target="#cancelOrderModal">
-                                Cancel Order
-                            </button>
-                        </div>
-                    @endif
 
-                    @if ($order->order_status != 3 && $order->cancel_status == 0)
-                        <div class="col-md-3">
-                            <a href="" onclick="event.preventDefault(); if(confirm('Are You Sure - Mark order as Complete ?')) document.getElementById('delivery-status-form-{{ $order->id }}').submit();">
-                                <button type="button" class="btn btn-success me-2">Mark Complete</button>
-                            </a>
-                            <form id="delivery-status-form-{{ $order->id }}"
-                                action="{{ route('order.status', $order->id) }}" method="post">
-                                @csrf
-                                @method('put')
-                            </form>
-                        </div>
-                    @endif
-
-                    @if ($order->shipping_address_id != getStorePickupShippingId() && $order->delivery_status == 0 && $order->order_status !=4 && $order->cancel_status == 0)
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-secondary me-2"
-                                data-bs-toggle="modal"
-                                data-bs-target="#autoSubmitModal">
-                                Review Delivery
-                            </button>
-                            @livewire('Delivery.review-delivery',['order'=>$order])
-
-                        </div>
-                    @endif
-                </div>
+        <!-- Order Cancel Reason -->
+        @if ($order->ordercancel)
+            <div class="alert alert-danger">
+                <strong>Order Cancelled:</strong> {{ $order->ordercancel->reason }}
             </div>
+        @endif
+        
+        <div class="row gy-3">
+            @if ($order->cancel_status == 0 && $order->order_status != 3)
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-danger me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#cancelOrderModal">
+                        Cancel Order
+                    </button>
+                </div>
+            @endif
+
+            @if ($order->order_status != 3 && $order->cancel_status == 0)
+                <div class="col-md-3">
+                    <a href="" onclick="event.preventDefault(); if(confirm('Are You Sure - Mark order as Complete ?')) document.getElementById('delivery-status-form-{{ $order->id }}').submit();">
+                        <button type="button" class="btn btn-success me-2">Mark Complete</button>
+                    </a>
+                    <form id="delivery-status-form-{{ $order->id }}"
+                        action="{{ route('order.status', $order->id) }}" method="post">
+                        @csrf
+                        @method('put')
+                    </form>
+                </div>
+            @endif
+
+            @if ($order->shipping_address_id != getStorePickupShippingId() && $order->delivery_status == 0 && $order->order_status ==1 && $order->cancel_status == 0)
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-secondary me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#autoSubmitModal">
+                        Review Delivery
+                    </button>
+                    @livewire('Delivery.review-delivery',['order'=>$order])
+
+                </div>
+            @endif
         </div>
 
         <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalTitle" aria-hidden="true">
@@ -87,57 +90,42 @@
                 @if ($order->shipping_address_id == getStorePickupShippingId())
                     Pickup
                 @else
-                    Delivery
+                    @if ($order->order_status == 4)
+                        Delivery in progress
+                    @else
+                        Delivery
+                    @endif
                 @endif
             </div>
 
             <div class="card-body mt-2">
                 <!-- Header Section -->
-                @if ($order->shipping_address_id != getStorePickupShippingId())
-                <div class="row gy-3 mb-4">
-                    <div class="col-md-3">
-                        <h6 class="text-muted mb-1">Apt / Suite / Floor</h6>
-                        <p class="mb-0">{{ $order->shippingAddress->house_no ?? '' }}</p>
-                    </div>
-                    <div class="col-md-3">
-                        <h6 class="text-muted mb-1">Street</h6>
-                        <p class="mb-0">{{ $order->shippingAddress->address ?? '' }}</p>
-                    </div>
-                    <div class="col-md-3">
-                        <h6 class="text-muted mb-1">City</h6>
-                        <p class="mb-0">{{ $order->shippingAddress->city ?? '' }}</p>
-                    </div>
-                    <div class="col-md-3">
-                        <h6 class="text-muted mb-1">Postal Code</h6>
-                        <p class="mb-0">{{ $order->shippingAddress->postal_code ?? '' }}</p>
-                    </div>
-                </div>
-                @endif
-
                 <!-- Order Meta -->
-                <div class="row text-center border-top border-bottom py-2">
+                {{-- <div class="row text-center border-top border-bottom p-2"> --}}
+                <div class="row gy-3 pt-2">
                     <div class="col-md-6">
                         <h6 class="text-muted mb-1">DATE</h6>
-                        <h5>{{ $order->created_at->diffForHumans() }}</h5>
+                        <h5 class="mb-1">{{ $order->created_at->diffForHumans() }}</h5>
                     </div>
                     <div class="col-md-6">
                         <h6 class="text-muted mb-1">Order ID</h6>
-                        <h5>{{ $order->pid }}</h5>
+                        <h5 class="mb-1">{{ $order->pid }}</h5>
                     </div>
                 </div>
+                <hr>
 
                 <!-- Customer Info -->
-                <div class="row gy-3 mb-4">
-                    <div class="col-md-4">
+                <div class="row gy-3 mb-4 pt-2">
+                    <div class="col-md-3">
                         <h6 class="text-muted mb-1">NAME</h6>
                         <p class="mb-0">{{ $order->user->name ?? '' }}
                             {{ $order->user->lname ?? '' }}</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <h6 class="text-muted mb-1">EMAIL</h6>
                         <p class="mb-0">{{ $order->user->email ?? '' }}</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <h6 class="text-muted mb-1">PHONE</h6>
                         <p class="mb-0">{{ $order->user->mobile ?? '' }}</p>
                     </div>
@@ -164,12 +152,33 @@
                     </div> --}}
                 </div>
 
+                @if ($order->shipping_address_id != getStorePickupShippingId())
+                <div class="row gy-3 pt-2 pb-2"> 
+                    <div class="col-md-3">
+                        <h6 class="text-muted mb-1">Apt / Suite / Floor</h6>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->house_no ?? '' }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted mb-1">Street</h6>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->address ?? '' }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted mb-1">City</h6>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->city ?? '' }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted mb-1">Postal Code</h6>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->postal_code ?? '' }}</p>
+                    </div>
+                </div>
+                @endif
+
                 <div class="row gy-3 mb-4">
                     <div class="col-md-4">
                         <h6 class="text-muted mb-1">Notes</h6>
                         <p class="mb-0">{{ $order->notes }}</p>
 
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateNotesModel">Update Notes
+                        <button type="button" class="btn btn-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#updateNotesModel">Update Notes
                         </button>
 
                         <div class="modal fade" id="updateNotesModel" tabindex="-1" aria-labelledby="updateNotesModelTitle" aria-hidden="true">
@@ -223,10 +232,10 @@
                                     </td>
                                     <td>{{ $item->product->name }}</td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>$ {{ number_format($item->product->getPriceForQuantity($item->quantity), 2) }}
+                                    <td>$ {{ number_format($item->price, 2) }}
                                     </td>
                                     <td class="text-end">$
-                                        {{ number_format($item->product->getPriceForQuantity($item->quantity) * $item->quantity, 2) }}
+                                        {{ number_format($item->price * $item->quantity, 2) }}
                                     </td>
                                 </tr>
                             @empty
@@ -242,13 +251,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <!-- Order Cancel Reason -->
-                @if ($order->ordercancel)
-                    <div class="alert alert-danger mt-4">
-                        <strong>Order Cancelled:</strong> {{ $order->ordercancel->reason }}
-                    </div>
-                @endif
             </div>
         </div>
     </div>

@@ -238,21 +238,25 @@ class Checkout extends Component
             ? getStorePickupShippingId()
             : $this->shipping_id;
 
-        $orderData = [
+        // Remove previous pending order with same pid
+        Order::where('pid', $this->pid)
+            ->where('order_status', 0)
+            ->delete();
+
+        // Create new order
+        $order = Order::create([
             'pid' => $this->pid,
             'quantity' => $this->cartCount,
             'user_id' => auth()->id(),
             'amount' => $this->subTotal,
             'discount' => $this->discount,
             'shipping_address_id' => $effectiveShippingId,
-            'notes' => $this->deliveryNotes !== null ? trim($this->deliveryNotes) : null,
-        ];
+            'order_status' => 1,
+            'notes' => $this->deliveryNotes ? trim($this->deliveryNotes) : null,
+        ]);
 
-        $order = DB::transaction(function () use ($orderData, $effectiveShippingId) {
-            Order::where('pid', $this->pid)->where('order_status', 0)->delete();
-
-            $order = Order::create($orderData);
-
+        // Insert order products in bulk
+        if (!empty($this->cartItems)) {
             OrderProductList::insert(
                 collect($this->cartItems)->map(fn ($item) => [
                     'order_id' => $order->id,
@@ -261,25 +265,25 @@ class Checkout extends Component
                     'price' => $item['unitPrice'],
                 ])->toArray()
             );
-
-            $shippingAddress = $effectiveShippingId ? ShippingAddress::find($effectiveShippingId) : null;
-            if ($shippingAddress) {
-                OrderDeliveryAddress::create([
-                    'order_id' => $order->id,
-                    'name' => $shippingAddress->name,
-                    'email' => $shippingAddress->email,
-                    'address' => $shippingAddress->address,
-                    'street' => $shippingAddress->street,
-                    'city' => $shippingAddress->city,
-                    'tole' => $shippingAddress->tole,
-                    'house_no' => $shippingAddress->house_no,
-                    'phone' => $shippingAddress->phone,
-                    'description' => $shippingAddress->description,
-                ]);
-            }
-
-            return $order;
-        });
+        }
+        
+        // Use $this->shippings instead of a DB query
+        $shippingAddress = $this->shippings->firstWhere('id', $effectiveShippingId);
+        if($shippingAddress) { //Pickup does not shipping address
+            OrderDeliveryAddress::create([
+                'order_id' => $order->id,
+                'name' => $shippingAddress->name,
+                'email' => $shippingAddress->email,
+                'address' => $shippingAddress->address,
+                'street' => $shippingAddress->street,
+                'city' => $shippingAddress->city,
+                'tole' => $shippingAddress->tole,
+                'house_no' => $shippingAddress->house_no,
+                'phone' => $shippingAddress->phone,
+                'description' => $shippingAddress->description,
+                'postal_code' => $shippingAddress->postal_code,
+            ]);
+        }
 
         return $order;
     }
@@ -303,16 +307,20 @@ class Checkout extends Component
 
     public function getCanEnableCheckoutButton()
     {
+        if ($this->subTotal == 0) {
+            return true;
+        }
+
+        if ($this->cartCount == 0) {
+            return true;
+        }
+
         if ($this->delivery_method === 'pickup') {
             return true;
         }
 
         if ($this->delivery_method === 'delivery') {
             return ! empty($this->shipping_id);
-        }
-
-        if ($this->cartCount == 0) {
-            return true;
         }
 
         return false;
@@ -357,40 +365,38 @@ class Checkout extends Component
                 return;
             }
 
-            // $order = $this->orderStore();
-            $this->orderStore();
-            $order_check = Order::where('pid', $this->pid)->first();
+            // Step 1: Place the order (database transaction)
+            $order = DB::transaction(function () {
+                return $this->orderStore();
+            });
 
-            if ($order_check) {
-                $order_check->update(['order_status' => 1]);
-                Cart::destroy();
+            // Step 2: Clear cart and reset counters
+            Cart::destroy();
+            $this->cartCount = 0;
+            $this->subTotal = 0;
 
-                try {
-                    // $order = Order::wherePid($pid)->first();
-                    $productList = OrderProductList::with('product')->where('order_id', $order_check->id)->get();
-                    $deliveryAddress = ShippingAddress::find($order_check->shipping_address_id);
+            // Step 3: Mark order as completed
+            //$order->update(['order_status' => 1]); Done in orderStore
 
-                    $email = strtoupper(auth()->user()->email) ?? '';
-                    Mail::to($email)->send(new SendOrderConfirmation($order_check, $productList, $deliveryAddress));
+            try {
+                // Step 4: Load related models for email
+                $order->load('orderProductLists.product', 'orderDeliveryAddress');
 
-                } catch (Exception $e) {
-                    if (config('app.debug')) {
-                        $this->dispatch(
-                            'console-log',
-                            message: 'Checkout error',
-                            data: $e->getMessage()
-                        );
-                    }
+                // Step 5: Send confirmation email (outside transaction)
+                $this->sendOrderConfirmationEmail($order);
+            } catch (Exception $e) {
+                if (config('app.debug')) {
+                    $this->dispatch(
+                        'console-log',
+                        message: 'Checkout error',
+                        data: $e->getMessage()
+                    );
                 }
-
-                $this->dispatch('alert', ['type' => 'success', 'message' => 'Order successfully placed. Please wait for response!!!!']);
-
-                return redirect(route('success.page', $order_check->pid));
-            } else {
-                $this->dispatch('alert', ['type' => 'error', 'message' => 'Order placement Failed!']);
-
-                return redirect(route('frontend.index'));
             }
+
+            $this->dispatch('alert', ['type' => 'success', 'message' => 'Order successfully placed. Please wait for response!!!!']);
+
+            return redirect(route('success.page', $order->pid));
         } catch (\Exception $e) {
             $this->dispatch('alert', ['type' => 'error', 'message' => 'Internal Server Error']);
             if (config('app.debug')) {
@@ -400,10 +406,21 @@ class Checkout extends Component
                     data: $e->getMessage()
                 );
             }
-
             return;
         } finally {
             $this->isProcessing = false;
         }
     }
+
+    protected function sendOrderConfirmationEmail(Order $order)
+    {
+        try {
+            $email = auth()->user()->email ?? '';
+            Mail::to($email)->send(new SendOrderConfirmation($order));
+        } catch (\Exception $e) {
+            // Log email failure but don't block the order
+            logger()->error("Order confirmation email failed for Order ID {$order->id}: {$e->getMessage()}");
+        }
+    }
+
 }

@@ -52,6 +52,7 @@ Route::middleware(['auth'])->prefix('/home')->group(function () {
     Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout'])->name('checkout');
     Route::get('/order-success/{pid}', [OrderController::class, 'successPage'])->name('success.page');
     Route::post('/cancel-order', [OrderController::class, 'orderCancel'])->name('client.order.cancel');
+    Route::get('/order-email/{pid}', [OrderController::class, 'ResendOrderConfirmationEmail']);
 
     Route::get('/invoice/{pid}', function () {
         return view('backend.checkout.invoice');

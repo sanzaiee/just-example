@@ -103,7 +103,7 @@ class LoginController extends Controller
         //$executionTime = microtime(true) - $start;
         // dump('Execution time: ' . $executionTime . ' seconds');
 
-        return redirect()->route('verify.otp', $user->email)->with('success', 'OTP sent to your email');
+        return redirect()->route('verify.otp', $user->email)->with('success', 'Your one-time passcode has been sent to your email address. This code is valid for 10 minutes.');
     }
 
     public function verifyOtp($emails)

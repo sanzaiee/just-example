@@ -1,0 +1,105 @@
+{
+    "id": "del_p7LYi9MGQJWtIJ2UBKC-yA",
+    "quote_id": "dqt_p7LYi9MGQJWtIJ2UBKC-yA",
+    "status": "pending",
+    "complete": false,
+    "kind": "delivery",
+    "pickup": {
+        "name": "Bayview Jug Milk",
+        "phone_number": "14165551234",
+        "address": "2780 Eglinton Unit 3, Scarborough, Ontario, CA",
+        "detailed_address": {
+            "street_address_1": "2780 Eglinton Ave E",
+            "street_address_2": "Toronto, ON M1J 2C8",
+            "city": "Toronto",
+            "state": "",
+            "zip_code": "M1J 2C8",
+            "country": "CA"
+        },
+        "notes": "",
+        "location": {
+            "lat": 43.73849,
+            "lng": -79.24366
+        }
+    },
+    "dropoff": {
+        "name": "Saroj, S",
+        "phone_number": "+14165559876",
+        "address": "1071 Danforth Road, Scarborough, Ontario, CA",
+        "detailed_address": {
+            "street_address_1": "1071 Danforth Rd",
+            "street_address_2": "",
+            "city": "Toronto",
+            "state": "ON",
+            "zip_code": "M1J 2C7",
+            "country": "CA"
+        },
+        "notes": "",
+        "seller_notes": "- Additional address information:\n1071 Danforth Road, Scarborough, Ontario, CA",
+        "location": {
+            "lat": 43.735256,
+            "lng": -79.24675
+        }
+    },
+    "manifest": {
+        "description": "1 X Package\n",
+        "total_value": 0
+    },
+    "manifest_items": [
+        {
+            "name": "Package",
+            "quantity": 1,
+            "size": "small",
+            "dimensions": {
+                "length": 20,
+                "height": 7,
+                "depth": 15
+            },
+            "must_be_upright": false,
+            "preferred_replacements": null,
+            "item_customizations": null
+        }
+    ],
+    "created": "2026-01-31T18:12:25.583Z",
+    "updated": "2026-01-31T18:12:25.583Z",
+    "pickup_ready": "2026-01-31T18:12:26Z",
+    "pickup_deadline": "2026-01-31T18:32:25Z",
+    "dropoff_ready": "2026-01-31T18:12:25Z",
+    "dropoff_deadline": "2026-01-31T19:09:15Z",
+    "pickup_eta": "2026-01-31T18:19:54Z",
+    "dropoff_eta": "2026-01-31T18:52:36Z",
+    "related_deliveries": null,
+    "fee": 790,
+    "currency": "cad",
+    "tracking_url": "https:\/\/delivery.uber.com\/ca\/orders\/a7b2d88b-d306-4095-ad20-9d9404a0bec8?tenancyOverride=uber%2Ftesting",
+    "undeliverable_action": "",
+    "courier_imminent": false,
+    "courier": null,
+    "live_mode": false,
+    "undeliverable_reason": "",
+    "uuid": "A7B2D88BD3064095AD209D9404A0BEC8",
+    "fences": null,
+    "external_id": "",
+    "items_acquired": null,
+    "state_changes": null,
+    "deliverable_action": "deliverable_action_meet_at_door",
+    "return": {
+        "name": "Bayview Jug Milk",
+        "phone_number": "14165551234",
+        "address": "2780 Eglinton Unit 3, Scarborough, Ontario, CA",
+        "detailed_address": {
+            "street_address_1": "2780 Eglinton Ave E",
+            "street_address_2": "Toronto, ON M1J 2C8",
+            "city": "Toronto",
+            "state": "",
+            "zip_code": "M1J 2C8",
+            "country": "CA"
+        },
+        "notes": "",
+        "location": {
+            "lat": 43.73849,
+            "lng": -79.24366
+        }
+    },
+    "refunds": null
+}

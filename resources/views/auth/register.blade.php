@@ -44,7 +44,7 @@
                                 <label for="mobile" class="form-label">Phone Number</label>
                                 <input type="text" value="{{ old('mobile') }}"
                                     class="form-control @error('mobile') is-invalid @enderror" id="mobile" name="mobile"
-                                    placeholder="Enter your phone number" autofocus />
+                                    placeholder="+12345678901" autofocus />
                                 @error('mobile')
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror

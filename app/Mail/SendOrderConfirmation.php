@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use App\Models\Order;
-use App\Models\ShippingAddress;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -18,11 +17,8 @@ class SendOrderConfirmation extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public Order $order,
-        public $productList,
-        public ?ShippingAddress $deliveryAddress
-    ) {
-    }
+        public Order $order, //Pickup address does not have shipping address
+    ) {}
 
     /**
      * Get the message envelope.
@@ -42,9 +38,7 @@ class SendOrderConfirmation extends Mailable
         return new Content(
             view: 'emails.order-confirmation-email',
             with: [
-                'order' => $this->order,
-                'productList' => $this->productList,
-                'deliveryAddress' => $this->deliveryAddress,
+                'order' => $this->order
             ],
         );
     }

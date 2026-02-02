@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderCancel;
 use App\Models\OrderProductList;
-use App\Models\ShippingAddress;
+use App\Models\OrderDeliveryAddress;
 use Illuminate\Http\Request;
+use App\Mail\SendOrderConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -17,7 +19,7 @@ class OrderController extends Controller
     //order_status = 4 => Shipping in Progress
     public function index(Request $request)
     {
-        $query = Order::with('user', 'orderProductLists', 'orderProductLists.product', 'shippingAddress');
+        $query = Order::with('user', 'orderProductLists', 'orderProductLists.product', 'orderDeliveryAddress');
 
         // Apply filters
         if ($request->filled('date_from')) {
@@ -38,6 +40,7 @@ class OrderController extends Controller
         }
 
         $orders = $query->latest()->paginate(request('per_page', 10));
+        // return $orders;
 
         if (auth()->user()->is_admin) {
             return view('backend.checkout.orders', compact('orders'));
@@ -50,7 +53,7 @@ class OrderController extends Controller
     {
         $order = Order::wherePid($pid)->first();
         $productList = OrderProductList::with('product')->where('order_id', $order->id)->get();
-        $deliveryAddress = ShippingAddress::find($order->shipping_address_id);
+        $deliveryAddress = OrderDeliveryAddress::where('order_id', $order->id)->get()->first();
 
         return view('backend.checkout.orderSuccess', compact('order', 'productList', 'deliveryAddress'));
     }
@@ -108,6 +111,7 @@ class OrderController extends Controller
     {
         $delivery = Order::findorFail($id);
         $delivery['order_status'] = 3;
+        $delivery['pending_status'] = 1; // Set pending_status to true when marking as complete
         $delivery->update();
 
         return redirect()->route('order.index')->with('success', 'Order Status Changed.');
@@ -115,8 +119,8 @@ class OrderController extends Controller
 
     public function show($pid)
     {
-        $order = Order::where('pid', $pid)->first();
-
+        $order = Order::with('orderDeliveryAddress','user','orderProductLists', 'orderProductLists.product')->where('pid', $pid)->first();
+    
         return view('backend.order.show', compact('order'));
     }
 
@@ -134,11 +138,31 @@ class OrderController extends Controller
         return back()->with('success', 'Order notes updated successfully.');
     }
 
+    public function ResendOrderConfirmationEmail($orderId)
+    {
+        $order = Order::with('user', 'orderProductLists.product', 'orderDeliveryAddress')->where('pid', $orderId)->first();
+        if (! $order) {
+            return "Order with number {$orderId} not found.";
+        }
+
+        // return $order;
+
+        try {
+            $email = $order->user->email ?? '';
+            Mail::to($email)->send(new SendOrderConfirmation($order));
+
+            return "Order confirmation email resent successfully for order number {$orderId}";
+        } catch (\Exception $e) {
+            logger()->error("Resend order confirmation email failed for Order ID {$order->id}: {$e->getMessage()}");
+            return "Failed to resend order confirmation email for order number {$orderId}. : {$e->getMessage()}";
+        }
+    }
+
     // public function show($pid)
     // {
     //     $order = Order::wherePid($pid)->first();
     //     $productList = OrderProductList::with('product')->where('order_id', $order->id)->get();
-    //     $deliveryAddress = ShippingAddress::find($order->shipping_address_id);
+    //     $deliveryAddress = OrderDeliveryAddress::find($order->shipping_address_id);
     //     return view('backend.checkout.orderSuccess', compact('order', 'productList', 'deliveryAddress'));
     // }
 }

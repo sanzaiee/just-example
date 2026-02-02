@@ -234,11 +234,11 @@
                                                         <a href="{{ route('product.detail', $prod->product->slug) }}"
                                                             target="_blank" class="text-decoration-none text-dark">
                                                             <div class="cart-item">
-                                                                <img src="/default-png-min.png" style="width: 120px;" alt="{{ $prod->product->name }}" class="img-fluid object-fit-cover">
+                                                                <img src="{{ $prod->product->image }}" style="width: 120px;" alt="{{ $prod->product->name }}" class="img-fluid object-fit-cover">
                                                                 <div class="flex-grow-1 d-flex flex-column justify-content-center">
                                                                     <h5 class="mb-1">{{ $prod->product->name }}</h5>
                                                                     <div class="d-flex gap-2 text-muted small">
-                                                                        <span class="price">$ {{ number_format($prod->product->getPriceForQuantity($prod->quantity), 2) }}</span>
+                                                                        <span class="price">$ {{ number_format($prod->price, 2) }}</span>
                                                                         <span class="quantity">× {{ $prod->quantity }}</span>
                                                                     </div>
                                                                     <div>
@@ -332,11 +332,11 @@
                                                                 // ['email', 'Email'], 
                                                                 ['city', 'City'], 
                                                                 ['postal_code', 'Postal Code']] as $index => $title)
-                                                                @if ($item->shippingAddress->{$title[0]})
+                                                                @if ($item->orderDeliveryAddress?->{$title[0]})
                                                                     <div class="col-md-6 mb-3">
                                                                         <code>{{ $title[1] }} : </code>
                                                                         <p class="mb-0">
-                                                                            {{ $item->shippingAddress->{$title[0]} ?? '' }}
+                                                                            {{ $item->orderDeliveryAddress?->{$title[0]} ?? '-' }}
                                                                         </p>
                                                                     </div>
                                                                 @endif

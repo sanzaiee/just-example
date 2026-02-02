@@ -109,9 +109,9 @@
                                         ['city', 'City'], 
                                         ['postal_code', 'Postal Code']
                                         ] as $index => $title)
-                                    @if ($deliveryAddress->{$title[0]})
-                                        <div class="fw-bold"> <code>{{ $title[1] }} : </code> <span
-                                                class="fm-lighter">{{ $deliveryAddress->{$title[0]} }}</span></div>
+                                    @if ($deliveryAddress?->{$title[0]})
+                                        <div class="fw-bold"> <code>{{ $title[1] }} : </code> 
+                                            <span class="fm-lighter">{{ $deliveryAddress?->{$title[0]} ?? '-' }}</span></div>
                                     @endif
                                 @endforeach
                                 @endif

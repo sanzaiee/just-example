@@ -25,22 +25,22 @@
                 <div class="row g-2 mb-2">
                     <div class="col mb-0">
                         <label for="nameBasic" class="form-label">Apt / Suite / Floor:</label>
-                        <p class="mb-0">{{ $order->shippingAddress->house_no ?? '' }}</p>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->house_no ?? '' }}</p>
                     </div>
                     <div class="col mb-0">
                         <label for="nameBasic" class="form-label">Street</label>
-                        <p class="mb-0">{{ $order->shippingAddress->address ?? '' }}</p>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->address ?? '' }}</p>
                     </div>
                 </div>
 
                 <div class="row g-2">
                     <div class="col mb-0">
                         <label for="nameBasic" class="form-label">City</label>
-                        <p class="mb-0">{{ $order->shippingAddress->city ?? '' }}</p>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->city ?? '' }}</p>
                     </div>
                     <div class="col mb-0">
                         <label for="nameBasic" class="form-label">Postal Code</label>
-                        <p class="mb-0">{{ $order->shippingAddress->postal_code ?? '' }}</p>
+                        <p class="mb-0">{{ $order->orderDeliveryAddress->postal_code ?? '' }}</p>
                     </div>
                 </div>
                 @endif
@@ -56,22 +56,41 @@
                 {{-- Disclaimer --}}
                 @if (!$apiResponse)
                     <div class="alert alert-warning mb-0" role="alert" style="text-align: justify">
-                        After clicking <strong>Start Delivery</strong>, the process cannot be undone.
-                        Please do not close the window during the process.
+                        <p>After clicking <strong>Start Delivery</strong>, the process cannot be undone.
+                        Please do not close the window during the process.</p>
                     </div>
                 @endif
 
                 @if ($apiResponse)
-                    <div class="alert alert-info mt-2 mb-0" role="alert">
-                        {{ $apiResponse }}
+                    @php
+                        $response = json_decode($apiResponse, true);
+                    @endphp
+
+                    @if(($response['code'] ?? null) == 200)
+                    <div class="alert alert-success mt-2 mb-0" role="alert">
+
+                        <p>Delivery created successfully</p>
+                        <p>
+                            <a href="{{ $response['tracking_url'] }}" target="_blank" rel="noopener">
+                                Click here to track
+                            </a>
+                        </p>
+
+                        <p class="small text-muted">
+                            {{ $response['tracking_url'] }}
+                        </p>
                     </div>
+                    @else
+                    <div class="alert alert-info mt-2 mb-0" role="alert">
+                        <p>{{ $apiResponse }}</p>
+                    </div>  
+                    @endif
                 @endif
-                
             </div>
             <div class="modal-footer pt-0">
                 <button class="btn btn-label secondary" data-bs-dismiss="modal" :disabled="$wire.processing">Close</button>
 
-                @if (!$isComplete)
+                @if (!$isComplete && !$apiResponse)
                     <button type="button" class="btn btn-primary" id="submitButton"
                         wire:click="createDelivery"
                         wire:loading.attr="disabled"

@@ -175,12 +175,7 @@
                                                                 <i class="bi bi-box-seam me-1"></i>
                                                                 Qty: {{ $prod->quantity }}
                                                             </span>
-                                                            @if ($prod->notes)
-                                                                <span class="text-muted small fst-italic">
-                                                                    <i class="bi bi-chat-left-text me-1"></i>
-                                                                    {{ $prod->notes }}
-                                                                </span>
-                                                            @endif
+                                                            <span class="small">× $ {{ $prod->price }}</span>
                                                         </div>
                                                     </div>
                                                 </div>

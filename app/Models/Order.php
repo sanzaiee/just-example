@@ -40,8 +40,8 @@ class Order extends Model
         return $this->hasOne(OrderCancel::class);
     }
 
-     public function shippingAddress()
+    public function orderDeliveryAddress()
     {
-        return $this->belongsTo(ShippingAddress::class, 'shipping_address_id');
+        return $this->hasOne(OrderDeliveryAddress::class, 'order_id');
     }
 }

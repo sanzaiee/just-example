@@ -37,19 +37,22 @@
                         <div class="fw-bold"> <code>9AM to 9PM</code><span class="fm-lighter"></span></div>
                 @else
                     <strong>Order Type:</strong> Delivery<br>
-                    @foreach ([
-                        ['house_no', 'Apt / Suite / Floor'], 
-                        ['address', 'Address'], 
-                        // ['name', 'Name'], 
-                        // ['email', 'Email'], 
-                        ['city', 'City'], 
-                        ['postal_code', 'Postal Code']
-                        ] as $index => $title)
-                        @if ($deliveryAddress->{$title[0]})
-                            <div class="fw-bold"> <code>{{ $title[1] }} : </code> <span
-                                    class="fm-lighter">{{ $deliveryAddress->{$title[0]} }}</span></div>
-                        @endif
-                    @endforeach
+                    
+                    @if ($order->orderDeliveryAddress)
+                      @foreach ([
+                          ['house_no', 'Apt / Suite / Floor'], 
+                          ['address', 'Address'], 
+                          // ['name', 'Name'], 
+                          // ['email', 'Email'], 
+                          ['city', 'City'], 
+                          ['postal_code', 'Postal Code']
+                          ] as $index => $title)
+                          @if ($order->orderDeliveryAddress->{$title[0]})
+                              <div class="fw-bold"> <code>{{ $title[1] }} : </code> <span
+                                      class="fm-lighter">{{ $order->orderDeliveryAddress->{$title[0]} }}</span></div>
+                          @endif
+                      @endforeach
+                    @endif
                 @endif
               </p>
               <strong>Notes:</strong> <br>
@@ -69,7 +72,7 @@
                   <th align="right" style="border:1px solid #dddddd;">Subtotal</th>
                 </tr>
 
-                @foreach ($productList as $item)
+                @foreach ($order->orderProductLists as $item)
                     <tr>
                         <td>
                             <img src="{{ $item->product->image }}"
@@ -79,9 +82,9 @@
                         <td style="border:1px solid #dddddd;">
                             {{ $item->product->name }}
                         </td>
-                        <td align="right" style="border:1px solid #dddddd;">$ {{ $item->product->getPriceForQuantity($item->quantity) }}</td>
+                        <td align="right" style="border:1px solid #dddddd;">$ {{ $item->price }}</td>
                         <td align="right" style="border:1px solid #dddddd;">{{ $item->quantity }}</td>
-                        <td align="right" style="border:1px solid #dddddd;">$ {{ $item->product->getPriceForQuantity($item->quantity) * $item->quantity }}</td>
+                        <td align="right" style="border:1px solid #dddddd;">$ {{ $item->price * $item->quantity }}</td>
                     </tr>                    
                 @endforeach
 
