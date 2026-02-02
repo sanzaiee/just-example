@@ -20,7 +20,7 @@
                         <p class=" mb-0">{{ $order->user->mobile ?? '' }}</p>
                     </div>
                 </div>
-                @if ($order->shipping_address_id != getStorePickupShippingId())
+                @if (!$order->is_store_pickup)
                 <hr>
                 <div class="row g-2 mb-2">
                     <div class="col mb-0">

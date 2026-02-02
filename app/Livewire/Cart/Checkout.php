@@ -250,7 +250,7 @@ class Checkout extends Component
             'user_id' => auth()->id(),
             'amount' => $this->subTotal,
             'discount' => $this->discount,
-            'shipping_address_id' => $effectiveShippingId,
+            'is_store_pickup' => $this->delivery_method === 'pickup',
             'order_status' => 1,
             'notes' => $this->deliveryNotes ? trim($this->deliveryNotes) : null,
         ]);

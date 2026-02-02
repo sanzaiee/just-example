@@ -135,7 +135,7 @@
                                     </td>
 
                                     <td class="delivery_method">
-                                        @if ($item->shipping_address_id == getStorePickupShippingId())
+                                        @if ($item->is_store_pickup)
                                             <span class="badge bg-info">Pickup</span>
                                         @else
                                             <span class="badge bg-secondary">Delivery</span>
@@ -187,7 +187,7 @@
                                     </td>
 
                                     <td class="status">
-                                        @if($item->shipping_address_id == getStorePickupShippingId())
+                                        @if($item->is_store_pickup)
                                             <span class="badge bg-info">N/A</span>
                                         @else
                                             @if ($item->delivery_status == 0)
@@ -322,7 +322,7 @@
                                                     <h5 class="modal-title">Delivery Method</h5>
 
                                                     <div class="row">
-                                                        @if ($item->shipping_address_id == getStorePickupShippingId())
+                                                        @if ($item->is_store_pickup)
                                                             <div class="fw-bold"> <code>Store Pickup</code> <span class="fm-lighter"></span></div>
                                                         @else
                                                             @foreach ([

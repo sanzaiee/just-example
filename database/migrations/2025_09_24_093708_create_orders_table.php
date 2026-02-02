@@ -33,7 +33,7 @@ return new class extends Migration
             $table->tinyInteger('enabled')->default(0);
 
             $table->unsignedBigInteger('shipping_address_id');
-            $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses')->onDelete('cascade');
+            $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses');
 
             $table->softDeletes();
             $table->timestamps();

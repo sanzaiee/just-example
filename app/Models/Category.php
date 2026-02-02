@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable =['name','slug','parent_id','position','description','status','menu'];
+    protected $fillable = ['name', 'slug', 'parent_id', 'position', 'description', 'status', 'menu'];
 
     protected static function booted()
     {
@@ -23,7 +24,7 @@ class Category extends Model
             // Check if the generated slug already exists
             $counter = 1;
             while (in_array($slug, $existingSlugs)) {
-                $slug = Str::slug($category->name, '-') . '-' . $counter;
+                $slug = Str::slug($category->name, '-').'-'.$counter;
                 $counter++;
             }
 
@@ -39,7 +40,7 @@ class Category extends Model
             // Check if the generated slug already exists
             $counter = 1;
             while (in_array($slug, $existingSlugs)) {
-                $slug = Str::slug($category->name, '-') . '-' . $counter;
+                $slug = Str::slug($category->name, '-').'-'.$counter;
                 $counter++;
             }
 
@@ -48,17 +49,19 @@ class Category extends Model
 
     }
 
-    public function parent(){
-        return $this->belongsTo(Category::class,'parent_id');
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    public function child(){
-        return $this->hasMany(Category::class,'parent_id');
+    public function child()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
-//    Primary Level -> Class Three -> Subjects -> Chapter -> [Content,Others,FAQs]
-//    Teacher -> Level -> Classes{online,physical} [three -> [Nepali,Time and all] -> [Remarks of Day, Tomorrows Plan]]
-//    Students ->Class ->Subjects -> Chapter
+    //    Primary Level -> Class Three -> Subjects -> Chapter -> [Content,Others,FAQs]
+    //    Teacher -> Level -> Classes{online,physical} [three -> [Nepali,Time and all] -> [Remarks of Day, Tomorrows Plan]]
+    //    Students ->Class ->Subjects -> Chapter
 
     public function product()
     {

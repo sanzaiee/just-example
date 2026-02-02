@@ -32,7 +32,7 @@
             <td style="padding-bottom:15px;">
               <p style="margin:0;">
                 <strong>Order No:</strong> {{ $order->pid }}<br>
-                @if ($order->shipping_address_id == getStorePickupShippingId())
+                @if ($order->is_store_pickup)
                     <strong>Order Type:</strong> Store Pickup<br>
                         <div class="fw-bold"> <code>9AM to 9PM</code><span class="fm-lighter"></span></div>
                 @else

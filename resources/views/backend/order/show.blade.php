@@ -38,7 +38,7 @@
                 </div>
             @endif
 
-            @if ($order->shipping_address_id != getStorePickupShippingId() && $order->delivery_status == 0 && $order->order_status ==1 && $order->cancel_status == 0)
+            @if (!$order->is_store_pickup && $order->delivery_status == 0 && $order->order_status ==1 && $order->cancel_status == 0)
                 <div class="col-md-3">
                     <button type="button" class="btn btn-secondary me-2"
                         data-bs-toggle="modal"
@@ -87,7 +87,7 @@
 
         <div class="card shadow-sm border-0 mt-2">
             <div class="card-header bg-primary text-white fw-bold">
-                @if ($order->shipping_address_id == getStorePickupShippingId())
+                @if ($order->is_store_pickup)
                     Pickup
                 @else
                     @if ($order->order_status == 4)
@@ -152,7 +152,7 @@
                     </div> --}}
                 </div>
 
-                @if ($order->shipping_address_id != getStorePickupShippingId())
+                @if (!$order->is_store_pickup)
                 <div class="row gy-3 pt-2 pb-2"> 
                     <div class="col-md-3">
                         <h6 class="text-muted mb-1">Apt / Suite / Floor</h6>

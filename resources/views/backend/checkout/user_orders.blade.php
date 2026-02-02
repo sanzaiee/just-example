@@ -80,7 +80,7 @@
                                     <div class="d-flex flex-column gap-2">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <span class="small">Delivery</span>
-                                            @if ($item->shipping_address_id == getStorePickupShippingId())
+                                            @if ($item->is_store_pickup)
                                                 <span class="badge bg-info bg-opacity-75">Pickup</span>
                                             @else
                                                 @if ($item->delivery_status == 0)

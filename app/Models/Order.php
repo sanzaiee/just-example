@@ -20,7 +20,7 @@ class Order extends Model
         'cancel_status',
         'delivery_status',
         'order_status',
-        'shipping_address_id',
+        'is_store_pickup',
         'notes'
     ];
 
@@ -43,5 +43,14 @@ class Order extends Model
     public function orderDeliveryAddress()
     {
         return $this->hasOne(OrderDeliveryAddress::class, 'order_id');
+    }
+
+    /**
+     * Alias for orderDeliveryAddress for backward compatibility.
+     * Use orderDeliveryAddress for new code.
+     */
+    public function shippingAddress()
+    {
+        return $this->orderDeliveryAddress();
     }
 }

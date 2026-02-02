@@ -95,7 +95,7 @@
                             </div>
 
                             <div class="col-lg-12 col-sm-6">
-                                @if ($order->shipping_address_id == getStorePickupShippingId())
+                                @if ($order->is_store_pickup)
                                     <h5>Pickup From Store</h5>
                                     <div class="fw-bold"> <code>9AM to 9PM</code> <span
                                             class="fm-lighter"></span></div>
