@@ -22,7 +22,14 @@ class ShippingAddress extends Model
            'phone',
            'description',
            'postal_code',
+           'latitude',
+           'longitude',
            'active'
+    ];
+
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public function user()

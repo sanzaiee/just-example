@@ -1,30 +1,54 @@
 <?php
 
 namespace App\Traits;
+
 use Illuminate\Support\Str;
 
 trait Slugify
 {
-
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::creating(function ($model) {
-            $model->generateSlug();
+        static::creating(function ($model): void {
+            if (empty($model->slug)) {
+                $model->generateSlug();
+            }
         });
 
-        static::updating(function ($model) {
-            $model->generateSlug();
+        static::updating(function ($model): void {
+            // Do not change slug on normal updates; only generate if it's missing
+            if (empty($model->slug)) {
+                $model->generateSlug();
+            }
         });
     }
 
-    protected function generateSlug()
+    protected function generateSlug(): void
     {
-        $slug = Str::slug($this->title ?? $this->name);
+        $source = $this->title ?? $this->name;
 
-        $existingSlug = static::where('slug', $slug)->first();
+        if (empty($source)) {
+            return;
+        }
+
+        $slug = Str::slug($source);
+
+        // Ensure uniqueness; ignore current model when updating
+        $query = static::where('slug', $slug);
+
+        if ($this->exists && $this->getKey()) {
+            $query->whereKeyNot($this->getKey());
+        }
+
+        $existingSlug = $query->first();
 
         if ($existingSlug) {
-            $count = static::where('slug', 'like', $slug.'%')->count();
+            $countQuery = static::where('slug', 'like', $slug . '%');
+
+            if ($this->exists && $this->getKey()) {
+                $countQuery->whereKeyNot($this->getKey());
+            }
+
+            $count = $countQuery->count();
             $slug .= '-' . ($count + 1);
         }
 

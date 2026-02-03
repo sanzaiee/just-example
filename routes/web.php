@@ -4,15 +4,17 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\ShippingAddressController;
 use App\Livewire\BrandSetup;
 use App\Livewire\Category;
 use App\Livewire\OrderSummary;
 use App\Livewire\ProductSetup;
 use App\Livewire\SetupShippingAddress;
 use App\Livewire\UserManagement;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,7 +48,7 @@ Route::middleware(['auth'])->prefix('/home')->group(function () {
     // Route::get('/products', [App\Http\Controllers\HomeController::class, 'products'])->name('products.list');
     Route::get('/products/{slug}', [App\Http\Controllers\HomeController::class, 'productShow'])->name('product.detail');
 
-    Route::get('/shipping-address', SetupShippingAddress::class)->name('shipping.address');
+    // Route::get('/shipping-address', SetupShippingAddress::class)->name('shipping.address');
 
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout'])->name('checkout');
@@ -70,6 +72,12 @@ Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
     Route::get('/brand', BrandSetup::class)->name('brand.index');
     Route::resource('/product', ProductController::class)->except(['show']);
     Route::get('/product/create', ProductSetup::class)->name('product.create');
+    Route::resource('/shipping-addresses', ShippingAddressController::class)
+        ->parameters(['shipping-addresses' => 'shippingaddress'])
+        ->except(['show'])
+        ->names('shipping-address');
+    Route::put('/shipping-addresses/{id}/active', [ShippingAddressController::class, 'setActive'])
+        ->name('shipping-address.set-active');
     Route::get('/order-summary', OrderSummary::class)->name('order.summary');
 
     Route::put('/order-status/{id}', [OrderController::class, 'complete'])->name('order.status');
@@ -78,7 +86,7 @@ Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
     Route::put('/pay-status/{id}', [OrderController::class, 'payStatus'])->name('order.pay.status');
     Route::get('/order/{pid}', [OrderController::class, 'show'])->name('order.show');
     Route::put('/update-notes', [OrderController::class, 'updateNotes'])->name('order.notes.update');
-    
+
     Route::post('/tinymce/upload-image', [App\Http\Controllers\HomeController::class, 'uploadImage'])->name('tinymce.uploadImage');
 
     Route::get('/site/settings/{slug}', [SettingController::class, 'view'])->name('site.view');

@@ -15,17 +15,17 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('type',100)->nullable();
-            $table->string('name',100)->nullable();
-            $table->string('email',80)->nullable();
-            $table->string('address',100)->nullable();
-            $table->string('street',80)->nullable();
-            $table->string('city',80)->nullable();
-            $table->string('tole',80)->nullable();
-            $table->string('house_no',80)->nullable();
-            $table->string('phone',50)->nullable();
-            $table->string('description',200)->nullable();
-            $table->boolean('active')->default(1);
+            $table->string('type', 100)->nullable();
+            $table->string('name', 100)->nullable();
+            $table->string('email', 100)->nullable();
+            $table->string('address', 225)->nullable();
+            $table->string('street', 80)->nullable();
+            $table->string('city', 100)->nullable();
+            $table->string('tole', 100)->nullable();
+            $table->string('house_no', 100)->nullable();
+            $table->string('phone', 50)->nullable();
+            $table->string('description', 200)->nullable();
+            $table->boolean('active')->default(0);
             $table->timestamps();
         });
     }

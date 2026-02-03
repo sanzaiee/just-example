@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\ShippingAddress;
+use App\Services\AddressMapService;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -48,6 +50,10 @@ class SetupShippingAddress extends Component
     #[Validate('required|regex:/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z] \d[ABCEGHJ-NPRSTV-Z]\d$/i')] #with space only
     public $postal_code;
 
+    /** Set by map picker (optional). */
+    public $latitude;
+    public $longitude;
+
     protected $messages = [
         'postal_code.regex' => 'The postal code must be in the format A1A 1A1.',
         'house_no.regex' => 'The house number must be in the format Apt 101, Suite 202, Floor 3, Unit 4.',
@@ -79,6 +85,8 @@ class SetupShippingAddress extends Component
     {
         $data = $this->validate();
         $data['user_id'] = auth()->id();
+        $data['latitude'] = $this->latitude;
+        $data['longitude'] = $this->longitude;
         if($this->shippingAddress){
             $this->shippingAddress->update($data);
 
@@ -161,5 +169,46 @@ class SetupShippingAddress extends Component
         $this->phone =$address->phone;
         $this->description =$address->description;
         $this->postal_code =$address->postal_code;
+        $this->latitude =$address->latitude;
+        $this->longitude =$address->longitude;
+    }
+
+    /**
+     * Set address, city, postal_code, and optional lat/lng from the map picker (Leaflet + Nominatim).
+     * Called from the frontend when the user selects a location.
+     */
+    public function setAddressFromMap(
+        string $address,
+        ?string $city = null,
+        ?string $postal_code = null,
+        ?float $latitude = null,
+        ?float $longitude = null
+    ): void {
+        $this->address = $address;
+        if ($city !== null) {
+            $this->city = $city;
+        }
+        if ($postal_code !== null) {
+            $this->postal_code = $postal_code;
+        }
+        if ($latitude !== null) {
+            $this->latitude = $latitude;
+        }
+        if ($longitude !== null) {
+            $this->longitude = $longitude;
+        }
+    }
+
+    /**
+     * Config for the address map picker (passed to the view).
+     */
+    #[Computed]
+    public function addressMapConfig(): array
+    {
+        $service = app(AddressMapService::class);
+        $config = $service->getFrontendConfig();
+        $config['containerId'] = 'address-map';
+        $config['searchInputId'] = 'address-map-search';
+        return $config;
     }
 }
