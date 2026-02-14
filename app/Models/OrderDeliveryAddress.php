@@ -12,6 +12,7 @@ class OrderDeliveryAddress extends Model
     protected $fillable = [
         'order_id',
         'name',
+        'lname',
         'email',
         'address',
         'street',

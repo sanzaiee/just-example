@@ -48,13 +48,12 @@ Route::middleware(['auth'])->prefix('/home')->group(function () {
     // Route::get('/products', [App\Http\Controllers\HomeController::class, 'products'])->name('products.list');
     Route::get('/products/{slug}', [App\Http\Controllers\HomeController::class, 'productShow'])->name('product.detail');
 
-    // Route::get('/shipping-address', SetupShippingAddress::class)->name('shipping.address');
+    Route::get('/shipping-address', SetupShippingAddress::class)->name('shipping.address');
 
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::get('/checkout', [App\Http\Controllers\HomeController::class, 'checkout'])->name('checkout');
     Route::get('/order-success/{pid}', [OrderController::class, 'successPage'])->name('success.page');
     Route::post('/cancel-order', [OrderController::class, 'orderCancel'])->name('client.order.cancel');
-    Route::get('/order-email/{pid}', [OrderController::class, 'ResendOrderConfirmationEmail']);
 
     Route::get('/invoice/{pid}', function () {
         return view('backend.checkout.invoice');
@@ -72,24 +71,29 @@ Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
     Route::get('/brand', BrandSetup::class)->name('brand.index');
     Route::resource('/product', ProductController::class)->except(['show']);
     Route::get('/product/create', ProductSetup::class)->name('product.create');
-    Route::resource('/shipping-addresses', ShippingAddressController::class)
-        ->parameters(['shipping-addresses' => 'shippingaddress'])
-        ->except(['show'])
-        ->names('shipping-address');
-    Route::put('/shipping-addresses/{id}/active', [ShippingAddressController::class, 'setActive'])
-        ->name('shipping-address.set-active');
+    // Route::resource('/shipping-addresses', ShippingAddressController::class)
+    //     ->parameters(['shipping-addresses' => 'shippingaddress'])
+    //     ->except(['show'])
+    //     ->names('shipping-address');
+    // Route::put('/shipping-addresses/{id}/active', [ShippingAddressController::class, 'setActive'])
+    //     ->name('shipping-address.set-active');
     Route::get('/order-summary', OrderSummary::class)->name('order.summary');
 
     Route::put('/order-status/{id}', [OrderController::class, 'complete'])->name('order.status');
     Route::put('/delivery-status/{id}', [OrderController::class, 'delivery'])->name('delivery.status');
     Route::put('/pending-status/{id}', [OrderController::class, 'pending'])->name('pending.status');
     Route::put('/pay-status/{id}', [OrderController::class, 'payStatus'])->name('order.pay.status');
-    Route::get('/order/{pid}', [OrderController::class, 'show'])->name('order.show');
+    // Route::get('/order/{pid}', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/order/{pid}', App\Livewire\ShowOrder::class)->name('order.show');
+
     Route::put('/update-notes', [OrderController::class, 'updateNotes'])->name('order.notes.update');
 
     Route::post('/tinymce/upload-image', [App\Http\Controllers\HomeController::class, 'uploadImage'])->name('tinymce.uploadImage');
 
     Route::get('/site/settings/{slug}', [SettingController::class, 'view'])->name('site.view');
     Route::post('/site/settings', [SettingController::class, 'update'])->name('site.update');
+
+    Route::get('/order-email/{pid}', [OrderController::class, 'ResendOrderConfirmationEmail']);
+    Route::get('/pickup-email/{pid}', [OrderController::class, 'ResendPickupEmail']);
 
 });

@@ -20,7 +20,7 @@
           <!-- Greeting -->
           <tr>
             <td style="padding-bottom:15px;">
-              <p style="margin:0;">Hi <strong>{{ $order->user->name }}</strong>,</p>
+              <p style="margin:0;">Hi <strong>{{ $order->orderDeliveryAddress->name }}</strong>,</p>
               <p style="margin:8px 0 0 0;">
                 Thanks for your order! Here are the details:
               </p>

@@ -1,0 +1,20 @@
+{
+    "Items": [
+        {
+            "Id": "CA|CP|ENG|ON-SCARBOROUGH-EGLINTON_AVE_E-2780",
+            "Text": "2780 Eglinton Ave E",
+            "Highlight": "0-4,5-19",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8 - 8 Addresses",
+            "Next": "Find"
+        },
+        {
+            "Id": "CA|CP|A|802505988",
+            "Text": "2780 Eglinton Ave E",
+            "Highlight": "0-4,5-19",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        }
+    ]
+}

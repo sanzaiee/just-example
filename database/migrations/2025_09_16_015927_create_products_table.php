@@ -39,7 +39,6 @@ return new class extends Migration
             $table->double('tax')->default(0);
 
             $table->integer('delivery_charges')->default(0);
-
             $table->integer('view_count')->default(0);
 
             $table->string('warrenty_period')->nullable();

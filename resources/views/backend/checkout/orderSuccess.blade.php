@@ -71,19 +71,19 @@
                         <div class="row g-4">
                             <div class="col-lg-12 col-sm-12">
                                 <h5>Details ({{ $productList->count() }} Items)</h5>
-
-                                <td class="subtotal">
-                                    <h6 class="fw-bold"><code>Total : $ {{ $order->amount }}</code></h6>
-                                </td>
-
-                                {{-- @if ($order->coupon_id)
-                                        <ul class="summery-contain">
-                                            <li>
-                                                <h4>Coupon Discount</h4>
-                                                <h4 class="price text-danger">{{ $order->coupon->discount ?? '0' }}</h4>
-                                            </li>
-                                        </ul>
-                                    @endif --}}
+                            
+                                <table>
+                                    <tr>
+                                        <td>Shipping</td>
+                                        <td>:</td>
+                                        <td>$ {{ $order->shipping_cost }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td>:</td>
+                                        <td>$ {{ $order->amount }}</td>
+                                    </tr>
+                                </table>
                             </div>
 
                             <div class="col-lg-12 col-sm-12">

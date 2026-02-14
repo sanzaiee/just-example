@@ -15,14 +15,17 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->string('name', 100)->nullable();
-            $table->string('email', 80)->nullable();
-            $table->string('address', 100)->nullable();
+            $table->string('name', 100);
+            $table->string('lname', 100)->nullable();
+            $table->string('email', 80);
+            $table->string('phone', 50)->nullable();
+
+            $table->string('address', 100);
             $table->string('street', 80)->nullable();
-            $table->string('city', 80)->nullable();
+            $table->string('city', 80);
+            $table->string('postal_code', 50);
             $table->string('tole', 80)->nullable();
             $table->string('house_no', 80)->nullable();
-            $table->string('phone', 50)->nullable();
             $table->string('description', 200)->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();

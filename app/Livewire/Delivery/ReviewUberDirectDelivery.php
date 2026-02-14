@@ -5,9 +5,11 @@ namespace App\Livewire\Delivery;
 use Livewire\Component;
 use App\Models\Order;
 Use App\Helpers\UberTokenHelper;
-use App\Models\UberDeliveryTracking;
+use App\Models\OrderFulfillment;
+use App\Models\Setting;
+use Carbon\Carbon;
 
-class ReviewDelivery extends Component
+class ReviewUberDirectDelivery extends Component
 {
     public bool $processing = false;
     public bool $isComplete = false;
@@ -25,8 +27,43 @@ class ReviewDelivery extends Component
         //         ]);
     }
 
+    public bool $is_scheduled = false;
+    public $scheduled_time=null;
+    protected function rules()
+    {
+        return [
+            'is_scheduled'   => ['boolean'],
+            'scheduled_time' => [
+                function ($attribute, $value, $fail) {
+                    if (!$this->is_scheduled) {
+                        return; // no validation needed
+                    }
+
+                    if (!$value) {
+                        return $fail('Please select a pickup time.');
+                    }
+
+                    $now = now('America/Toronto');
+                    $pickup = \Carbon\Carbon::parse($value, 'America/Toronto')
+                        ->setDate($now->year, $now->month, $now->day);
+
+                    if ($pickup->isPast()) {
+                        $fail('Pickup time cannot be earlier than the current Toronto time.');
+                    }
+                }
+            ],
+        ];
+    }
+
+    public function toggleSchedule($value)
+    {
+        $this->is_scheduled = (bool) $value;
+    }
+
     public function createDelivery()
     {
+        $this->validate();
+
         // HARD stop: prevents duplicate submission
         if ($this->processing) {
             return;
@@ -36,44 +73,57 @@ class ReviewDelivery extends Component
         $this->apiResponse = null;
         
         try {
-            //  sleep(5); // Simulate processing delay
+            // sleep(5);
+            // $this->apiResponse = json_encode([
+            //         'code' => 200,
+            //         'delivery_id' => '123',
+            //         'status' => 'success',
+            //         'tracking_url' => '123.com',
+            //         'uuid' => '1123',
+            //     ]);
+            // $this->dispatch('order-updated');
+            // return;
+
+            //  sleep(10); // Simulate processing delay
             //  $this->apiResponse = 'Simulated delivery creation successful.';
             //  return;
 
-            // $this->order->update(['order_status' => 4]); // Shipping in Progress
-            // $this->order->update();
-            // return;
             $response=UberTokenHelper::createDelivery($this->createDeliveryPayload($this->order));
 
-            //  $this->apiResponse = 'Simulated delivery creation successful.';
-            //  return;
             if ($response->successful()) {
                 $json = $response->json();
                 logger()->info('Uber Delivery Created:', $json);
 
+                $orderUUID = $json['uuid'] ?? null;
+                $lastFive = $orderUUID
+                    ? substr($orderUUID, -5)
+                    : null;
                 // Extract only the fields you care about
                 $this->apiResponse = json_encode([
                     'code' => 200,
                     'delivery_id' => $json['id'] ?? null,
                     'status' => $json['status'] ?? null,
                     'tracking_url' => $json['tracking_url'] ?? null,
+                    'uuid' => $lastFive,
                 ]);
 
-                UberDeliveryTracking::create([
+                OrderFulfillment::create([
                     'order_id' => $this->order->id,
                     'tracking_number' => $json['id'] ?? null,
+                    'delivery_partner' => 0, //for uber
                     'status' => $json['status'] ?? null,
                     'message' => 'Delivery created successfully',
                     'tracking_url' => $json['tracking_url'] ?? null,
-                    'delivery_id' => $json['id'] ?? null,
-                    'delivery_status' => $json['status'] ?? null,
-                    'delivery_message' => '',
+                    'created_by' => auth()->id() //for auditing
                 ]);
 
-                $this->order->update(['order_status' => 4, 'pending_status' => 1]); // Shipping in Progress
+                $this->order->update(['order_status' => 4, 'pending_status' => 1, 'admin_notes' => $lastFive]); // Shipping in Progress
+                $this->dispatch('order-updated');
             } else {
                 $status = $response->status();
                 $json = $response->json();
+
+                logger()->info('Uber Delivery Failed:', $json);
 
                 // Special handling for address undeliverable
                 if ($status === 400 && isset($json['code']) && $json['code'] === 'address_undeliverable') {
@@ -84,10 +134,22 @@ class ReviewDelivery extends Component
                 }
                 // Generic Uber API errors
                 elseif (isset($json['code'], $json['message'])) {
-                    $this->apiResponse = json_encode([
+                    $tempResponse = [
                         'code' => $json['code'],
                         'message' => $json['message'],
-                    ]);
+                    ];
+                    // Add "kind" only if present 
+                    if (isset($json['kind'])) $tempResponse['kind'] = $json['kind']; 
+                    
+                    // Add "metadata" only if present 
+                    if (isset($json['metadata'])) $tempResponse['metadata'] = $json['metadata'];
+
+                    $this->apiResponse = json_encode($tempResponse);
+
+                    //If $payload is an array
+                    $payload = $this->createDeliveryPayload($this->order);
+                    $payloadString = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                    logger()->info($payloadString);
                 }
                 // Fallback for unknown response
                 else {
@@ -110,6 +172,24 @@ class ReviewDelivery extends Component
         $pickup  = \App\Services\UberDirectAddressFormatter::pickupAddress();
         $dropoff = \App\Services\UberDirectAddressFormatter::format($order->orderDeliveryAddress);
 
+        $required = [
+            'uber_direct_pickup_instructions',
+            'uber_direct_return_label_instructions',
+        ];
+
+        $settings = Setting::whereIn('attribute', $required)
+            ->get()
+            ->keyBy('attribute');
+
+        foreach ($required as $attribute) {
+            if (!isset($settings[$attribute])) {
+                throw new \Exception("Missing required setting: {$attribute}. Please create it in the settings table.");
+            }
+        }
+
+        $PickUpInstructions = $settings['uber_direct_pickup_instructions']->value;
+        $ReturnInstructions = $settings['uber_direct_return_label_instructions']->value;
+
         #phone_number string ^\+[0-9]+$
         #{{ $order->user->name ?? '' }} {{ $order->user->lname ?? '' }}
 
@@ -119,8 +199,10 @@ class ReviewDelivery extends Component
         //     'zip_code'       => $address->postal_code ?? '',
         //     'country'
 
+        if (!$order->user->mobile)
+            throw new \RuntimeException('User phone number is missing');
 
-        return [
+        $payload = [
             'pickup_name' => 'Bayview Jug Milk',
             'pickup_address' => json_encode([
                 'street_address' => $pickup['street_address'],
@@ -131,7 +213,7 @@ class ReviewDelivery extends Component
                 ]),
             'pickup_phone_number' => '6475566452',
             'pickup_business_name' => 'Bayview Jug Milk',
-            'pickup_notes' => 'PLEASE READ! Pickup at unit #101, which is on the "OUTSIDE" towards the East-side of the Condo Hayden Street entrance. Go through the black gate and ring the doorbell OR call 647-556-6452.', 
+            'pickup_notes' => $PickUpInstructions, 
             'dropoff_name' => $this->order->user->name . ', ' . substr($this->order->user->lname ?? '', 0, 1), 
             'dropoff_address' => json_encode([
                     'street_address' => $dropoff['street_address'],
@@ -145,20 +227,44 @@ class ReviewDelivery extends Component
                 [
                     'name'     => 'Package',
                     'quantity' => 1,
-                    'size'     => 'small',
+                    'size'     => 'medium',
                 ],
             ],
+            'manifest_total_value' => (int) round($order->amount * 100),
             'dropoff_notes' => $this->order->notes ?? '',
-            'dropoff_seller_notes' => '',
-            'return_notes' => 'Return package to Unit #101. Leave inside the black storage bin and send photo image proof of return to: 647-556-6452. Thank you',
+            'dropoff_seller_notes' => 'Thank you for shopping with us',
+            'return_notes' => $ReturnInstructions
         ];
         //'pickup_ready_dt' => now()->addMinutes(10)->toIso8601String(),
         //'dropoff_deadline_dt' => now()->addHours(2)->toIso8601String(),
+        if ($this->is_scheduled) {
+            $payload['pickup_ready_dt'] = $this->pickup_ready_dt($this->scheduled_time);
+        }
+        return $payload;
     }
 
+    private function pickup_ready_dt(string $timeInput): string
+    {
+        // Always use Toronto timezone 
+        $now = Carbon::now('America/Toronto'); 
+        
+        // Build the pickup time for today in Toronto 
+        $pickup = Carbon::parse($timeInput, 'America/Toronto') ->setDate($now->year, $now->month, $now->day);
+
+        // Create a Carbon instance for today with the given time 
+        $pickup = Carbon::now()->setTimeFromTimeString($timeInput);
+
+        // If the selected time is already past, it would roll over to tomorrow 
+        if ($pickup->isPast()) {
+            throw new Exception("Currior Pickup time cannot be in the past. It will roll over to tomorrow.");
+        }
+
+        // Return RFC 3339 format required by Uber Direct 
+        return $pickup->toRfc3339String();
+    }
 
     public function render()
     {
-        return view('livewire.delivery.review-delivery-admin');
+        return view('livewire.delivery.review-uber-direct-delivery-admin');
     }
 }

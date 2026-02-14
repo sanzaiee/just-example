@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-             $table->string('pid')->unique();
+            $table->string('pid')->unique();
 
-            $table->double('amount');
+            $table->decimal('amount');
             $table->integer('quantity');
-            $table->double('discount')->nullable();
+            $table->decimal('discount')->nullable();
+            $table->decimal('shipping_cost', 8, 2)->nullable();
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -26,14 +27,15 @@ return new class extends Migration
             $table->boolean('pending_status')->default(0);
             $table->boolean('cancel_status')->default(0);
             $table->boolean('delivery_status')->default(0);
-
-
             $table->boolean('order_status')->default(0);
 
             $table->tinyInteger('enabled')->default(0);
+            $table->longText('notes')->nullable();
+            $table->boolean('is_store_pickup')->default(false);
+            $table->longText('admin_notes')->nullable();
 
-            $table->unsignedBigInteger('shipping_address_id');
-            $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses');
+            // $table->unsignedBigInteger('shipping_address_id');
+            // $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses');
 
             $table->softDeletes();
             $table->timestamps();

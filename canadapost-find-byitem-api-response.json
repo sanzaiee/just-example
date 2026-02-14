@@ -1,0 +1,68 @@
+{
+    "Items": [
+        {
+            "Id": "CA|CP|A|5573964",
+            "Text": "1-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|5571047",
+            "Text": "2-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|5592311",
+            "Text": "3-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|637703",
+            "Text": "4-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|5531385",
+            "Text": "5-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|5534360",
+            "Text": "6-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|1316113",
+            "Text": "7-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        },
+        {
+            "Id": "CA|CP|A|5516595",
+            "Text": "8-2780 Eglinton Ave E",
+            "Highlight": "",
+            "Cursor": 0,
+            "Description": "Scarborough, ON, M1J 2C8",
+            "Next": "Retrieve"
+        }
+    ]
+}

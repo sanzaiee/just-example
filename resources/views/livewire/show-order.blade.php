@@ -1,6 +1,13 @@
-@extends('backend.master')
-@section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+<div>
+    @push('css')
+    <style>
+        table td:not(:first-child),
+        table th:not(:first-child) {
+            text-align: right;
+        }
+    </style>
+
+    @endpush<div class="container-xxl flex-grow-1 container-p-y">
         @if ($order->order_status == 3)
             <div class="alert alert-success">
                 <strong>Order Complete</strong>
@@ -254,7 +261,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php $subtotal = 0; @endphp
+
                             @forelse ($order->orderProductLists as $item)
+                                @php $subtotal += $item->price * $item->quantity; @endphp
+
                                 <tr>
                                     <td>
                                         <img src="{{ $item->product->image }}" alt="Product" class="img-thumbnail"
@@ -274,6 +285,14 @@
                                     </td>
                                 </tr>
                             @endforelse
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Sub Total</td>
+                                <td class="text-end fw-bold">$ {{ number_format($subtotal, 2) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Shipping Cost</td>
+                                <td class="text-end fw-bold">$ {{ number_format($order->shipping_cost, 2) }}</td>
+                            </tr>
                             <tr class="table-active">
                                 <td colspan="4" class="text-end fw-bold">GRAND TOTAL</td>
                                 <td class="text-end fw-bold">$ {{ number_format($order->amount, 2) }}</td>
@@ -284,10 +303,4 @@
             </div>
         </div>
     </div>
-<style>
-    table td:not(:first-child),
-    table th:not(:first-child) {
-        text-align: right;
-    }
-</style>
-@endsection
+</div>

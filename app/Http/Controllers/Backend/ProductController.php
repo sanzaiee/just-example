@@ -20,7 +20,8 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = $this->product->with('user');
+        //TO:DO avoid fetching tierred pricing for index data
+        $products = $this->product;//->with('user');
 
         if (request()->has('query')) {
             $query = '%'.request()->input('query').'%';

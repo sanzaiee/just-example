@@ -83,10 +83,14 @@
                                             @if ($item->is_store_pickup)
                                                 <span class="badge bg-info bg-opacity-75">Pickup</span>
                                             @else
-                                                @if ($item->delivery_status == 0)
-                                                    <span class="badge bg-danger bg-opacity-75">Pending</span>
+                                                @if($item->order_status == 4)
+                                                    <span class="badge bg-info bg-opacity-75">In-Progress</span>
                                                 @else
-                                                    <span class="badge bg-success bg-opacity-75">Delivered</span>
+                                                    @if ($item->delivery_status == 0)
+                                                        <span class="badge bg-danger bg-opacity-75">Pending</span>
+                                                    @else
+                                                        <span class="badge bg-success bg-opacity-75">Delivered</span>
+                                                    @endif
                                                 @endif
                                             @endif
                                         </div>
@@ -178,6 +182,9 @@
                                                             <span class="small">× $ {{ $prod->price }}</span>
                                                         </div>
                                                     </div>
+                                                    <div class="d-flex align-items-end">
+                                                        <h6 class="mb-1 fw-semibold">$ {{ number_format($prod->quantity * $prod->price, 2) }}</h6>
+                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -195,9 +202,9 @@
                                         </div>
                                         <div class="col-md-6 text-end">
                                             <div class="d-flex align-items-center justify-content-end gap-2">
-                                                <span class="text-muted">Total Amount:</span>
+                                                <span class="text-muted">Shipping:</span>
                                                 <span class="fw-bold fs-5 text-primary">
-                                                    {{ number_format($item->amount, 2) }}
+                                                    {{ number_format($item->shipping_cost, 2) }}
                                                 </span>
                                             </div>
                                         </div>

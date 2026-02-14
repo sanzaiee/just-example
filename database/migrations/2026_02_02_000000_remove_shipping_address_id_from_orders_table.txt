@@ -18,17 +18,18 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->boolean('is_store_pickup')->default(false)->after('order_status');
+            $table->longText('admin_notes')->nullable()->after('is_store_pickup');
         });
 
         // Preserve pickup flag: orders that used shipping_address_id = 1 (store pickup)
-        DB::table('orders')
-            ->where('shipping_address_id', 1)
-            ->update(['is_store_pickup' => true]);
+        // DB::table('orders')
+        //     ->where('shipping_address_id', 1)
+        //     ->update(['is_store_pickup' => true]);
 
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['shipping_address_id']);
-            $table->dropColumn('shipping_address_id');
-        });
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->dropForeign(['shipping_address_id']);
+        //     $table->dropColumn('shipping_address_id');
+        // });
     }
 
     /**
@@ -36,18 +37,19 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('shipping_address_id')->nullable()->after('order_status');
-            $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses');
-        });
+        // Schema::table('orders', function (Blueprint $table) {
+        //     $table->unsignedBigInteger('shipping_address_id')->nullable()->after('order_status');
+        //     $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses');
+        // });
 
-        // Restore pickup orders to shipping_address_id = 1 (data loss: other IDs not restored)
-        DB::table('orders')
-            ->where('is_store_pickup', true)
-            ->update(['shipping_address_id' => 1]);
+        // // Restore pickup orders to shipping_address_id = 1 (data loss: other IDs not restored)
+        // DB::table('orders')
+        //     ->where('is_store_pickup', true)
+        //     ->update(['shipping_address_id' => 1]);
 
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('is_store_pickup');
+            $table->dropColumn('admin_notes');
         });
     }
 };

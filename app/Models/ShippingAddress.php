@@ -24,12 +24,14 @@ class ShippingAddress extends Model
            'postal_code',
            'latitude',
            'longitude',
+           'driving_distance_km',
            'active'
     ];
 
     protected $casts = [
         'latitude' => 'float',
         'longitude' => 'float',
+        'driving_distance_km' => 'float',
     ];
 
     public function user()

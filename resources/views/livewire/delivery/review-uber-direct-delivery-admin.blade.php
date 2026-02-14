@@ -21,19 +21,14 @@
                     </div>
                 </div>
                 @if (!$order->is_store_pickup)
-                <hr>
                 <div class="row g-2 mb-2">
                     <div class="col mb-0">
-                        <label for="nameBasic" class="form-label">Apt / Suite / Floor:</label>
-                        <p class="mb-0">{{ $order->orderDeliveryAddress->house_no ?? '' }}</p>
-                    </div>
-                    <div class="col mb-0">
-                        <label for="nameBasic" class="form-label">Street</label>
+                        <label for="nameBasic" class="form-label">Address Line:</label>
                         <p class="mb-0">{{ $order->orderDeliveryAddress->address ?? '' }}</p>
                     </div>
-                </div>
+                {{-- </div>
 
-                <div class="row g-2">
+                <div class="row g-2"> --}}
                     <div class="col mb-0">
                         <label for="nameBasic" class="form-label">City</label>
                         <p class="mb-0">{{ $order->orderDeliveryAddress->city ?? '' }}</p>
@@ -44,19 +39,46 @@
                     </div>
                 </div>
                 @endif
-                <br>
 
-                <div class="row">
-                    <div class="col mb-3">
-                        <label for="description" class="form-label">Notes</label>
-                        <p class="mb-0">{{ $order->notes ?? '' }}</p>
+                <!-- Notes Section -->
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label fw-semibold">Notes</label>
+                        <div class="border rounded p-2 bg-light">
+                            <p class="mb-0">{{ $order->notes ?? '—' }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="my-3">
+                
+                <!-- Schedule Section -->
+                <div class="row align-items-center">
+                    <div class="col-auto mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_scheduled" 
+                            wire:change="toggleSchedule($event.target.checked)" 
+                            wire:loading.attr="disabled" id="is_scheduled">
+                            <label class="form-check-label fw-semibold" for="is_scheduled" wire:loading.attr="disabled">
+                                Schedule courier pickup ?
+                            </label>
+                        </div>
+                    </div>
+                
+                    <div class="col-auto mb-3">
+                        <input type="time" class="form-control @error('scheduled_time') is-invalid @enderror" name="scheduled_time"
+                            id="scheduled_time" 
+                            wire:model="scheduled_time" 
+                            @disabled(!$is_scheduled) 
+                            >
+                        @error('scheduled_time') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
 
                 {{-- Disclaimer --}}
                 @if (!$apiResponse)
                     <div class="alert alert-warning mb-0" role="alert" style="text-align: justify">
-                        <p>After clicking <strong>Start Delivery</strong>, the process cannot be undone.
+                        <p class="m-0 p-0">After clicking <strong>Start Delivery</strong>, the process cannot be undone.
                         Please do not close the window during the process.</p>
                     </div>
                 @endif
@@ -68,16 +90,21 @@
 
                     @if(($response['code'] ?? null) == 200)
                     <div class="alert alert-success mt-2 mb-0" role="alert">
-
-                        <p>Delivery created successfully</p>
-                        <p>
+                        <p class="mb-1 fw-semibold">Delivery created successfully</p>
+                    
+                        <p class="mb-1">
                             <a href="{{ $response['tracking_url'] }}" target="_blank" rel="noopener">
                                 Click here to track
                             </a>
                         </p>
-
-                        <p class="small text-muted">
+                    
+                        <p class="small text-muted mb-2">
                             {{ $response['tracking_url'] }}
+                        </p>
+                    
+                        <p class="mb-0">
+                            <span class="fw-semibold text-dark">Order ID:</span>
+                            {{ $response['uuid'] }}
                         </p>
                     </div>
                     @else
@@ -87,14 +114,13 @@
                     @endif
                 @endif
             </div>
-            <div class="modal-footer pt-0">
-                <button class="btn btn-label secondary" data-bs-dismiss="modal" :disabled="$wire.processing">Close</button>
+            <div class="modal-footer pt-0 d-flex justify-content-between">
+                <button class="btn btn-label secondary" data-bs-dismiss="modal" wire:loading.attr="disabled">Close</button>
 
                 @if (!$isComplete && !$apiResponse)
                     <button type="button" class="btn btn-primary" id="submitButton"
                         wire:click="createDelivery"
                         wire:loading.attr="disabled"
-                        wire:target="createDelivery"
                         >
                         <span wire:loading.remove wire:target="createDelivery">Start Delivery</span>
                         <span wire:loading wire:target="createDelivery">Processing...</span>

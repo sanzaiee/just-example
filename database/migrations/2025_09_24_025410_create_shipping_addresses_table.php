@@ -18,14 +18,18 @@ return new class extends Migration
             $table->string('type', 100)->nullable();
             $table->string('name', 100)->nullable();
             $table->string('email', 100)->nullable();
-            $table->string('address', 225)->nullable();
+            $table->string('address', 225);
             $table->string('street', 80)->nullable();
-            $table->string('city', 100)->nullable();
+            $table->string('city', 100);
+            $table->string('postal_code'); // adjust column order if needed
             $table->string('tole', 100)->nullable();
             $table->string('house_no', 100)->nullable();
             $table->string('phone', 50)->nullable();
             $table->string('description', 200)->nullable();
             $table->boolean('active')->default(0);
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->decimal('driving_distance_km', 8, 2)->nullable();
             $table->timestamps();
         });
     }
