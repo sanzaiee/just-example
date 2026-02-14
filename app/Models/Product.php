@@ -101,14 +101,21 @@ class Product extends Model implements HasMedia
     {
         // Get the appropriate tier directly with database query
         // We need to reorder since the relationship has default ascending order
-        $tieredPrice = $this->tieredPrices()
-            ->where('quantity', '<=', $quantity)
-            ->reorder() // Remove the default ordering from the relationship
-            ->orderBy('quantity', 'desc')
-            ->first();
+        // $tieredPrice = $this->tieredPrices()
+        //     ->where('quantity', '<=', $quantity)
+        //     ->reorder() // Remove the default ordering from the relationship
+        //     ->orderBy('quantity', 'desc')
+        //     ->first();
 
-        // If no tier found (quantity smaller than all tiers), return base price
-        return $tieredPrice ? $tieredPrice->price : $this->price;
+        // // If no tier found (quantity smaller than all tiers), return base price
+        // return $tieredPrice ? $tieredPrice->price : $this->price;
+
+        $tier = $this->tieredPrices() ->where('quantity', '<=', $quantity) ->reorder() ->orderBy('quantity', 'desc') ->first(); 
+        // No tier found → unit price = 0 
+        if (! $tier) { return 0; } 
+        
+        // Convert stored total price into unit price 
+        return $tier->price / $tier->quantity;
     }
 
     /**

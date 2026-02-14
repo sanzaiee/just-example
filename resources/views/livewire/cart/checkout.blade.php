@@ -1,4 +1,26 @@
 <div>
+    @push('css')
+    <style>
+        .qty-auto {
+            width: auto !important;
+            flex: 0 0 auto !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+            text-align: center;
+        }
+         /* Desktop behavior (your original intent) 
+        .qty-auto { width: auto !important; flex: 0 0 auto !important; padding-left: 4px !important; padding-right: 4px
+        !important; text-align: center !important; } */
+
+        .qty-btn { padding-left: 4px !important; padding-right: 4px !important; min-width: 32px; }
+
+        /* Mobile fix: make all elements equal width */
+        @media (max-width: 576px) {
+            .qty-stack { display: flex; flex-direction: column; align-items: center; } .qty-stack .btn, .qty-stack .form-control { width: 100% !important; max-width: 140px; margin: 3px auto; flex: none !important; /* overrides qty-auto */ } .qty-stack .form-control { text-align: center !important; /* ensures visible + centered */ }
+        }
+
+    </style>    
+    @endpush
     <div class="row g-3">
         @if ($cartCount == 0 || $subTotal == 0 )
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -8,13 +30,13 @@
         @endif
 
         <div class="col-md-8">
-            <div class="table-responsive">
+            <div class="table-responsive-sm">
                 <table class="table">
                     <tbody>
                         @forelse ($cartItems as $item)
                             <tr class="" wire:key="cart-item-{{ $item['rowId'] }}">
                                 <td
-                                    class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap">
+                                    class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap px-0">
                                     <a href="{{ route('product.detail', $item['slug']) }}">
                                         <img src="{{ $item['image'] }}"
                                             class="rounded float-start img-thumbnail blur-up lazyload" alt=""
@@ -29,20 +51,22 @@
                                     <p>${{ number_format($item['unitPrice'], 2) }}</p>
                                 </td>
 
-                                <td class="quantity px-0">
+                                <td class="quantity px-0 text-center">
                                     <h6 class="table-title text-content" style="text-align: center">Qty</h6>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-primary"
-                                            wire:click="decreaseQty('{{ $item['rowId'] }}')">
-                                            <i class="fa fa-minus"></i>
+                                    <div class="input-group input-group-sm justify-content-center qty-stack">
+                                        <button type="button" class="btn btn-outline-primary qty-btn"
+                                        wire:loading.attr="disabled"
+                                        wire:click="decreaseQty('{{ $item['rowId'] }}')"
+                                        ><i class="fa fa-minus"></i>
                                         </button>
 
-                                        <input type="number" class="form-control text-center" min="1"
+                                        <input type="number" class="form-control qty-auto" min="1"
                                             max="5" value="{{ $item['qty'] }}" readonly>
 
-                                        <button type="button" class="btn btn-outline-primary"
-                                            wire:click="increaseQty('{{ $item['rowId'] }}')">
-                                            <i class="fa fa-plus"></i>
+                                        <button type="button" class="btn btn-outline-primary qty-btn" 
+                                        wire:loading.attr="disabled"
+                                        wire:click="increaseQty('{{ $item['rowId'] }}')"
+                                        ><i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </td>
