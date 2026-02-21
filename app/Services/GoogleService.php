@@ -13,7 +13,7 @@ class GoogleService
         $response = Http::get($url, [
             'address' => $address,
             'components' => 'administrative_area:ON|country:CA',
-            'key' => env('GOOGLE_MAPS_KEY'),
+            'key' => config('services.api_key.google_maps_key')
         ]);
 
         if (!$response->successful()) {
@@ -43,7 +43,7 @@ class GoogleService
             'mode'         => 'driving',
             'units'        => 'metric',
             'avoid'        => 'tolls|highways',
-            'key'          => env('GOOGLE_MAPS_KEY'),
+            'key'          => config('services.api_key.google_maps_key'),
         ]);
 
         // 1. Ensure HTTP request succeeded

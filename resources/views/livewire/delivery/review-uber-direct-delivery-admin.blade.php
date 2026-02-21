@@ -1,12 +1,11 @@
-<div class="modal fade" wire:ignore.self id="autoSubmitModal" tabindex="-1" aria-labelledby="exampleModalLong"
-    aria-hidden="true">
+<div>
+<div class="modal fade" id="reviewUberDeliveryModal" tabindex="-1" aria-labelledby="exampleModalLong" aria-hidden="true" wire:ignore.self >
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="exampleModalLong">
                     <i class="fas fa-shipping-fast me-2"></i> Ready to Start Delivery ?
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4">
                 <div class="row g-2 mb-2">
@@ -20,7 +19,6 @@
                         <p class=" mb-0">{{ $order->user->mobile ?? '' }}</p>
                     </div>
                 </div>
-                @if (!$order->is_store_pickup)
                 <div class="row g-2 mb-2">
                     <div class="col mb-0">
                         <label for="nameBasic" class="form-label">Address Line:</label>
@@ -38,7 +36,6 @@
                         <p class="mb-0">{{ $order->orderDeliveryAddress->postal_code ?? '' }}</p>
                     </div>
                 </div>
-                @endif
 
                 <!-- Notes Section -->
                 <div class="row mb-3">
@@ -59,7 +56,7 @@
                             <input class="form-check-input" type="checkbox" name="is_scheduled" 
                             wire:change="toggleSchedule($event.target.checked)" 
                             wire:loading.attr="disabled" id="is_scheduled">
-                            <label class="form-check-label fw-semibold" for="is_scheduled" wire:loading.attr="disabled">
+                            <label class="form-check-label fw-semibold" for="is_scheduled">
                                 Schedule courier pickup ?
                             </label>
                         </div>
@@ -78,8 +75,7 @@
                 {{-- Disclaimer --}}
                 @if (!$apiResponse)
                     <div class="alert alert-warning mb-0" role="alert" style="text-align: justify">
-                        <p class="m-0 p-0">After clicking <strong>Start Delivery</strong>, the process cannot be undone.
-                        Please do not close the window during the process.</p>
+                        <p class="m-0 p-0">After clicking <strong>Start Delivery</strong>, the process cannot be undone.</p>
                     </div>
                 @endif
 
@@ -115,12 +111,13 @@
                 @endif
             </div>
             <div class="modal-footer pt-0 d-flex justify-content-between">
-                <button class="btn btn-label secondary" data-bs-dismiss="modal" wire:loading.attr="disabled">Close</button>
+                <button class="btn btn-label secondary" data-bs-dismiss="modal" wire:loading.attr="disabled" wire:click="closeModal">Close</button>
 
-                @if (!$isComplete && !$apiResponse)
-                    <button type="button" class="btn btn-primary" id="submitButton"
+                @if (!$apiResponse)
+                    <button type="button" class="btn btn-primary"
                         wire:click="createDelivery"
                         wire:loading.attr="disabled"
+                        wire:target="toggleSchedule,createDelivery"
                         >
                         <span wire:loading.remove wire:target="createDelivery">Start Delivery</span>
                         <span wire:loading wire:target="createDelivery">Processing...</span>
@@ -129,4 +126,11 @@
             </div>
         </div>
     </div>
+</div>
+
+@push('custom-scripts')
+<script>
+    document.addEventListener('close-modal', () => { const modalEl = document.getElementById('reviewUberDeliveryModal'); if (!modalEl) return; let modal = bootstrap.Modal.getInstance(modalEl); if (!modal) { modal = new bootstrap.Modal(modalEl); } modal.hide(); });
+</script>
+@endpush
 </div>

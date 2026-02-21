@@ -8,8 +8,8 @@ use App\Models\OrderCancel;
 use App\Models\OrderProductList;
 use App\Models\OrderDeliveryAddress;
 use Illuminate\Http\Request;
-use App\Mail\SendOrderConfirmation;
-use Illuminate\Support\Facades\Mail;
+Use App\Helpers\UberTokenHelper;
+Use App\Helpers\UberTokenHelper_mock;
 
 class OrderController extends Controller
 {
@@ -161,6 +161,32 @@ class OrderController extends Controller
         $response = $emailServices->PickupOrderInstruction($order);
         return "Pickup Order Instruction sent {$response['status']} for Order: {$orderId}";
     }
+
+    public function UpdateUberDeliveryStatus($orderId)
+    {
+        $order = Order::with('latestFulfillment')->where('pid', $orderId)->first();
+
+        if (!$order) {
+            return "Order with number {$orderId} not found.";
+        }
+
+        if ($order->is_store_pickup) {
+            return "Order type is store pickup.";
+        }
+
+        $tracking = $order->latestFulfillment->tracking_number ?? null;
+
+        if (!$tracking || !is_string($tracking) || trim($tracking) === '') {
+            return "Uber delivery is not created yet.";
+        }
+
+        // Now call Uber API
+        // $response = UberTokenHelper::getDeliveryUpdate($tracking);
+        $response = UberTokenHelper_mock::getDeliveryUpdate($tracking);
+
+        return $response->json();
+    }
+
 
     // public function show($pid)
     // {

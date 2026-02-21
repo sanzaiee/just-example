@@ -73,22 +73,24 @@
                 </tr>
 
                 @foreach ($order->orderProductLists as $item)
-                    <tr>
-                        <td>
-                            <img src="{{ $item->product->image }}"
-                                    class=""
-                                    alt="{{ $item->product->name }}" width="50px" height="50px">
-                        </td>
-                        <td style="border:1px solid #dddddd;">
-                            {{ $item->product->name }}
-                        </td>
-                        <td align="right" style="border:1px solid #dddddd;">$ {{ $item->price }}</td>
-                        <td align="right" style="border:1px solid #dddddd;">{{ $item->quantity }}</td>
-                        <td align="right" style="border:1px solid #dddddd;">$ {{ $item->price * $item->quantity }}</td>
-                    </tr>                    
+                <tr>
+                  <td style="border:1px solid #dddddd;">
+                    <img src="{{ $item->product->image }}" class="" alt="{{ $item->product->name }}" width="50px" height="50px">
+                  </td>
+                  <td style="border:1px solid #dddddd;">
+                    {{ $item->product->name }}
+                  </td>
+                  <td align="right" style="border:1px solid #dddddd;">$ {{ $item->price }}</td>
+                  <td align="right" style="border:1px solid #dddddd;">{{ $item->quantity }}</td>
+                  <td align="right" style="border:1px solid #dddddd;">$ {{ $item->price * $item->quantity }}</td>
+                </tr>
                 @endforeach
-
-
+                
+                <tr>
+                  <td colspan="4" align="right" style="border:1px solid #dddddd;"><strong>Shipping</strong></td>
+                  <td align="right" style="border:1px solid #dddddd;"><strong>$ {{ $order->shipping_cost }}</strong></td>
+                </tr>
+                
                 <!-- Totals -->
                 <tr>
                   <td colspan="4" align="right" style="border:1px solid #dddddd;"><strong>Total</strong></td>
@@ -101,12 +103,12 @@
           <!-- Footer -->
           <tr>
             <td style="padding-top:20px;">
-              <p style="margin:0;">
-                If you have any questions, just reply to this email.
-              </p>
               <p style="margin:8px 0 0 0;">
                 Thanks for choosing us!
               </p>
+              <p style="font-size: 16px;"></p>
+              <p style="font-size: 16px;">Best regards,</p>
+              <p style="font-size: 16px;">{{ config('app.name') }} Team</p>
             </td>
           </tr>
 

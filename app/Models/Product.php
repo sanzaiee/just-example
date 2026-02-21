@@ -97,25 +97,18 @@ class Product extends Model implements HasMedia
      * Get price based on quantity
      * Returns the appropriate price for the given quantity (finds the best applicable tier)
      */
-    public function getPriceForQuantity($quantity = 1)
+    public function getPriceForQuantity_old($quantity = 1)
     {
         // Get the appropriate tier directly with database query
-        // We need to reorder since the relationship has default ascending order
-        // $tieredPrice = $this->tieredPrices()
-        //     ->where('quantity', '<=', $quantity)
-        //     ->reorder() // Remove the default ordering from the relationship
-        //     ->orderBy('quantity', 'desc')
-        //     ->first();
+        //We need to reorder since the relationship has default ascending order
+        $tieredPrice = $this->tieredPrices()
+            ->where('quantity', '<=', $quantity)
+            ->reorder() // Remove the default ordering from the relationship
+            ->orderBy('quantity', 'desc')
+            ->first();
 
-        // // If no tier found (quantity smaller than all tiers), return base price
-        // return $tieredPrice ? $tieredPrice->price : $this->price;
-
-        $tier = $this->tieredPrices() ->where('quantity', '<=', $quantity) ->reorder() ->orderBy('quantity', 'desc') ->first(); 
-        // No tier found → unit price = 0 
-        if (! $tier) { return 0; } 
-        
-        // Convert stored total price into unit price 
-        return $tier->price / $tier->quantity;
+        // If no tier found (quantity smaller than all tiers), return base price
+        return $tieredPrice ? $tieredPrice->price : $this->price;
     }
 
     /**
@@ -140,8 +133,29 @@ class Product extends Model implements HasMedia
             ->where('quantity', $quantity)
             ->first();
 
+        logger()->info("getExactTierPrice " . ($tieredPrice?->price ?? ''));
+
+        if ($tieredPrice) {
+            return $tieredPrice->price;
+        } else {
+            throw new \Exception(
+                'getExactTierPrice not found for quantity: ' . $quantity
+            );
+        }
+
         // If exact tier not found, fall back to the best price for this quantity
-        return $tieredPrice ? $tieredPrice->price : $this->getPriceForQuantity($quantity);
+        //return $tieredPrice ? $tieredPrice->price : $this->getPriceForQuantity($quantity);
+    }
+
+    public function getPriceForQuantity($quantity = 1)
+    {
+        $tier = $this->tieredPrices() ->where('quantity', '<=', $quantity) ->reorder() ->orderBy('quantity', 'desc') ->first(); 
+        // No tier found → unit price = 0 
+        logger()->info("getPriceForQuantity " . ($tier ? ($tier->price / $tier->quantity) : 0));
+        if (! $tier) { return 0; } 
+        
+        // Convert stored total price into unit price 
+        return $tier->price / $tier->quantity;
     }
 
     /**

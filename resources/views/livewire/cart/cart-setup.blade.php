@@ -24,24 +24,23 @@
     @else --}}
     <form wire:submit.prevent="cartSelectSubmit" class="d-flex flex-column gap-.5">
         @if ($selected_quantity)
-            <div class="alert alert-info py-1 px-1 small mb-2" style="text-align: center">
+            {{-- <div class="alert alert-info py-1 px-1 small mb-2" style="text-align: center">
                 <p class="mb-0"><i class="bi bi-info-circle me-1"></i>
                 Adding {{ $selected_quantity }} unit(s) @
                 ${{ number_format($product->getPriceForQuantity($selected_quantity), 2) }}</p>
-            </div>
+            </div> --}}
         @endif
         <div class="d-flex align-items-center gap-2 justify-content-between">
-            <div class="form-group">
-
+            <div class="form-group flex-grow-1">
                 <select wire:model.live="selected_quantity" id="quantity"
                     class="form-select form-select-sm shadow-sm border-0 bg-light">
-                    <option value="" disabled selected>-- select quantity --</option>
+                    <option value="" disabled selected class="text-center">-- select quantity --</option>
                     @foreach ($prices as $price)
-                        <option value="{{ $price->quantity }}" class="text-center">{{ $price->quantity }}+ units @ ${{ number_format($price->price, 2) }} each</option>
+                        <option value="{{ $price->quantity }}" class="text-center">{{ $price->quantity }} units @ ${{ number_format($price->price, 2) }}</option>
                     @endforeach
                 </select>
             </div>
-            <button type="submit" @disabled($prices->isEmpty()) class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2 shadow-sm">
+            <button type="submit" @disabled($prices->isEmpty() || $selected_quantity == "") class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2 shadow-sm px-3.5">
                 <i class="fa fa-cart-plus"></i>
             </button>
         </div>

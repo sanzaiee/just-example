@@ -4,7 +4,7 @@
 
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="py-2">
-            <a href="{{ route('user.dashboard', ['brand' => $product->brand->slug]) }}"><span class="text-muted fw-light">{{ $product->brand->name }}</span></a> / {{ $product->name }}
+            <a href="{{ route('user.dashboard', ['brand' => $product->brand->slug]) }}"><span class="text-muted fw-light">{{ $product->brand->name }}</span></a> / <a href="{{ route('user.dashboard', ['category' => $product->category->slug]) }}"><span class="text-muted fw-light">{{ $product->category->name }}</span></a>
         </h4>
         <div class="card h-90 shadow-sm">
             <div class="card-body d-flex flex-column">
@@ -60,8 +60,10 @@
 
                         <hr>
 
-                        <div class="mt-2 d-flex justify-content-between">
+                        <div class="mt-2 d-flex">
                             <livewire:cart-setup :product="$product" :detail="true" />
+                        </div>
+                        <div class="mt-2 d-flex justify-content-between">
                             <div class="badges">
                                 @if ($product->best_rated)
                                     <span class="badge bg-warning mt-2" style="float: right; margin-right: 2px;">Best Rated</span>
@@ -107,7 +109,10 @@
                                                     </p>
 
                                                     <!-- Buttons -->
-                                                    <div class="mt-auto d-flex justify-content-between gap-2">
+                                                    {{-- <div class="mt-auto d-flex justify-content-between gap-2">
+                                                        <livewire:cart-setup :product="$item" :detail="false" />
+                                                    </div> --}}
+                                                    <div class="border-top pt-3">
                                                         <livewire:cart-setup :product="$item" :detail="false" />
                                                     </div>
                                                 </div>

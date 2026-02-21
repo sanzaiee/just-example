@@ -14,7 +14,7 @@ class CanadaPostService
 
     public function __construct()
     {
-        $this->apiKey = env('CANADA_POST_KEY');
+        $this->apiKey = config('services.api_key.canada_post_key');
     }
 
     /**

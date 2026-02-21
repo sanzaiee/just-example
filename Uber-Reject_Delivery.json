@@ -1,0 +1,8 @@
+{
+    "code": "address_undeliverable",
+    "message": "The specified location is not in a deliverable area.",
+    "kind": "error",
+    "metadata": {
+        "details": "The dropoff location is outside the delivery radius of the pickup location (Max Radius: 6.21 miles, Calculated Distance: 8.21 miles)."
+    }
+}

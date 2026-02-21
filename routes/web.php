@@ -95,5 +95,6 @@ Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
 
     Route::get('/order-email/{pid}', [OrderController::class, 'ResendOrderConfirmationEmail']);
     Route::get('/pickup-email/{pid}', [OrderController::class, 'ResendPickupEmail']);
+    Route::get('/update-uber-status/{pid}', [OrderController::class, 'UpdateUberDeliveryStatus']);
 
 });

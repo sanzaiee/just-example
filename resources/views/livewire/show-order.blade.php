@@ -6,8 +6,9 @@
             text-align: right;
         }
     </style>
-
-    @endpush<div class="container-xxl flex-grow-1 container-p-y">
+    @endpush
+    
+    <div class="container-xxl flex-grow-1 container-p-y">
         @if ($order->order_status == 3)
             <div class="alert alert-success">
                 <strong>Order Complete</strong>
@@ -49,11 +50,10 @@
                 <div class="col-4">
                     <button type="button" class="btn btn-secondary me-2"
                         data-bs-toggle="modal"
-                        data-bs-target="#autoSubmitModal">
+                        data-bs-target="#reviewUberDeliveryModal">
                         Review Delivery
                     </button>
                     @livewire('Delivery.review-uber-direct-delivery',['order'=>$order])
-
                 </div>
             @endif
 
@@ -110,11 +110,7 @@
                     @if ($order->is_store_pickup)
                         Pickup
                     @else
-                        @if ($order->order_status == 4)
-                            Delivery in progress
-                        @else
-                            Delivery
-                        @endif
+                        Delivery
                     @endif
                 @else
                     <div class="gy-3">

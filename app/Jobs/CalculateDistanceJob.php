@@ -59,8 +59,8 @@ class CalculateDistanceJob implements ShouldQueue
 
         // 2. Store location (example)
         $store = [
-            'lat' => 43.67051795,
-            'lng' => -79.38165406,
+            'lat' => 43.66963252,
+            'lng' => -79.38474131,
         ];//43.67051795, -79.38165406 
         //43.73837530, -79.24351120
 

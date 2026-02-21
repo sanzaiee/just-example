@@ -5,26 +5,19 @@ namespace App\Livewire\Delivery;
 use Livewire\Component;
 use App\Models\Order;
 Use App\Helpers\UberTokenHelper;
+Use App\Helpers\UberTokenHelper_mock;
 use App\Models\OrderFulfillment;
 use App\Models\Setting;
 use Carbon\Carbon;
 
 class ReviewUberDirectDelivery extends Component
 {
-    public bool $processing = false;
-    public bool $isComplete = false;
     public ?string $apiResponse = null;
 
     public Order $order;
     public function mount(Order $order)
     {
         $this->order = $order;
-        // $this->apiResponse = json_encode([
-        //             'code' => 200,
-        //             'delivery_id' => $json['id'] ?? null,
-        //             'status' => $json['status'] ?? null,
-        //             'tracking_url' => 'https://delivery.uber.com/ca/orders/f52d2144-ed91-4101-8f34-d026a1050b24?tenancyOverride=uber%2Ftesting',
-        //         ]);
     }
 
     public bool $is_scheduled = false;
@@ -63,15 +56,6 @@ class ReviewUberDirectDelivery extends Component
     public function createDelivery()
     {
         $this->validate();
-
-        // HARD stop: prevents duplicate submission
-        if ($this->processing) {
-            return;
-        }
-
-        $this->processing = true;
-        $this->apiResponse = null;
-        
         try {
             // sleep(5);
             // $this->apiResponse = json_encode([
@@ -88,7 +72,8 @@ class ReviewUberDirectDelivery extends Component
             //  $this->apiResponse = 'Simulated delivery creation successful.';
             //  return;
 
-            $response=UberTokenHelper::createDelivery($this->createDeliveryPayload($this->order));
+            //$response=UberTokenHelper::createDelivery($this->createDeliveryPayload($this->order));
+            $response=UberTokenHelper_mock::createDelivery();
 
             if ($response->successful()) {
                 $json = $response->json();
@@ -98,15 +83,7 @@ class ReviewUberDirectDelivery extends Component
                 $lastFive = $orderUUID
                     ? substr($orderUUID, -5)
                     : null;
-                // Extract only the fields you care about
-                $this->apiResponse = json_encode([
-                    'code' => 200,
-                    'delivery_id' => $json['id'] ?? null,
-                    'status' => $json['status'] ?? null,
-                    'tracking_url' => $json['tracking_url'] ?? null,
-                    'uuid' => $lastFive,
-                ]);
-
+                
                 OrderFulfillment::create([
                     'order_id' => $this->order->id,
                     'tracking_number' => $json['id'] ?? null,
@@ -117,23 +94,34 @@ class ReviewUberDirectDelivery extends Component
                     'created_by' => auth()->id() //for auditing
                 ]);
 
-                $this->order->update(['order_status' => 4, 'pending_status' => 1, 'admin_notes' => $lastFive]); // Shipping in Progress
-                $this->dispatch('order-updated');
+                $this->order->update(['order_status' => 4, 'pending_status' => 1, 'admin_notes' => $lastFive]);
+
+                // Extract only the fields you care about
+                $this->apiResponse = json_encode([
+                    'code' => 200,
+                    'delivery_id' => $json['id'] ?? null,
+                    'status' => $json['status'] ?? null,
+                    'tracking_url' => $json['tracking_url'] ?? null,
+                    'uuid' => $lastFive,
+                ]);
+
+                $this->dispatch('alert', [
+                    'type' => 'info',
+                    'message' => 'Delivery created.',
+                ]);
+
             } else {
                 $status = $response->status();
                 $json = $response->json();
 
+                logger()->info('_________________');
                 logger()->info('Uber Delivery Failed:', $json);
+                $payload = $this->createDeliveryPayload($this->order);
+                $payloadString = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                logger()->info($payloadString);
+                logger()->info('_________________');
 
-                // Special handling for address undeliverable
-                if ($status === 400 && isset($json['code']) && $json['code'] === 'address_undeliverable') {
-                    $this->apiResponse = json_encode([
-                        'code' => 'address_undeliverable',
-                        'message' => 'Delivery failed: The address cannot be delivered to. Please check the address.',
-                    ]);
-                }
-                // Generic Uber API errors
-                elseif (isset($json['code'], $json['message'])) {
+                if (isset($json['code'], $json['message'])) {
                     $tempResponse = [
                         'code' => $json['code'],
                         'message' => $json['message'],
@@ -145,11 +133,6 @@ class ReviewUberDirectDelivery extends Component
                     if (isset($json['metadata'])) $tempResponse['metadata'] = $json['metadata'];
 
                     $this->apiResponse = json_encode($tempResponse);
-
-                    //If $payload is an array
-                    $payload = $this->createDeliveryPayload($this->order);
-                    $payloadString = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                    logger()->info($payloadString);
                 }
                 // Fallback for unknown response
                 else {
@@ -161,10 +144,21 @@ class ReviewUberDirectDelivery extends Component
             }
         } catch (\Throwable $e) {
             $this->apiResponse = 'Request failed: ' . $e->getMessage();
-        } finally {
-            $this->processing = false;
-            $this->isComplete = true;
         }
+    }
+
+    private bool $isExecuted = false;
+    public function closeModal()
+    {
+        logger()->info('I am called');
+        if($this->isExecuted) return;
+
+        $this->dispatch('close-modal');
+
+        if($this->order->order_status == 4)
+            $this->dispatch('order-updated');
+
+        $this->isExecuted = true;
     }
 
     private function createDeliveryPayload(Order $order): array
