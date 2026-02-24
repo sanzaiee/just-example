@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Livewire\Cart\CartDropdown;
 use App\Livewire\Cart\CartSetup;
 use App\Livewire\Cart\Checkout;
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
@@ -33,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading(App::isLocal());
         Model::shouldBeStrict(App::isLocal());
 
+        // Register Product Observer to prevent deletion of products with orders
+        Product::observe(ProductObserver::class);
     }
 }

@@ -1,0 +1,119 @@
+﻿Backup generated on: 02/24/2026 14:20:06
+Relative Path | Category | Reason for Removal
+----------------------------------------
+\public\assets\vendor\libs\apex-charts\ | Charts | No usage detected in blade files
+\public\assets\vendor\libs\fullcalendar\ | Calendar | Only 1 mention in checkout, likely unused
+\public\assets\vendor\libs\jkanban\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\swiper\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\dropzone\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\sweetalert2\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\highlight\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\bootstrap-maxlength\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\bootstrap-select\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\bs-stepper\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\bootstrap-daterangepicker\ | UI Components | No usage detected in blade files
+\public\assets\vendor\libs\formvalidation\ | Form Validation | No usage detected or replaced by other libraries
+\public\assets\vendor\libs\jquery-timepicker\ | Form Validation | No usage detected or replaced by other libraries
+\public\assets\vendor\libs\bootstrap-datepicker\ | Form Validation | No usage detected or replaced by other libraries
+\public\assets\vendor\libs\rateyo\ | Form Validation | No usage detected or replaced by other libraries
+\public\select2\ | Select2 | Only commented out in 1 location, not actually used
+\public\assets\vendor\css\pages\page-pricing.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-icons.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-help-center.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\app-calendar.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\app-kanban.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\app-chat.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\app-email.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\cards-advance.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\advanced-wizard.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-faq.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-misc.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-auth.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-user-view.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\page-profile.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\app-invoice.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\app-invoice-print.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\ui-carousel.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\pages\wizard-ex-checkout.css | Page CSS | Page not implemented or not used
+\public\assets\vendor\css\theme-raspberry.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\theme-raspberry-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\theme-semi-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\theme-semi-dark-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\theme-bordered.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\theme-bordered-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\core-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-default-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-raspberry.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-raspberry-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-semi-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-semi-dark-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-bordered.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\theme-bordered-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\css\rtl\core-dark.css | Theme Variants | Only theme-default is used in layouts
+\public\assets\vendor\fonts\flag-icons.css | Fonts | Commented out and not used
+\public\assets\js\app-access-permission.js | JavaScript | No references found in blade files
+\public\assets\js\app-access-roles.js | JavaScript | No references found in blade files
+\public\assets\js\app-email.js | JavaScript | No references found in blade files
+\public\assets\js\app-invoice-edit.js | JavaScript | No references found in blade files
+\public\assets\js\app-invoice-list.js | JavaScript | No references found in blade files
+\public\assets\js\app-user-view-account.js | JavaScript | No references found in blade files
+\public\assets\js\extended-ui-misc-clipboardjs.js | JavaScript | No references found in blade files
+\public\assets\js\extended-ui-tour.js | JavaScript | No references found in blade files
+\public\assets\js\extended-ui-treeview.js | JavaScript | No references found in blade files
+\public\assets\js\extended-ui-perfect-scrollbar.js | JavaScript | No references found in blade files
+\public\assets\js\forms-editors.js | JavaScript | No references found in blade files
+\public\assets\js\forms-pickers.js | JavaScript | No references found in blade files
+\public\assets\js\forms-selects.js | JavaScript | No references found in blade files
+\public\assets\js\forms-typeahead.js | JavaScript | No references found in blade files
+\public\assets\js\modal-add-permission.js | JavaScript | No references found in blade files
+\public\assets\js\modal-create-app.js | JavaScript | No references found in blade files
+\public\assets\js\modal-edit-user.js | JavaScript | No references found in blade files
+\public\assets\js\modal-enable-otp.js | JavaScript | No references found in blade files
+\public\assets\js\modal-share-project.js | JavaScript | No references found in blade files
+\public\assets\js\modal-two-factor-auth.js | JavaScript | No references found in blade files
+\public\assets\js\modal-add-new-cc.js | JavaScript | No references found in blade files
+\public\assets\js\modal-add-new-address.js | JavaScript | No references found in blade files
+\public\assets\js\modal-add-role.js | JavaScript | No references found in blade files
+\public\assets\js\offcanvas-add-payment.js | JavaScript | No references found in blade files
+\public\assets\js\pages-account-settings-account.js | JavaScript | No references found in blade files
+\public\assets\js\pages-account-settings-billing.js | JavaScript | No references found in blade files
+\public\assets\js\pages-account-settings-security.js | JavaScript | No references found in blade files
+\public\assets\js\pages-auth-multisteps.js | JavaScript | No references found in blade files
+\public\assets\js\pages-auth-two-steps.js | JavaScript | No references found in blade files
+\public\assets\js\ui-carousel.js | JavaScript | No references found in blade files
+\public\assets\js\ui-menu.js | JavaScript | No references found in blade files
+\public\assets\js\ui-modals.js | JavaScript | No references found in blade files
+\public\assets\js\ui-navbar.js | JavaScript | No references found in blade files
+\public\assets\js\wizard-ex-create-deal.js | JavaScript | No references found in blade files
+\public\assets\js\wizard-ex-checkout.js | JavaScript | No references found in blade files
+\public\assets\js\wizard-ex-property-listing.js | JavaScript | No references found in blade files
+\public\assets\js\form-wizard-validation.js | JavaScript | No references found in blade files
+\public\assets\js\form-wizard-icons.js | JavaScript | No references found in blade files
+\public\assets\js\form-wizard-numbered.js | JavaScript | No references found in blade files
+\public\assets\js\tables-datatables-advanced.js | JavaScript | No references found in blade files
+\public\assets\js\tables-datatables-extensions.js | JavaScript | No references found in blade files
+\public\assets\js\dashboards-analytics.js | JavaScript | No references found in blade files
+\public\assets\js\dashboards-ecommerce.js | JavaScript | No references found in blade files
+\public\assets\js\cards-statistics.js | JavaScript | No references found in blade files
+\public\assets\js\app-calendar.js | JavaScript | No references found in blade files
+\public\assets\js\app-chat.js | JavaScript | No references found in blade files
+\public\assets\js\app-kanban.js | JavaScript | No references found in blade files
+\public\assets\vendor\libs\plyr\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\quill\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\nouislider\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\pickr\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\typeahead-js\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\bloodhound\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\clipboard\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\idletimer\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\spinkit\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\jstree\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\shepherd\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\datatables-checkboxes-jquery\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\datatables-fixedcolumns-bs5\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\datatables-fixedheader-bs5\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\datatables-rowgroup-bs5\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\datatables-select-bs5\ | Vendor JS | No usage detected
+\public\assets\vendor\libs\node-waves\node-waves.css | Vendor JS | No usage detected
+\public\assets\vendor\libs\animate-on-scroll\ | Vendor JS | No usage detected
+\public\assets\wimmviewer\ | WimmViewer | Used only in product show - load from CDN if needed

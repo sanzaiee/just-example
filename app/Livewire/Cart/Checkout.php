@@ -258,12 +258,19 @@ class Checkout extends Component
         // Insert order products in bulk
         if (!empty($this->cartItems)) {
             OrderProductList::insert(
-                collect($this->cartItems)->map(fn ($item) => [
-                    'order_id' => $order->id,
-                    'product_id' => $item['id'],
-                    'quantity' => $item['qty'],
-                    'price' => $item['unitPrice'],
-                ])->toArray()
+                collect($this->cartItems)->map(function ($item) {
+                    $product = $this->products[$item['id']] ?? null;
+
+                    return [
+                        'order_id' => $order->id,
+                        'product_id' => $item['id'],
+                        'product_name' => $product?->name,
+                        'product_code' => $product?->code,
+                        'product_description' => $product?->short,
+                        'quantity' => $item['qty'],
+                        'price' => $item['unitPrice'],
+                    ];
+                })->toArray()
             );
         }
         
