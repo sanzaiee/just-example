@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Illuminate\Http\Client\RequestException;
 use App\Models\User;
-use App\Services\UberDirectAddressFormatter;
 class UberTokenHelper
 {
     private static string $clientId;
@@ -16,9 +15,9 @@ class UberTokenHelper
 
     public static function init()
     {
-        self::$clientId = env('UBER_CLIENT_ID');
-        self::$clientSecret = env('UBER_CLIENT_SECRET');
-        self::$customerId = env('UBER_CUSTOMER_ID');
+        self::$clientId = config('services.uber.client_id'); 
+        self::$clientSecret = config('services.uber.client_secret'); 
+        self::$customerId = config('services.uber.customer_id');
     }
 
     /**
@@ -103,39 +102,12 @@ class UberTokenHelper
         return $accessToken;
     }
 
-    /**
-     * Make an Uber API request with automatic token handling
-     * 
-     * @param string $method HTTP method ('get', 'post', etc.)
-     * @param string $url Full API URL
-     * @param array $options Optional request options (headers, json, etc.)
-     */
-    private static function request(string $method, string $url, array $options = []): \Illuminate\Http\Client\Response
-    {
-        $token = self::getToken();
-
-        // Merge Authorization header
-        $options['headers'] = array_merge($options['headers'] ?? [], [
-            'Authorization' => "Bearer $token",
-            'Accept' => 'application/json',
-        ]);
-
-        // Make the request
-        $response = Http::{$method}($url, $options);
-
-        // If unauthorized, retry once with new token
-        if ($response->status() === 401) {
-            $token = self::fetchAndStoreToken(); // force new token
-            $options['headers']['Authorization'] = "Bearer $token";
-
-            $response = Http::{$method}($url, $options);
-        }
-
-        return $response;
-    }
-
     public static function createDelivery(array $payload): \Illuminate\Http\Client\Response
     {
+        if (config('app.debug') && app()->environment('local')) {
+            throw new \Exception('App is in local testing mode');
+        }
+
         $token = self::getToken();
 
         // Request headers
@@ -158,6 +130,29 @@ class UberTokenHelper
 
             $response = Http::withHeaders($options['headers'])
                 ->post($url, $payload);
+        }
+
+        return $response;
+    }
+
+    public static function getDeliveryUpdate(string $deliveryId): \Illuminate\Http\Client\Response
+    {
+        if (!is_string($deliveryId) || trim($deliveryId) === '') {
+            throw new \InvalidArgumentException('Uber delivery ID must be a non-empty string.');
+        }
+
+        $token = self::getToken();
+        $headers = ['Authorization' => "Bearer $token", 'Accept' => 'application/json', 'Content-Type' => 'application/json',];
+
+        $url = "https://api.uber.com/v1/customers/" . self::$customerId . "/deliveries/" . $deliveryId;
+        $response = Http::withHeaders($headers)->get($url);
+
+        // If unauthorized, retry once with new token
+        if ($response->status() === 401) {
+            $token = self::fetchAndStoreToken(); // force new token
+            $headers['Authorization'] = "Bearer $token";
+
+            $response = Http::withHeaders($headers)->get($url);
         }
 
         return $response;

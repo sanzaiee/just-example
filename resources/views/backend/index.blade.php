@@ -1,6 +1,7 @@
 @extends('backend.master')
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+    {{-- <div class="container-xxl flex-grow-1 container-p-y"> --}}
+    <div class="container-xxl flex-grow-1">
         <!-- Header Section -->
         {{-- <div class="row mb-4">
             <div class="col-12">
@@ -31,7 +32,7 @@
         </div> --}}
 
         <!-- Search and Filter Section -->
-        <div class="row mb-4">
+        <div class="row mb-3">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -149,39 +150,12 @@
             </div>
         </div>
 
-        <!-- Featured Products Section -->
-        @if ($featuredProducts)
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="card border-0">
-                        <div class="card-header py-3 ">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-dark">
-                                    <i class="fas fa-star text-warning me-2"></i>Featured Products
-                                </h5>
-
-                                <a style="display: none !important;" href="{{ route('user.dashboard', ['status' => 'feature']) }}"
-                                    class="btn btn-primary btn-sm">View All</a>
-                            </div>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="row g-4" id="featuredProducts">
-                                @foreach ($featuredProducts as $product)
-                                    @include('layouts.list', ['product' => $product])
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
         <!-- Best Sellers Section -->
         @if ($bestSellers->count() > 0)
-            <div class="row mb-4">
+            <div class="row mb-3">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header px-2 py-2">
+                        <div class="card-body py-2.5">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-crown text-success me-2"></i>Best Sellers
@@ -190,12 +164,12 @@
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
-                        <div class="card-body px-2">
-                            <div class="row g-3" id="bestSellerProducts">
-                                @foreach ($bestSellers as $product)
-                                    @include('layouts.list', ['product' => $product])
-                                @endforeach
-                            </div>
+                    </div>
+                    <div class="card-body" style="margin-top: 1rem;">
+                        <div class="row g-3" id="bestSellerProducts">
+                            @foreach ($bestSellers as $product)
+                            @include('layouts.list', ['product' => $product])
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -204,10 +178,10 @@
 
         <!-- On Sale Products Section -->
         @if ($onSaleProducts->count() > 0)
-            <div class="row mb-4">
+            <div class="row mb-3">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header px-2 py-2 px-md-4">
+                        <div class="card-body py-2.5">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-tags text-info me-2"></i>On Sale Products
@@ -216,12 +190,12 @@
                                     class="btn btn-primary btn-sm">View All</a>
                             </div>
                         </div>
-                        <div class="card-body px-2 px-md-4">
-                            <div class="row g-3" id="onSaleProducts">
-                                @foreach ($onSaleProducts as $product)
-                                    @include('layouts.list', ['product' => $product])
-                                @endforeach
-                            </div>
+                    </div>
+                    <div class="card-body" style="margin-top: 1rem;">
+                        <div class="row g-3" id="onSaleProducts">
+                            @foreach ($onSaleProducts as $product)
+                            @include('layouts.list', ['product' => $product])
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -230,10 +204,10 @@
 
         <!-- All Products -->
         @if(!$hideAllProducts)
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-body py-2.5">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-dark">
                                 <i class="fas fa-box text-primary me-2"></i>All Products
@@ -243,19 +217,19 @@
                                 class="btn btn-primary btn-sm">View All</a>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            @foreach ($products as $product)
-                                @include('layouts.list', ['product' => $product])
-                            @endforeach
-                        </div>
-                        <!-- Pagination -->
-                        @if ($products->hasPages())
-                            <div class=" text-center ">
-                                {{ $products->links('pagination::bootstrap-5') }}
-                            </div>
-                        @endif
+                </div>
+                <div class="card-body" style="margin-top: 1rem;">
+                    <div class="row g-3">
+                        @foreach ($products as $product)
+                        @include('layouts.list', ['product' => $product])
+                        @endforeach
                     </div>
+                    <!-- Pagination -->
+                    @if ($products->hasPages())
+                    <div class=" text-center mt-2">
+                        {{ $products->links('pagination::bootstrap-5') }}
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

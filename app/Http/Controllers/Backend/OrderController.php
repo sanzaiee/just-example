@@ -8,8 +8,8 @@ use App\Models\OrderCancel;
 use App\Models\OrderProductList;
 use App\Models\OrderDeliveryAddress;
 use Illuminate\Http\Request;
-use App\Mail\SendOrderConfirmation;
-use Illuminate\Support\Facades\Mail;
+Use App\Helpers\UberTokenHelper;
+Use App\Helpers\UberTokenHelper_mock;
 
 class OrderController extends Controller
 {
@@ -19,7 +19,7 @@ class OrderController extends Controller
     //order_status = 4 => Shipping in Progress
     public function index(Request $request)
     {
-        $query = Order::with('user', 'orderProductLists', 'orderProductLists.product', 'orderDeliveryAddress');
+        $query = Order::with('orderProductLists', 'orderProductLists.product', 'orderDeliveryAddress');
 
         // Apply filters
         if ($request->filled('date_from')) {
@@ -119,8 +119,8 @@ class OrderController extends Controller
 
     public function show($pid)
     {
-        $order = Order::with('orderDeliveryAddress','user','orderProductLists', 'orderProductLists.product')->where('pid', $pid)->first();
-    
+        $order = Order::with('orderDeliveryAddress','orderProductLists', 'orderProductLists.product','latestFulfillment')->where('pid', $pid)->first();
+        //return $order;
         return view('backend.order.show', compact('order'));
     }
 
@@ -138,7 +138,7 @@ class OrderController extends Controller
         return back()->with('success', 'Order notes updated successfully.');
     }
 
-    public function ResendOrderConfirmationEmail($orderId)
+    public function ResendOrderConfirmationEmail($orderId, \App\Services\EmailService $emailServices)
     {
         $order = Order::with('user', 'orderProductLists.product', 'orderDeliveryAddress')->where('pid', $orderId)->first();
         if (! $order) {
@@ -147,16 +147,46 @@ class OrderController extends Controller
 
         // return $order;
 
-        try {
-            $email = $order->user->email ?? '';
-            Mail::to($email)->send(new SendOrderConfirmation($order));
-
-            return "Order confirmation email resent successfully for order number {$orderId}";
-        } catch (\Exception $e) {
-            logger()->error("Resend order confirmation email failed for Order ID {$order->id}: {$e->getMessage()}");
-            return "Failed to resend order confirmation email for order number {$orderId}. : {$e->getMessage()}";
-        }
+        $response = $emailServices->OrderConfirmation($order);
+        return "Order confirmation email resent {$response['status']} for order number {$orderId}";
     }
+
+    public function ResendPickupEmail($orderId, \App\Services\EmailService $emailServices)
+    {
+        $order = Order::where('pid', $orderId)->first();
+        if (! $order) {
+            return "Order with number {$orderId} not found.";
+        }
+
+        $response = $emailServices->PickupOrderInstruction($order);
+        return "Pickup Order Instruction sent {$response['status']} for Order: {$orderId}";
+    }
+
+    public function UpdateUberDeliveryStatus($orderId)
+    {
+        $order = Order::with('latestFulfillment')->where('pid', $orderId)->first();
+
+        if (!$order) {
+            return "Order with number {$orderId} not found.";
+        }
+
+        if ($order->is_store_pickup) {
+            return "Order type is store pickup.";
+        }
+
+        $tracking = $order->latestFulfillment->tracking_number ?? null;
+
+        if (!$tracking || !is_string($tracking) || trim($tracking) === '') {
+            return "Uber delivery is not created yet.";
+        }
+
+        // Now call Uber API
+        // $response = UberTokenHelper::getDeliveryUpdate($tracking);
+        $response = UberTokenHelper_mock::getDeliveryUpdate($tracking);
+
+        return $response->json();
+    }
+
 
     // public function show($pid)
     // {

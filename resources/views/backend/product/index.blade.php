@@ -7,7 +7,9 @@
             <th>S/N</th>
             {{-- <th>Image</th> --}}
             <th>Title</th>
-            <th>Created By</th>
+            {{-- <th>Created By</th> --}}
+            <th>Category</th>
+            <th>Brand</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -35,7 +37,9 @@
                 </td>
 
 
-                <td>{{ $item->user->name ?? '-' }}</td>
+                {{-- <td>{{ $item->user->name ?? '-' }}</td> --}}
+                <td>{{ $item->category->name ?? '-' }}</td>
+                <td>{{ $item->brand->name ?? '-' }}</td>
 
                 {{-- <td>
                     <a href="{{ route('blog.comment',$item->slug) }}" target="_blank">

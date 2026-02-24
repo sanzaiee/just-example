@@ -21,9 +21,12 @@ class Order extends Model
         'delivery_status',
         'order_status',
         'is_store_pickup',
-        'notes'
+        'notes',
+        'admin_notes',
+        'shipping_cost'
     ];
 
+    protected $casts = ['shipping_cost' => 'decimal:2', 'amount' => 'decimal:2'];
 
     public function orderProductLists()
     {
@@ -45,12 +48,13 @@ class Order extends Model
         return $this->hasOne(OrderDeliveryAddress::class, 'order_id');
     }
 
-    /**
-     * Alias for orderDeliveryAddress for backward compatibility.
-     * Use orderDeliveryAddress for new code.
-     */
-    public function shippingAddress()
+    public function fulfillments()
     {
-        return $this->orderDeliveryAddress();
+        return $this->hasMany(OrderFulfillment::class);
+    }
+
+    public function latestFulfillment()
+    {
+        return $this->hasOne(OrderFulfillment::class)->latestOfMany();
     }
 }

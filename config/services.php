@@ -31,4 +31,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'uber' => [
+        'client_id' => env('UBER_CLIENT_ID'), 
+        'client_secret' => env('UBER_CLIENT_SECRET'), 
+        'customer_id' => env('UBER_CUSTOMER_ID'),
+    ],
+
+    'api_key' => [
+        'canada_post_key' => env('CANADA_POST_KEY'), 
+        'google_maps_key' => env('GOOGLE_MAPS_KEY'), 
+    ]
+
 ];

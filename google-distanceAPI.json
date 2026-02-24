@@ -1,0 +1,26 @@
+{
+    "destination_addresses": [
+        "2780 Eglinton Ave E, Toronto, ON M1J 2C8, Canada"
+    ],
+    "origin_addresses": [
+        "100 Hayden St, Toronto, ON M4Y 3C7, Canada"
+    ],
+    "rows": [
+        {
+            "elements": [
+                {
+                    "distance": {
+                        "text": "18.0 km",
+                        "value": 18024
+                    },
+                    "duration": {
+                        "text": "30 mins",
+                        "value": 1829
+                    },
+                    "status": "OK"
+                }
+            ]
+        }
+    ],
+    "status": "OK"
+}

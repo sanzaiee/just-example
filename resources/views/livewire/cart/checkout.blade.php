@@ -1,4 +1,26 @@
 <div>
+    @push('css')
+    <style>
+        .qty-auto {
+            width: auto !important;
+            flex: 0 0 auto !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+            text-align: center;
+        }
+         /* Desktop behavior (your original intent) 
+        .qty-auto { width: auto !important; flex: 0 0 auto !important; padding-left: 4px !important; padding-right: 4px
+        !important; text-align: center !important; } */
+
+        .qty-btn { padding-left: 4px !important; padding-right: 4px !important; min-width: 32px; }
+
+        /* Mobile fix: make all elements equal width */
+        @media (max-width: 576px) {
+            .qty-stack { display: flex; flex-direction: column; align-items: center; } .qty-stack .btn, .qty-stack .form-control { width: 100% !important; max-width: 140px; margin: 3px auto; flex: none !important; /* overrides qty-auto */ } .qty-stack .form-control { text-align: center !important; /* ensures visible + centered */ }
+        }
+
+    </style>    
+    @endpush
     <div class="row g-3">
         @if ($cartCount == 0 || $subTotal == 0 )
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -8,13 +30,13 @@
         @endif
 
         <div class="col-md-8">
-            <div class="table-responsive">
+            <div class="table-responsive-sm">
                 <table class="table">
                     <tbody>
                         @forelse ($cartItems as $item)
                             <tr class="" wire:key="cart-item-{{ $item['rowId'] }}">
                                 <td
-                                    class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap">
+                                    class="d-flex flex-column align-items-center justify-content-center text-center text-nowrap px-0">
                                     <a href="{{ route('product.detail', $item['slug']) }}">
                                         <img src="{{ $item['image'] }}"
                                             class="rounded float-start img-thumbnail blur-up lazyload" alt=""
@@ -29,33 +51,35 @@
                                     <p>${{ number_format($item['unitPrice'], 2) }}</p>
                                 </td>
 
-                                <td class="quantity">
+                                <td class="quantity px-0 text-center">
                                     <h6 class="table-title text-content" style="text-align: center">Qty</h6>
-                                    <div class="input-group input-group-sm">
-                                        <button type="button" class="btn btn-outline-primary"
-                                            wire:click="decreaseQty('{{ $item['rowId'] }}')">
-                                            <i class="fa fa-minus"></i>
+                                    <div class="input-group input-group-sm justify-content-center qty-stack">
+                                        <button type="button" class="btn btn-outline-primary qty-btn"
+                                        wire:loading.attr="disabled"
+                                        wire:click="decreaseQty('{{ $item['rowId'] }}')"
+                                        ><i class="fa fa-minus"></i>
                                         </button>
 
-                                        <input type="number" class="form-control text-center" min="1"
+                                        <input type="number" class="form-control qty-auto" min="1"
                                             max="5" value="{{ $item['qty'] }}" readonly>
 
-                                        <button type="button" class="btn btn-outline-primary"
-                                            wire:click="increaseQty('{{ $item['rowId'] }}')">
-                                            <i class="fa fa-plus"></i>
+                                        <button type="button" class="btn btn-outline-primary qty-btn" 
+                                        wire:loading.attr="disabled"
+                                        wire:click="increaseQty('{{ $item['rowId'] }}')"
+                                        ><i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </td>
 
-                                <td class="subtotal">
+                                <td class="subtotal" style="text-align: center">
                                     <h6 class="fw-bold">Sub Total</h6>
                                     <p>${{ number_format($item['subtotal'], 2) }}</p>
                                 </td>
 
-                                <td class="save-remove">
+                                <td class="save-remove px-0">
                                     <button class="btn btn-outline-danger btn-xs text-danger"
                                         wire:click="removeFromCart('{{ $item['rowId'] }}')">
-                                        <i class="fa fa-trash"></i>
+                                        <i class="fa fa-trash fa-2x"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -90,8 +114,8 @@
                     <!-- Delivery -->
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model.live="delivery_method" name="delivery_method" value="delivery">
-                            <label class="form-check-label" for="homeDelivery">
+                            <input class="form-check-input" for="homeDelivery" type="radio" wire:model.live="delivery_method" name="delivery_method" value="delivery">
+                            <label class="form-check-label" name="homeDelivery">
                                 Ship to
                             </label>
                         </div>
@@ -118,7 +142,7 @@
                     <div class="align-items-center justify-content-center mt-2">
                         <label class="form-label" for="notes">Notes</label>
                         <textarea wire:model.defer="deliveryNotes" id="notes" maxlength="255" class="form-control"></textarea>
-                        <small class="text-muted" id="notes-count">0 / 255</small>
+                        <small class="text-muted" id="notes-count">max 255 characters</small>
                     </div>
 
                 </div>
@@ -140,19 +164,17 @@
                         <p class="mb-0 fw-bold">${{ number_format($subTotal, 2) }}</p>
                     </div>
 
-                    @if ($discount > 0)
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold mb-0">Discount:</h6>
-                            <p class="mb-0 text-danger">-${{ number_format($discount, 2) }}</p>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">Shipping Cost:</h6>
+                        <p class="mb-0 fw-bold">${{ number_format($shipping_cost, 2) }}</p>
+                    </div>
 
-                        <hr>
+                    <hr>
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold mb-0">Total:</h6>
-                            <p class="mb-0 fw-bold text-success">$ {{ number_format($subTotal - $discount, 2) }}</p>
-                        </div>
-                    @endif
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">Total:</h6>
+                        <p class="mb-0 fw-bold text-success">$ {{ number_format($subTotal + $shipping_cost, 2) }}</p>
+                    </div>
 
                     <hr>
 
@@ -182,7 +204,7 @@
     </div>
 </div>
 
-@push('custom-scripts')
+{{-- @push('custom-scripts')
 <script>
     const textarea = document.getElementById('notes');
     const counter = document.getElementById('notes-count');
@@ -200,4 +222,4 @@
         }
     });
 </script>
-@endpush
+@endpush --}}

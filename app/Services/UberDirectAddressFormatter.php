@@ -16,9 +16,9 @@ class UberDirectAddressFormatter
             $streetParts[] = trim($deliveryAddress->address);
         }
 
-        if (!empty($deliveryAddress->house_no)) {
-            $streetParts[] = trim($deliveryAddress->house_no);
-        }
+        // if (!empty($deliveryAddress->house_no)) {
+        //     $streetParts[] = trim($deliveryAddress->house_no);
+        // }
 
         return [
             'street_address' => array_filter($streetParts), // "street_address": ["100 Maiden Ln", "Apt 101"],
@@ -29,7 +29,7 @@ class UberDirectAddressFormatter
         ];
     }
 
-    public static function pickupAddress(): array
+    public static function pickupAddressDummy(): array
     {
         // Create a dummy OrderDeliveryAddress object
         $address = new OrderDeliveryAddress([
@@ -37,6 +37,18 @@ class UberDirectAddressFormatter
             'house_no'    => 'Unit 2',
             'city'        => 'Scarborough',
             'postal_code' => 'M1J 2C8',
+        ]);
+        return self::format($address);
+    }
+
+    public static function pickupAddress(): array
+    {
+        // Create a dummy OrderDeliveryAddress object
+        $address = new OrderDeliveryAddress([
+            'address'      => '35 Hayden St',
+            'house_no'    => '',
+            'city'        => 'Toronto',
+            'postal_code' => 'M4Y 3C3',
         ]);
         return self::format($address);
     }

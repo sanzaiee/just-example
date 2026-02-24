@@ -28,7 +28,7 @@ class ProductSetup extends Component
 
     public $related_products = null;
 
-    #[Validate('required|min:3|max:20')]
+    #[Validate('required|min:3|max:100')]
     public $name;
 
     public $code;
@@ -162,7 +162,7 @@ class ProductSetup extends Component
     {
         // Validate all form data including images
         $data = $this->validate([
-            'name' => 'required|min:3|max:20',
+            'name' => 'required|min:3|max:100',
             'code' => 'required|min:3|max:20',
             'short' => 'nullable|min:5|max:80',
             'description' => 'nullable|min:5|max:200',

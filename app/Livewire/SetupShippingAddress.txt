@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\ShippingAddress;
+use App\Services\AddressMapService;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
+use Livewire\Component;
+
+#[Layout('backend.master')]
+class SetupShippingAddress extends Component
+{
+    public $shippingAddress, $authAddresses;
+
+    #[Validate('required|min:3|max:80')]
+    public $address, $city, $type;
+    // public $name, $address, $phone, $type, $city;
+    #[Validate('nullable|min:1|max:80')]
+    public $name, $phone, $email;
+
+    // #[Validate('required|min:3|email|max:80')]
+    // public $email;
+
+    #[Validate('nullable|min:1|max:80')]
+    public $street, $description;
+
+    // #[Validate('nullable|regex:Apt|Suite|Floor|Unit [A-Za-z0-9-]+')]
+    public $house_no;
+    public function rules(): array
+    {
+        return [
+            'house_no' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if (!empty($value) && !preg_match('/^(apt|suite|floor|unit) [A-Za-z0-9-]+$/i', $value)) {
+                        $fail("Must start with apt, suite, floor, or unit.");
+                    }
+                }
+            ],
+        ];
+    }
+
+    public function updatedHouseNo($value)
+    {
+        $this->validateOnly('house_no');
+    }
+
+    #[Validate('required|regex:/^[ABCEGHJ-NPRSTVXY]\d[ABCEGHJ-NPRSTV-Z] \d[ABCEGHJ-NPRSTV-Z]\d$/i')] #with space only
+    public $postal_code;
+
+    /** Set by map picker (optional). */
+    public $latitude;
+    public $longitude;
+
+    protected $messages = [
+        'postal_code.regex' => 'The postal code must be in the format A1A 1A1.',
+        'house_no.regex' => 'The house number must be in the format Apt 101, Suite 202, Floor 3, Unit 4.',
+    ];
+
+    public function render()
+    {
+        return view('livewire.setup-shipping-address');
+    }
+
+    public function mount()
+    {
+        $this->authAddresses = ShippingAddress::where('user_id', auth()->id())->get();
+    }
+
+    public $actionVal = "list";
+
+    public function action($action)
+    {
+        $this->actionVal = $action;
+    }
+
+    public function updatedPostalCode()
+    {
+        $this->validateOnly('postal_code');
+    }
+
+    public function save()
+    {
+        $data = $this->validate();
+        $data['user_id'] = auth()->id();
+        $data['latitude'] = $this->latitude;
+        $data['longitude'] = $this->longitude;
+        if($this->shippingAddress){
+            $this->shippingAddress->update($data);
+
+            $this->dispatch('alert', [
+                'type' => 'success',
+                'message' => 'Shipping address updated!',
+            ]);
+
+        }else{
+            $count = $this->authAddresses->count();
+            if($count < 5){
+                ShippingAddress::create($data);
+
+                $this->dispatch('alert', [
+                    'type' => 'success',
+                    'message' => 'Shipping address updated!',
+                ]);
+
+            }else{
+                 $this->dispatch('alert', [
+                    'type' => 'danger',
+                    'message' => 'Shipping address exceed not more than 5!',
+                ]);
+            }
+        }
+        $this->reset();
+        $this->mount();
+    }
+
+    public function removeAddress($id)
+    {
+        $address = ShippingAddress::find($id);
+        if (! $address) {
+            $this->dispatch('alert', [
+                'type' => 'warning',
+                'message' => 'Address not found or already removed.',
+            ]);
+            return;
+        }
+
+        $address->delete();
+        $this->dispatch('alert', [
+            'type' => 'danger',
+            'message' => 'Shipping address removed!',
+        ]);
+
+        $this->mount();
+    }
+
+    public function activeAddress($id)
+    {
+        $address = ShippingAddress::find($id);
+        $address->update(['active' => !$address->active]);
+
+        $this->dispatch('alert', [
+            'type' => 'danger',
+            'message' => 'Shipping address status marked!',
+        ]);
+
+        $this->mount();
+    }
+
+    public function editAddress($id)
+    {
+        $this->shippingAddress = ShippingAddress::find($id);
+        $this->setupAddress($this->shippingAddress);
+        $this->actionVal = "add";
+
+    }
+
+    public function setupAddress($address)
+    {
+        $this->type =$address->type;
+        $this->name =$address->name;
+        $this->email =$address->email;
+        $this->address =$address->address;
+        $this->street =$address->street;
+        $this->city =$address->city;
+        $this->house_no =$address->house_no;
+        $this->phone =$address->phone;
+        $this->description =$address->description;
+        $this->postal_code =$address->postal_code;
+        $this->latitude =$address->latitude;
+        $this->longitude =$address->longitude;
+    }
+
+    /**
+     * Set address, city, postal_code, and optional lat/lng from the map picker (Leaflet + Nominatim).
+     * Called from the frontend when the user selects a location.
+     */
+    public function setAddressFromMap(
+        string $address,
+        ?string $city = null,
+        ?string $postal_code = null,
+        ?float $latitude = null,
+        ?float $longitude = null
+    ): void {
+        $this->address = $address;
+        if ($city !== null) {
+            $this->city = $city;
+        }
+        if ($postal_code !== null) {
+            $this->postal_code = $postal_code;
+        }
+        if ($latitude !== null) {
+            $this->latitude = $latitude;
+        }
+        if ($longitude !== null) {
+            $this->longitude = $longitude;
+        }
+    }
+
+    /**
+     * Config for the address map picker (passed to the view).
+     */
+    #[Computed]
+    public function addressMapConfig(): array
+    {
+        $service = app(AddressMapService::class);
+        $config = $service->getFrontendConfig();
+        $config['containerId'] = 'address-map';
+        $config['searchInputId'] = 'address-map-search';
+        return $config;
+    }
+}

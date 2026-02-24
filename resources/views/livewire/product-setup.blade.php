@@ -338,7 +338,8 @@
                             <!-- Force next column to start on a new line -->
                             <div class="w-100 d-none d-md-block"></div>
 
-                            @foreach ([['short', 'Short Description'], ['description', 'Description']] as $item)
+                            {{-- @foreach ([['short', 'Short Description'], ['description', 'Description']] as $item) --}}
+                            @foreach ([['description', 'Description']] as $item)
                                 @include('backend.form.livewire-collection', [
                                     'data' => [
                                         'name' => $item[0],

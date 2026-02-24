@@ -19,6 +19,7 @@ class SettingSeeder extends Seeder
             'attribute' => 'site_name',
             'field_name' => 'Site Name',
             'field_type' => 'text',
+            'value' => 'BJM'
         ]);
 
         Setting::updateOrCreate([
@@ -80,6 +81,39 @@ class SettingSeeder extends Seeder
             'attribute' => 'official_phone',
             'field_name' => 'Official Phone',
             'field_type' => 'text',
+        ]);
+
+        // Uber direct return label instructions
+        Setting::updateOrCreate([
+            'attribute' => 'uber_direct_return_label_instructions',
+        ], [
+            'setting_group_slug' => 'general-information',
+            'attribute' => 'uber_direct_return_label_instructions',
+            'field_name' => 'Uber Direct Return Label Instructions',
+            'field_type' => 'text',
+            'value' => 'Return package to Unit #101. Leave inside the black storage bin and send photo image proof of return to: 647-556-6452. Thank you'
+        ]);
+
+        // Uber direct create shipping (Pickup instructions)
+        Setting::updateOrCreate([
+            'attribute' => 'uber_direct_pickup_instructions',
+        ], [
+            'setting_group_slug' => 'general-information',
+            'attribute' => 'uber_direct_pickup_instructions',
+            'field_name' => 'Uber Direct Pickup Instructions',
+            'field_type' => 'text',
+            'value' => 'PLEASE READ! Pickup at unit #101, which is on the "OUTSIDE" towards the East-side of the Condo Hayden Street entrance. Go through the black gate and ring the doorbell OR call 647-556-6452.'
+        ]);
+
+        // Store Pickup Instructions
+        Setting::updateOrCreate([
+            'attribute' => 'store_pickup_instructions',
+        ], [
+            'setting_group_slug' => 'general-information',
+            'attribute' => 'store_pickup_instructions',
+            'field_name' => 'Store Pickup Instructions',
+            'field_type' => 'text',
+            'value' => 'PLEASE READ! Pickup at unit #101, which is on the "OUTSIDE" towards the East-side of the Condo Hayden Street entrance. Go through the black gate and ring the doorbell OR call 647-556-6452. Collect at your box'
         ]);
     }
 }

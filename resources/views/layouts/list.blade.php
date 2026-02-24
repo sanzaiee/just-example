@@ -1,4 +1,4 @@
-<div class="col-6 col-lg-4 col-xl-3 mb-4">
+<div class="col-6 col-lg-4 col-xl-3">
     <div class="card h-100 border">
         <div class="position-relative">
             <img src="{{ $product->image ?: asset('/default-png-min.png') }}" class="card-img-top p-3"

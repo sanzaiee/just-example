@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('uber_delivery_trackings', function (Blueprint $table) {
+        Schema::create('order_fulfillments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->string('tracking_number')->unique();
+            $table->string('lockbox_number')->nullable();
+            $table->string('tracking_number')->nullable()->index();
+            $table->tinyInteger('delivery_partner');
             $table->string('status')->nullable();
-            $table->string('message')->nullable();
             $table->string('tracking_url')->nullable();
-            $table->string('delivery_id')->nullable();
-            $table->string('delivery_status')->nullable();
-            $table->string('delivery_message')->nullable();
+            $table->string('message')->nullable();
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('uber_delivery_trackings');
+        Schema::dropIfExists('order_fulfillments');
     }
 };

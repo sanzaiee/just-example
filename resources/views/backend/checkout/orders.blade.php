@@ -144,29 +144,33 @@
 
 
                                     <td class="status">
-                                        @if ($item->pending_status == 0)
-                                            <a href="" class="btn btn-sm rounded-pill btn-danger me-2"
-                                                data-bs-toggle="tooltip" data-bs-original-title=""
-                                                onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
-                                                Pending
-                                            </a>
-                                            <form id="pending-status-form-{{ $item->id }}"
-                                                action="{{ route('pending.status', $item->id) }}" method="post">
-                                                @csrf
-                                                @method('put')
-                                            </form>
-                                        @else
-                                            <a href="" class="btn btn-sm rounded-pill btn-primary me-2"
-                                                data-bs-toggle="tooltip" data-bs-original-title="Order Status"
-                                                onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
-                                                Processing
-                                            </a>
-                                            <form id="pending-status-form-{{ $item->id }}"
-                                                action="{{ route('pending.status', $item->id) }}" method="post">
-                                                @csrf
-                                                @method('put')
-                                            </form>
-                                        @endif
+                                        {{-- @if($item->order_status == 3)
+                                            <span class="badge bg-success">-</span>
+                                        @else --}}
+                                            @if ($item->pending_status == 0)
+                                                <a href="" class="btn btn-sm rounded-pill btn-danger me-2"
+                                                    data-bs-toggle="tooltip" data-bs-original-title=""
+                                                    onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
+                                                    Pending
+                                                </a>
+                                                <form id="pending-status-form-{{ $item->id }}"
+                                                    action="{{ route('pending.status', $item->id) }}" method="post">
+                                                    @csrf
+                                                    @method('put')
+                                                </form>
+                                            @else
+                                                <a href="" class="btn btn-sm rounded-pill btn-primary me-2"
+                                                    data-bs-toggle="tooltip" data-bs-original-title="Order Status"
+                                                    onclick="event.preventDefault(); if(confirm('Are You Sure ?')) document.getElementById('pending-status-form-{{ $item->id }}').submit();">
+                                                    Processing
+                                                </a>
+                                                <form id="pending-status-form-{{ $item->id }}"
+                                                    action="{{ route('pending.status', $item->id) }}" method="post">
+                                                    @csrf
+                                                    @method('put')
+                                                </form>
+                                            @endif
+                                        {{-- @endif --}}
                                     </td>
 
                                     <td class="status">

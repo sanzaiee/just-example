@@ -35,10 +35,10 @@ class CartSetup extends Component
         return view('livewire.cart.cart-setup');
     }
 
-    public function cartSubmit()
-    {
-        $this->addToCart();
-    }
+    // public function cartSubmit()
+    // {
+    //     $this->addToCart();
+    // }
 
     /**
      * Get the appropriate price for a given quantity
@@ -49,51 +49,51 @@ class CartSetup extends Component
         return $this->product->getExactTierPrice($quantity);
     }
 
-    public function addToCart()
-    {
-        if ($this->product->stock) {
-            // Check if product already in cart
-            $existing = Cart::search(function ($cartItem, $rowId) {
-                return $cartItem->id === $this->product->id;
-            });
+    // public function addToCart()
+    // {
+    //     if ($this->product->stock) {
+    //         // Check if product already in cart
+    //         $existing = Cart::search(function ($cartItem, $rowId) {
+    //             return $cartItem->id === $this->product->id;
+    //         });
 
-            $currentQty = $existing->isNotEmpty() ? $existing->first()->qty : 0;
-            $totalQty = $currentQty + $this->quantity;
+    //         $currentQty = $existing->isNotEmpty() ? $existing->first()->qty : 0;
+    //         $totalQty = $currentQty + $this->quantity;
 
-            // Get price based on total quantity
-            $price = $this->getPriceForQuantity($totalQty);
+    //         // Get price based on total quantity
+    //         $price = $this->getPriceForQuantity($totalQty);
 
-            if ($existing->isNotEmpty()) {
-                $rowId = $existing->first()->rowId;
-                Cart::update($rowId, $totalQty);
-                // Update the price in cart to reflect the new tiered price
-                $cartItem = Cart::get($rowId);
-                Cart::update($rowId, [
-                    'price' => $price,
-                    'qty' => $totalQty,
-                ]);
-            } else {
-                Cart::add(
-                    $this->product->id,
-                    $this->product->name,
-                    $this->quantity,
-                    $price,
-                );
-            }
+    //         if ($existing->isNotEmpty()) {
+    //             $rowId = $existing->first()->rowId;
+    //             Cart::update($rowId, $totalQty);
+    //             // Update the price in cart to reflect the new tiered price
+    //             $cartItem = Cart::get($rowId);
+    //             Cart::update($rowId, [
+    //                 'price' => $price,
+    //                 'qty' => $totalQty,
+    //             ]);
+    //         } else {
+    //             Cart::add(
+    //                 $this->product->id,
+    //                 $this->product->name,
+    //                 $this->quantity,
+    //                 $price,
+    //             );
+    //         }
 
-            $this->dispatch('alert', [
-                'type' => 'success',
-                'message' => 'Product Added To Cart!',
-            ]);
-        } else {
-            $this->dispatch('alert', [
-                'type' => 'danger',
-                'message' => 'Out of stock!',
-            ]);
-        }
+    //         $this->dispatch('alert', [
+    //             'type' => 'success',
+    //             'message' => 'Product Added To Cart!',
+    //         ]);
+    //     } else {
+    //         $this->dispatch('alert', [
+    //             'type' => 'danger',
+    //             'message' => 'Out of stock!',
+    //         ]);
+    //     }
 
-        $this->dispatch('cartUpdated');
-    }
+    //     $this->dispatch('cartUpdated');
+    // }
 
     public function add($id, $name, $price, $qty = 1)
     {
@@ -188,21 +188,23 @@ class CartSetup extends Component
             // Get price based on total quantity
             // $price = $this->getPriceForQuantity($totalQty);
             $price = $this->product->getPriceForQuantity($totalQty);
-
             if ($existing->isNotEmpty()) {
                 $rowId = $existing->first()->rowId;
-                Cart::update($rowId, $totalQty);
+                //Cart::update($rowId, $totalQty);
                 // Update the price in cart to reflect the new tiered price
                 Cart::update($rowId, [
                     'price' => $price,
                     'qty' => $totalQty,
                 ]);
+                // logger()->info("Quantity {{$totalQty}} : Price {{$price}}");
             } else {
+                // logger()->info("Product Name {{$this->product->name}} : Quantity {{$this->selected_quantity}} : Price {{$this->product->getExactTierPrice($this->selected_quantity)}}");
+                $UnitPrice = round($this->product->getExactTierPrice($this->selected_quantity) / $this->selected_quantity,2 );
                 Cart::add(
                     $this->product->id,
                     $this->product->name,
                     $this->selected_quantity,
-                    $this->product->getExactTierPrice($this->selected_quantity),
+                    $UnitPrice //$this->product->getExactTierPrice($this->selected_quantity),
                 );
             }
 

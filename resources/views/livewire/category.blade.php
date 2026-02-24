@@ -151,7 +151,7 @@
                                         ])
                                     @endforeach
 
-                                    @foreach ([['status','Status'],['menu','Menu']] as $item)
+                                    @foreach ([['status','Status']] as $item)
                                         @include('backend.form.livewire-collection', [
                                             'data' => [
                                                 'name' => $item[0],

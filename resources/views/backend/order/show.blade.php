@@ -16,7 +16,7 @@
         
         <div class="row gy-3">
             @if ($order->cancel_status == 0 && $order->order_status != 3)
-                <div class="col-md-3">
+                <div class="col-4">
                     <button type="button" class="btn btn-danger me-2"
                         data-bs-toggle="modal"
                         data-bs-target="#cancelOrderModal">
@@ -26,7 +26,7 @@
             @endif
 
             @if ($order->order_status != 3 && $order->cancel_status == 0)
-                <div class="col-md-3">
+                <div class="col-4">
                     <a href="" onclick="event.preventDefault(); if(confirm('Are You Sure - Mark order as Complete ?')) document.getElementById('delivery-status-form-{{ $order->id }}').submit();">
                         <button type="button" class="btn btn-success me-2">Mark Complete</button>
                     </a>
@@ -39,13 +39,25 @@
             @endif
 
             @if (!$order->is_store_pickup && $order->delivery_status == 0 && $order->order_status ==1 && $order->cancel_status == 0)
-                <div class="col-md-3">
+                <div class="col-4">
                     <button type="button" class="btn btn-secondary me-2"
                         data-bs-toggle="modal"
                         data-bs-target="#autoSubmitModal">
                         Review Delivery
                     </button>
-                    @livewire('Delivery.review-delivery',['order'=>$order])
+                    @livewire('Delivery.review-uber-direct-delivery',['order'=>$order])
+
+                </div>
+            @endif
+
+            @if ($order->is_store_pickup && $order->order_status ==1 && $order->cancel_status == 0)
+                <div class="col-4">
+                    <button type="button" class="btn btn-secondary me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#autoSubmitModal">
+                        Review Pickup
+                    </button>
+                    @livewire('Delivery.review-order-pickup',['order'=>$order])
 
                 </div>
             @endif
@@ -87,14 +99,32 @@
 
         <div class="card shadow-sm border-0 mt-2">
             <div class="card-header bg-primary text-white fw-bold">
-                @if ($order->is_store_pickup)
-                    Pickup
-                @else
-                    @if ($order->order_status == 4)
-                        Delivery in progress
+                @if (!$order->latestFulfillment)
+                    @if ($order->is_store_pickup)
+                        Pickup
                     @else
-                        Delivery
+                        @if ($order->order_status == 4)
+                            Delivery in progress
+                        @else
+                            Delivery
+                        @endif
                     @endif
+                @else
+                    <div class="gy-3">
+                        @if ($order->is_store_pickup)
+                            <p class="m-0 p-0">
+                                Pickup email sent. <br>
+                                LockBox number: {{$order->latestFulfillment->lockbox_number}}</p>
+                        @else
+                            @if($order->latestFulfillment->delivery_partner == 0)
+                            <p class="m-0 p-0">
+                                Status: {{$order->latestFulfillment->status}} <br>
+                                {{-- Tracking Number: {{$order->latestFulfillment->tracking_number}} <br> --}}
+                                Url: <a style="color: white" href="{{ $order->latestFulfillment->tracking_url }}" target="_blank" rel="noopener">{{ $order->latestFulfillment->tracking_url }}</a>
+                            </p>
+                            @endif
+                        @endif
+                    </div>
                 @endif
             </div>
 
@@ -159,7 +189,7 @@
                         <p class="mb-0">{{ $order->orderDeliveryAddress->house_no ?? '' }}</p>
                     </div>
                     <div class="col-md-3">
-                        <h6 class="text-muted mb-1">Street</h6>
+                        <h6 class="text-muted mb-1">Address Line</h6>
                         <p class="mb-0">{{ $order->orderDeliveryAddress->address ?? '' }}</p>
                     </div>
                     <div class="col-md-3">
