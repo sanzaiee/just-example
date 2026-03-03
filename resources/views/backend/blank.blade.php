@@ -50,6 +50,27 @@
     <!-- Page CSS -->
     @yield('styles')
 
+    <!-- Common Auth Page Centering Styles -->
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .authentication-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .authentication-inner {
+            width: 100%;
+            max-width: 400px;
+        }
+        .card {
+            margin: 0 auto;
+            width: 100%;
+        }
+    </style>
+
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
 
