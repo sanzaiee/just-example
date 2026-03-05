@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index()
     {
         //TO:DO avoid fetching tierred pricing for index data
-        $products = $this->product;//->with('user');
+        $products = $this->product->with('category','brand');//->with('user');
 
         if (request()->has('query')) {
             $query = '%'.request()->input('query').'%';
@@ -52,12 +52,17 @@ class ProductController extends Controller
 
     public function destroy($slug)
     {
-        $product = $this->product->where('slug', $slug)->firstOrFail();
-        $product->clearMediaCollection('image');
+        try {
+            $product = $this->product->where('slug', $slug)->firstOrFail();
+            $product->clearMediaCollection('image');
 
-        $product->delete();
+            $product->delete();
 
-        return redirect()->route('product.index');
-
+            return redirect()->route('product.index')->with('success', 'Product deleted successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error deleting product: '.$e->getMessage());
+        }
     }
 }

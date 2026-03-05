@@ -19,7 +19,7 @@ class OrderController extends Controller
     //order_status = 4 => Shipping in Progress
     public function index(Request $request)
     {
-        $query = Order::with('orderProductLists', 'orderProductLists.product', 'orderDeliveryAddress');
+        $query = Order::with('user', 'orderProductLists', 'orderProductLists.product', 'orderDeliveryAddress');
 
         // Apply filters
         if ($request->filled('date_from')) {

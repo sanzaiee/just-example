@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\OrderProductList;
 use App\Models\Product;
+use Illuminate\Validation\ValidationException;
 
 class ProductObserver
 {
@@ -15,21 +16,18 @@ class ProductObserver
      */
     public function deleting(Product $product): void
     {
-        // Check if this product is used in any order
-        // This applies to both soft deletes and force deletes
-        $hasOrders = OrderProductList::where('product_id', $product->id)->exists();
+        $orderProductLists = OrderProductList::where('product_id', $product->id)->get();
 
-        if ($hasOrders) {
-            $orderId = OrderProductList::where('product_id', $product->id)
-                ->select('order_id')
-                ->first()
-                ?->order_id;
+        if ($orderProductLists->isNotEmpty()) {
+            $orderIds = $orderProductLists->pluck('order_id')->unique()->values()->toArray();
 
-            throw new \Exception(
-                'Cannot delete product "'.$product->name.'" (ID: '.$product->id.') '.
-                'because it is associated with existing orders (Order ID: '.$orderId.'). '.
-                'Please use soft delete instead or check with system administrator.'
-            );
+            throw ValidationException::withMessages([
+                'product' => [
+                    'Cannot delete product "'.$product->name.'" (ID: '.$product->id.') '.
+                    'because it is used in existing orders (Order IDs: '.implode(', ', $orderIds).'). ',
+                    // 'Please use soft delete instead.'
+                ],
+            ]);
         }
     }
 
