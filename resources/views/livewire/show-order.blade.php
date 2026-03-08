@@ -286,7 +286,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end fw-bold">Shipping Cost</td>
-                                <td class="text-end fw-bold">${{ number_format($order->shipping_cost, 2) }}</td>
+                                <td class="text-end fw-bold">$ {{ number_format($order->shipping_cost ?? 0, 2) }}</td>
                             </tr>
                             <tr class="table-active">
                                 <td colspan="4" class="text-end fw-bold">GRAND TOTAL</td>

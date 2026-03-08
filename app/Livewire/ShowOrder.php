@@ -13,7 +13,7 @@ class ShowOrder extends Component
 
     public function mount($pid)
     {
-        $this->order = Order::with(
+        $this->order = Order::select('*')->with(
             'orderDeliveryAddress',
             'orderProductLists',
             'orderProductLists.product',
