@@ -54,7 +54,7 @@ class ProductController extends Controller
     {
         try {
             $product = $this->product->where('slug', $slug)->firstOrFail();
-            $product->clearMediaCollection('image');
+            // $product->clearMediaCollection('image');
 
             $product->delete();
 

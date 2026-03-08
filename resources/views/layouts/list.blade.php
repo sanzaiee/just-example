@@ -5,14 +5,14 @@
                 alt="{{ $product->name }}" loading="lazy" style="height: 200px; aspect-ratio: 5 / 6; object-fit: cover;">
 
             <div class="position-absolute top-0 start-0 end-0 m-2 d-flex align-items-center">
-                @if (isset($product->feature) && $product->feature)
+                {{-- @if (isset($product->feature) && $product->feature)
                     <span class="badge bg-warning text-dark me-auto d-flex align-items-center">
                         <i class="fas fa-star"></i>
                         <span class="d-none d-sm-inline ms-1">Featured</span>
                     </span>
-                @endif
+                @endif --}}
 
-                @if (isset($product->stock) && $product->stock)
+                @if (isset($product->stock))
                 <span
                     class="badge {{ $product->stock ? 'bg-success' : 'bg-danger' }} d-flex align-items-center text-nowrap">
                     <i class="fas {{ $product->stock ? 'fa-check' : 'fa-times' }}"></i>

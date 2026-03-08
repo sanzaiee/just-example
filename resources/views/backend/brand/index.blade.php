@@ -22,10 +22,9 @@
 
                                 <div class="col-md-2">
                                     <select class="form-select" name="per_page">
-                                        <option value="6" {{ request('per_page') == 6 ? 'selected' : '' }}>6 per page
-                                        </option>
-                                        <option value="12" {{ request('per_page') == 12 ? 'selected' : '' }}>12 per page
-                                        </option>
+                                        <option value="4" {{ request('per_page') == 4 ? 'selected' : '' }}>4 per page</option>
+                                        <option value="8" {{ request('per_page') == 8 ? 'selected' : '' }}>8 per page</option>
+                                        <option value="12" {{ request('per_page') == 12 ? 'selected' : '' }}>12 per page</option>
                                     </select>
                                 </div>
 

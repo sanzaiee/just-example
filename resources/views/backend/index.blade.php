@@ -136,8 +136,9 @@
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
                                             @endif
-                                            <a href="{{ route('user.dashboard') }}"
-                                                class="btn btn-sm btn-outline-secondary ms-2">Clear all</a>
+                                            <span class="mt-1">
+                                                <a href="{{ route('user.dashboard') }}" class="btn btn-sm btn-outline-secondary m-0">Clear all</a>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

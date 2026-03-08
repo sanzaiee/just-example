@@ -170,4 +170,12 @@ class Product extends Model implements HasMedia
     {
         return $this->tieredPrices()->get();
     }
+
+    protected static function booted()
+    {
+        static::forceDeleted(function ($product) {
+            $product->clearMediaCollection('image');
+        });
+    }
+
 }

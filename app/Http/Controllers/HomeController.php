@@ -86,7 +86,9 @@ class HomeController extends Controller
 
         // Base query with relationships
         $baseQuery = Product::with([ 'category', 'user', 'brand', 'tieredPrices', 'media' ])
-                    ->select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id') ->orderBy('products.name', 'asc');
+                    ->select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id')
+                    ->where('status', 1)
+                    ->orderBy('products.name', 'asc');
 
         // $baseQuery = Product::select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id')->with(['category', 'user', 'brand', 'tieredPrices', 'media']);
 
