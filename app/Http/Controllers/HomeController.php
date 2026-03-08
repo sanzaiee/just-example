@@ -76,93 +76,99 @@ class HomeController extends Controller
         $sort = request()->get('sort', 'latest');
         $pageSize = request()->get('per_page', 8);
 
-        // Hide all products
-        $hideAllProducts = false;
-        if ($query == '' && $category == '' && $brand == '') {
-            $hideAllProducts = false;
-        }
+        $showAllProductsOnly = request()->hasAny(['search', 'category', 'brand', 'page']);
+
+        // $hideAllExcept_AllProducts = false;
+        // if (!$isFirstLoad && empty($query) || (empty($query) && empty($category) && empty($brand) )) {
+        //     $hideAllExcept_AllProducts = true;
+        // }
+        // return dd($hideAllExcept_AllProducts);
 
         // Base query with relationships
-        $productsQuery = Product::query()->select(['id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id'])
-            ->with(['category:id,name,slug', 'user:id,name', 'brand:id,name,slug', 'tieredPrices']);
+        $baseQuery = Product::with([ 'category', 'user', 'brand', 'tieredPrices', 'media' ])
+                    ->select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id') ->orderBy('products.name', 'asc');
+
+        // $baseQuery = Product::select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id')->with(['category', 'user', 'brand', 'tieredPrices', 'media']);
 
         // Apply filters
-        $productsQuery->when($query, function ($q) use ($query) {
+        // $baseQuery->when($query, function ($q) use ($query) {
+        //     $q->where(function ($sub) use ($query) {
+        //         $sub->where('name', 'like', "%$query%")
+        //             ->orWhere('description', 'like', "%$query%")
+        //             ->orWhere('code', 'like', "%$query%");
+        //     });
+        // });
+
+        // // $baseQuery->when($category, fn ($q) => $q->where('category_id', $category));
+        // $baseQuery->when($category, function ($q) use ($category) {
+        //     $q->whereHas('category', function ($cat) use ($category) {
+        //         $cat->where('slug', $category);
+        //     });
+        // });
+
+        // // $baseQuery->when($brand, fn ($q) => $q->where('brand_id', $brand));
+        // $baseQuery->when($brand, function ($q) use ($brand) {
+        //     $q->whereHas('brand', function ($cat) use ($brand) {
+        //         $cat->where('slug', $brand);
+        //     });
+        // });
+        //$baseQuery->orderBy('products.name', 'asc');
+
+        $baseQuery->when($query, function ($q) use ($query) {
             $q->where(function ($sub) use ($query) {
-                $sub->where('name', 'like', "%$query%")
-                    ->orWhere('description', 'like', "%$query%")
-                    ->orWhere('code', 'like', "%$query%");
+                $sub->where('name', 'like', "%$query%")->orWhere('description', 'like', "%$query%")->orWhere('code', 'like', "%$query%");
             });
         });
-
-        $productsQuery->when($category, function ($q) use ($category) {
-            $q->whereHas('category', function ($cat) use ($category) {
-                $cat->where('slug', $category);
-            });
+        $baseQuery->when($category, function ($q) use ($category) {
+            $q->whereHas('category', fn($cat) => $cat->where('slug', $category));
         });
-
-        $productsQuery->when($brand, function ($q) use ($brand) {
-            $q->whereHas('brand', function ($cat) use ($brand) {
-                $cat->where('slug', $brand);
-            });
+        $baseQuery->when($brand, function ($q) use ($brand) {
+            $q->whereHas('brand', fn($cat) => $cat->where('slug', $brand));
         });
 
         // Sorting
-        $productsQuery->orderBy('name', 'asc');
+        // $baseQuery->orderBy('created_at', $sort === 'oldest' ? 'asc' : 'desc');
+        // $baseQuery->orderBy('products.name', 'asc');
 
         // dd($baseQuery->toSql());
         // Paginated products
-        $products = $hideAllProducts ? collect() : $productsQuery->paginate($pageSize)->appends(request()->all());
+        // if ($hideAllProducts) {
+        //     $products = [];
+        // } else {
+        //     $products = (clone $baseQuery)
+        //         ->paginate($pageSize)
+        //         ->appends(request()->all());
+        // }
 
-        // $featuredProducts = (clone $baseQuery)
-        //     ->where('feature', true)
+        // Paginated products (SQL)
+        $products = $baseQuery->paginate($pageSize)->appends(request()->all());
+        // Load all products ONCE for the homepage sections (in memory)
+        $allProducts = (clone $baseQuery)->get();
+
+        // $bestSellers = $allProducts->where('best_rated', true)->take(8);
+        $bestSellers = [];
+        $onSaleProducts = [];
+        if (!$showAllProductsOnly) {
+            $bestSellers = (clone $baseQuery)->where('best_rated', true)->limit(8)->get();
+            $onSaleProducts = (clone $baseQuery)->where('on_sale', true)->limit(8)->get();
+        }
+
+        // $onSaleProducts = $allProducts->where('on_sale', true)->take(8);
+
+        $featuredProducts = [];
+        // $bestSellers = (clone $baseQuery)
+        //     ->where('best_rated', true)
         //     ->limit(8)
         //     ->get();
-        $featuredProducts = [];
 
-        $bestSellers = Product::select('id', 'name', 'slug', 'price')
-            ->with(['tieredPrices'])
-            ->when($brand, function ($q) use ($brand) {
-                $q->whereHas('brand', fn($b) => $b->where('slug', $brand));
-            })
-            ->when($category, function ($q) use ($category) {
-                $q->whereHas('category', fn($c) => $c->where('slug', $category));
-            })
-            // ->when($query, function ($q) use ($query) {
-            //     $q->where(function ($sub) use ($query) {
-            //         $sub->where('name', 'like', "%{$query}%")
-            //             ->orWhere('description', 'like', "%{$query}%")
-            //             ->orWhere('code', 'like', "%{$query}%");
-            //     });
-            // })
-            ->where('best_rated', true)
-            ->orderBy('name', 'asc')
-            ->limit(8)
-            ->get();
-
-        $onSaleProducts = Product::select('id', 'name', 'slug', 'price')
-            ->with(['tieredPrices'])
-            ->when($brand, function ($q) use ($brand) {
-                $q->whereHas('brand', fn($b) => $b->where('slug', $brand));
-            })
-            ->when($category, function ($q) use ($category) {
-                $q->whereHas('category', fn($c) => $c->where('slug', $category));
-            })
-            // ->when($query, function ($q) use ($query) {
-            //     $q->where(function ($sub) use ($query) {
-            //         $sub->where('name', 'like', "%{$query}%")
-            //             ->orWhere('description', 'like', "%{$query}%")
-            //             ->orWhere('code', 'like', "%{$query}%");
-            //     });
-            // })
-            ->where('on_sale', true)
-            ->orderBy('name', 'asc')
-            ->limit(8)
-            ->get();
+        // $onSaleProducts = (clone $baseQuery)
+        //     ->where('on_sale', true)
+        //     ->limit(8)
+        //     ->get();
 
         // Filters
-        $allCategories = Category::select('id', 'name', 'slug')->orderBy('name')->get();
-        $allBrands = Brand::select('id', 'name', 'slug')->orderBy('name')->get();
+        $allCategories = Category::orderBy('name')->get();
+        $allBrands = Brand::orderBy('name')->get();
 
         return view('backend.index', compact(
             'products',
@@ -170,8 +176,7 @@ class HomeController extends Controller
             'allBrands',
             'featuredProducts',
             'bestSellers',
-            'onSaleProducts',
-            'hideAllProducts'
+            'onSaleProducts'
         ));
     }
 
@@ -245,14 +250,14 @@ class HomeController extends Controller
     public function productShow($slug)
     {
         $product = Product::with([
-            'category', 'brand',
+            'category', 'brand', 'media',
             'relatedProducts' => function ($query) {
                 $query->limit(4);
             },
         ])->where('slug', $slug)->firstOrFail();
 
         // Load media collections
-        $product->loadMedia('images');
+        // $product->loadMedia('images');
 
         // $cacheKey = 'product_viewed_'.$product->id.'_'.session()->getId();
 
@@ -269,7 +274,8 @@ class HomeController extends Controller
         $query = request()->get('search', '');
         $pageSize = request()->get('per_page', 4);
 
-        $baseQuery = Brand::query();
+        $baseQuery = Brand::with('media');
+        // $baseQuery = Brand::query();
 
         $baseQuery->when($query, function ($q) use ($query) {
             $q->where('name', 'like', "%$query%");

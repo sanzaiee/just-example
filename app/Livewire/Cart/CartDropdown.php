@@ -46,7 +46,7 @@ class CartDropdown extends Component
         $productIds = $cartContent->pluck('id')->unique()->toArray();
 
         // Eager load all products with their relationships
-        $this->products = Product::with(['tieredPrices'])
+        $this->products = Product::with(['tieredPrices','media'])
             ->whereIn('id', $productIds)
             ->get()
             ->keyBy('id');

@@ -70,7 +70,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label" for="city">city</label>
+                                <label class="form-label" for="city">City</label>
                                 <input type="text" class="form-control" wire:model.defer="city">
                                 @error('city')
                                 <span class="text-danger">{{ $message }}</span>
@@ -109,7 +109,6 @@
                         </div>
                     </div>
                 </form>
-
                 
                 <div class="modal fade" id="exampleModalLong" tabindex="-1" aria-labelledby="exampleModalLongTitle" aria-hidden="true"
                     data-backdrop="static" data-keyboard="false" wire:ignore.self>
@@ -231,7 +230,7 @@
                                         </button> --}}
                                         <button wire:click="refreshShippingDistance('{{ $item->id }}')" wire:loading.attr="disabled"
                                             wire:target="refreshShippingDistance, removeAddress"
-                                            class="btn btn-sm btn-outline-danger"
+                                            class="btn btn-sm btn-outline-danger d-none"
                                             title="Refresh shipping distance">
                                             <span wire:loading.remove
                                                 wire:target="refreshShippingDistance('{{ $item->id }}')">

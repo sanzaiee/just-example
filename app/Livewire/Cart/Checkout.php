@@ -234,82 +234,92 @@ class Checkout extends Component
 
     public function orderStore()
     {
-        // Remove previous pending order with same pid
-        Order::where('pid', $this->pid)
-            ->where('order_status', 0)
-            ->delete();
+        try {
+            // Remove previous pending order with same pid
+            Order::where('pid', $this->pid)
+                ->where('order_status', 0)
+                ->delete();
 
-        // Create new order
-        $order = Order::create([
-            'pid' => $this->pid,
-            'quantity' => $this->cartCount,
-            'user_id' => auth()->id(),
-            'amount' => round($this->subTotal + $this->shipping_cost,2),
-            'discount' => $this->discount, //add shipping_cost
-            'shipping_cost' => $this->shipping_cost, //add shipping_cost
-            'is_store_pickup' => $this->delivery_method === 'pickup',
-            'order_status' => 1,
-            'notes' => $this->deliveryNotes ? trim($this->deliveryNotes) : null,
-        ]);
+            // Create new order
+            $order = Order::create([
+                'pid' => $this->pid,
+                'quantity' => $this->cartCount,
+                'user_id' => auth()->id(),
+                'amount' => round($this->subTotal + $this->shipping_cost, 2),
+                'discount' => $this->discount, //add shipping_cost
+                'shipping_cost' => $this->shipping_cost, //add shipping_cost
+                'is_store_pickup' => $this->delivery_method === 'pickup',
+                'order_status' => 1,
+                'notes' => $this->deliveryNotes ? trim($this->deliveryNotes) : null,
+            ]);
 
-        // Insert order products in bulk
-        if (!empty($this->cartItems)) {
-            OrderProductList::insert(
-                collect($this->cartItems)->map(function ($item) {
-                    $product = $this->products[$item['id']] ?? null;
+            // Insert order products in bulk
+            if (!empty($this->cartItems)) {
+                OrderProductList::insert(
+                    collect($this->cartItems)->map(function ($item) use ($order) {
+                        $product = $this->products[$item['id']] ?? null;
 
-                    return [
-                        'order_id' => $order->id,
-                        'product_id' => $item['id'],
-                        'product_name' => $product?->name,
-                        'product_code' => $product?->code,
-                        'product_description' => $product?->short,
-                        'quantity' => $item['qty'],
-                        'price' => $item['unitPrice'],
-                    ];
-                })->toArray()
-            );
-        }
-
-        $user = auth()->user();
-        logger()->info(json_encode($user));
-
-        $baseData = [
-            'order_id'    => $order->id,
-            'name'        => $user->name,
-            'lname'        => $user->lname,
-            'email'       => $user->email,
-            'phone'       => $user->mobile ?? '',
-            'address'     => '',
-            'street'      => '',
-            'city'        => '',
-            'tole'        => '',
-            'house_no'    => '',
-            'description' => '',
-            'postal_code' => '',
-        ];
-
-        logger()->info($baseData);
-        if ($this->delivery_method === 'pickup') {
-            // Pickup uses only base data (empty address fields)
-            OrderDeliveryAddress::create($baseData);
-        } else {
-            // Delivery: merge shipping address if available
-            $shipping = $this->shippings->firstWhere('id', $this->shipping_id);
-
-            if ($shipping) {
-                OrderDeliveryAddress::create(array_merge($baseData, [
-                    'address'     => $shipping->address,
-                    'street'      => $shipping->street,
-                    'city'        => $shipping->city,
-                    'tole'        => $shipping->tole,
-                    'house_no'    => $shipping->house_no,
-                    'description' => $shipping->description,
-                    'postal_code' => $shipping->postal_code,
-                ]));
+                        return [
+                            'order_id' => $order->id,
+                            'product_id' => $item['id'],
+                            'product_name' => $product?->name,
+                            'product_code' => $product?->code,
+                            'product_description' => $product?->short,
+                            'quantity' => $item['qty'],
+                            'price' => $item['unitPrice'],
+                        ];
+                    })->toArray()
+                );
             }
+
+            $user = auth()->user();
+            logger()->info(json_encode($user));
+
+            $baseData = [
+                'order_id'    => $order->id,
+                'name'        => $user->name,
+                'lname'        => $user->lname,
+                'email'       => $user->email,
+                'phone'       => $user->mobile ?? '',
+                'address'     => '',
+                'street'      => '',
+                'city'        => '',
+                'tole'        => '',
+                'house_no'    => '',
+                'description' => '',
+                'postal_code' => '',
+            ];
+
+            logger()->info($baseData);
+            if ($this->delivery_method === 'pickup') {
+                // Pickup uses only base data (empty address fields)
+                OrderDeliveryAddress::create($baseData);
+            } else {
+                // Delivery: merge shipping address if available
+                $shipping = $this->shippings->firstWhere('id', $this->shipping_id);
+
+                if ($shipping) {
+                    OrderDeliveryAddress::create(array_merge($baseData, [
+                        'address'     => $shipping->address,
+                        'street'      => $shipping->street,
+                        'city'        => $shipping->city,
+                        'tole'        => $shipping->tole,
+                        'house_no'    => $shipping->house_no,
+                        'description' => $shipping->description,
+                        'postal_code' => $shipping->postal_code,
+                    ]));
+                }
+            }
+            return $order;
+        } catch (\Throwable $e) {
+            // Return structured failure
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ];
         }
-        return $order;
     }
 
     public $delivery_method = null; // pickup or delivery
@@ -425,12 +435,26 @@ class Checkout extends Component
 
             $this->validateOnly('deliveryNotes');
 
-
-
             // Step 1: Place the order (database transaction)
             $order = DB::transaction(function () {
                 return $this->orderStore();
             });
+            if (is_array($order) && $order['error'] === true) {
+                if (config('app.debug')) {
+                    $this->dispatch(
+                        'console-log',
+                        message: 'OrderStore failed',
+                        data: $order
+                    );
+                }
+
+                $this->dispatch('alert', [
+                    'type' => 'error',
+                    'message' => 'Unable to place your order. Please try again.'
+                ]);
+
+                return;
+            }
 
             // Step 2: Clear cart and reset counters
             Cart::destroy();

@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\ShippingAddressController;
 use App\Livewire\BrandSetup;
 use App\Livewire\Category;
 use App\Livewire\OrderSummary;

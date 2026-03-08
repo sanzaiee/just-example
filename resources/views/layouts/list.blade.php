@@ -23,17 +23,17 @@
 
         </div>
 
-        <div class="card-body d-flex flex-column p-3 pt-0">
+        <div class="card-body d-flex flex-column p-2 pt-0">
             <a href="{{ route('product.detail', $product->slug) }}" class="text-decoration-none text-dark">
                 <h6 class="card-title fw-semibold">
                     {{ Str::limit($product->name, 50) }}
                 </h6>
-                <p class="card-text text-muted small mt-2 mb-3 flex-grow-1">
+                <p class="card-text text-muted small mt-2 mb-2 flex-grow-1">
                     {{ Str::limit($product->description, 70) }}
                 </p>
             </a>
 
-            <div class="border-top pt-3">
+            <div class="border-top pt-2">
                 <livewire:cart-setup :product="$product" :detail="false" />
             </div>
         </div>

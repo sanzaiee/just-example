@@ -92,13 +92,11 @@
                                 <!-- Page Size Filter -->
                                 <div style="display: none !important;" class="col-md-1">
                                     <select class="form-select" name="per_page" id="perPageFilter">
-                                        <option value="6" {{ request()->get('per_page') == 6 ? 'selected' : '' }}>6
+                                        <option value="8" {{ request()->get('per_page') == 8 ? 'selected' : '' }}>8
                                             per page</option>
-                                        <option value="12" {{ request()->get('per_page') == 12 ? 'selected' : '' }}>12
+                                        <option value="16" {{ request()->get('per_page') == 16 ? 'selected' : '' }}>16
                                             per page</option>
                                         <option value="24" {{ request()->get('per_page') == 24 ? 'selected' : '' }}>24
-                                            per page</option>
-                                        <option value="48" {{ request()->get('per_page') == 48 ? 'selected' : '' }}>48
                                             per page</option>
                                     </select>
                                 </div>
@@ -151,7 +149,7 @@
         </div>
 
         <!-- Best Sellers Section -->
-        @if ($bestSellers->count() > 0)
+        @if (!empty($bestSellers))
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="card">
@@ -177,7 +175,7 @@
         @endif
 
         <!-- On Sale Products Section -->
-        @if ($onSaleProducts->count() > 0)
+        @if (!empty($onSaleProducts))
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="card">
@@ -203,7 +201,6 @@
         @endif
 
         <!-- All Products -->
-        @if(!$hideAllProducts)
         <div class="row mb-3">
             <div class="col-12">
                 <div class="card">
@@ -220,9 +217,22 @@
                 </div>
                 <div class="card-body" style="margin-top: 1rem;">
                     <div class="row g-3">
-                        @foreach ($products as $product)
-                        @include('layouts.list', ['product' => $product])
-                        @endforeach
+                        @forelse ($products as $product)
+                            @include('layouts.list', ['product' => $product])
+                        @empty 
+
+                        <div class="col">
+                            <div class="card h-100 border">
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title fw-semibold mb-0">
+                                        <p class="text-muted mb-0">No products found.</p>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @endforelse
                     </div>
                     <!-- Pagination -->
                     @if ($products->hasPages())
@@ -233,7 +243,6 @@
                 </div>
             </div>
         </div>
-        @endif
     </div>
     @push('custom-scripts')
         <script>

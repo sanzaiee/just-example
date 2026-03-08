@@ -136,11 +136,11 @@
                 <!-- Order Meta -->
                 {{-- <div class="row text-center border-top border-bottom p-2"> --}}
                 <div class="row gy-3 pt-2">
-                    <div class="col-md-6">
+                    <div class="col-6">
                         <h6 class="text-muted mb-1">DATE</h6>
                         <h5 class="mb-1">{{ $order->created_at->diffForHumans() }}</h5>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-6">
                         <h6 class="text-muted mb-1">Order ID</h6>
                         <h5 class="mb-1">{{ $order->pid }}</h5>
                     </div>
@@ -149,16 +149,16 @@
 
                 <!-- Customer Info -->
                 <div class="row gy-3 mb-4 pt-2">
-                    <div class="col-md-3">
+                    <div class="col">
                         <h6 class="text-muted mb-1">NAME</h6>
                         <p class="mb-0">{{ $order->user->name ?? '' }}
                             {{ $order->user->lname ?? '' }}</p>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col">
                         <h6 class="text-muted mb-1">EMAIL</h6>
                         <p class="mb-0">{{ $order->user->email ?? '' }}</p>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col">
                         <h6 class="text-muted mb-1">PHONE</h6>
                         <p class="mb-0">{{ $order->user->mobile ?? '' }}</p>
                     </div>
@@ -269,10 +269,9 @@
                                     </td>
                                     <td>{{ $item->product->name }}</td>
                                     <td>{{ $item->quantity }}</td>
-                                    <td>$ {{ number_format($item->price, 2) }}
+                                    <td>${{ number_format($item->price, 2) }}
                                     </td>
-                                    <td class="text-end">$
-                                        {{ number_format($item->price * $item->quantity, 2) }}
+                                    <td class="text-end">${{ number_format($item->price * $item->quantity, 2) }}
                                     </td>
                                 </tr>
                             @empty
@@ -283,15 +282,15 @@
                             @endforelse
                             <tr>
                                 <td colspan="4" class="text-end fw-bold">Sub Total</td>
-                                <td class="text-end fw-bold">$ {{ number_format($subtotal, 2) }}</td>
+                                <td class="text-end fw-bold">${{ number_format($subtotal, 2) }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="text-end fw-bold">Shipping Cost</td>
-                                <td class="text-end fw-bold">$ {{ number_format($order->shipping_cost, 2) }}</td>
+                                <td class="text-end fw-bold">${{ number_format($order->shipping_cost, 2) }}</td>
                             </tr>
                             <tr class="table-active">
                                 <td colspan="4" class="text-end fw-bold">GRAND TOTAL</td>
-                                <td class="text-end fw-bold">$ {{ number_format($order->amount, 2) }}</td>
+                                <td class="text-end fw-bold">${{ number_format($order->amount, 2) }}</td>
                             </tr>
                         </tbody>
                     </table>

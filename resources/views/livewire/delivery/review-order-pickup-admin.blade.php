@@ -62,7 +62,7 @@
 
                     @if($responseArray['status'])
                         <div class="alert alert-success mt-2 mb-0" role="alert">
-                            <p>Your pickup email has been sent successfully.</p>
+                            <p class="mb-0">Pickup email sent.</p>
                         </div>
                     @else
                         <div class="alert alert-info mt-2 mb-0" role="alert">
@@ -76,10 +76,10 @@
                 @endif
             </div>
             <div class="modal-footer pt-0 d-flex justify-content-between">
-                <button class="btn btn-label secondary" data-bs-dismiss="modal" wire:loading.attr="disabled">Close</button>
+                <button class="btn btn-label secondary m-0" data-bs-dismiss="modal" wire:loading.attr="disabled">Close</button>
 
                 @if (!$response)
-                    <button type="button" class="btn btn-primary"
+                    <button type="button" class="btn btn-primary m-0"
                         wire:click="sendEmail"
                         wire:loading.attr="disabled"
                         wire:target="sendEmail,saveLockBoxNumber"

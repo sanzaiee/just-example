@@ -47,12 +47,17 @@ class Product extends Model implements HasMedia
 
     public function getImageAttribute()
     {
-        return $this->hasMedia('image') ? $this->getMedia('image')[0]->getFullUrl() : asset('/default-png-min.png') ;
+        // return $this->hasMedia('image') ? $this->getMedia('image')[0]->getFullUrl() : asset('/default-png-min.png') ;
+        $media = $this->media ->where('collection_name', 'image') ->first(); 
+        
+        return $media ? $media->getFullUrl() : asset('/default-png-min.png');
     }
 
     public function getImagesAttribute()
     {
-        return $this->hasMedia('images') ? $this->getMedia('images') : null;
+        // return $this->hasMedia('images') ? $this->getMedia('images') : null;
+
+        return $this->media ->where('collection_name', 'images') ->values();
     }
 
     public function tags()

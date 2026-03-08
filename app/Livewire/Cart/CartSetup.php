@@ -12,9 +12,9 @@ class CartSetup extends Component
 
     public $prices;
 
-    public $selected_quantity = 1;
+    public $selected_quantity;
 
-    public $quantity = 1;
+    public $quantity = 0;
 
     public $detail = false;
 
@@ -27,7 +27,9 @@ class CartSetup extends Component
         $this->product = $product;
         $this->detail = $detail;
         $this->prices = $this->product->tieredPrices;
-
+        if($this->prices->isNotEmpty()){
+            $this->selected_quantity = $this->prices ->sortBy('quantity') ->first() ->quantity;
+        }
     }
 
     public function render()

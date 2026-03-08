@@ -66,7 +66,7 @@
                         <div class="mt-2 d-flex justify-content-between">
                             <div class="badges">
                                 @if ($product->best_rated)
-                                    <span class="badge bg-warning mt-2" style="float: right; margin-right: 2px;">Best Rated</span>
+                                    <span class="badge bg-warning mt-2" style="float: right; margin-right: 2px;">Best Seller</span>
                                 @endif
 
                                 @if ($product->on_sale)

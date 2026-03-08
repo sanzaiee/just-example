@@ -33,7 +33,7 @@
     <!-- Icons -->
     <link rel="stylesheet" href="{{asset('assets/vendor/fonts/fontawesome.css')}}"/>
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/tabler-icons.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}"/>
+    {{-- <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}"/> --}}
 
     <!-- CSS Variables -->
     {{-- <link rel="stylesheet" href="{{ asset('root.css') }}"/> --}}
@@ -46,7 +46,7 @@
 
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}"/>
+    {{-- <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}"/> --}}
     <!-- Page CSS -->
     @yield('styles')
 

@@ -1,7 +1,7 @@
 @extends('backend.blank')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}" />
+    {{-- <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}" /> --}}
 @endsection
 
 @section('content')

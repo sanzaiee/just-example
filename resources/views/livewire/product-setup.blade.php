@@ -138,7 +138,7 @@
                                             </div>
                                         @endforeach
 
-                                        @if (count($tiered_prices) > 1)
+                                        {{-- @if (count($tiered_prices) > 1)
                                             <div class="alert alert-info small mt-2">
                                                 <i class="fa fa-info-circle"></i>
                                                 Example: If you set quantity 1 = $10, quantity 10 = $8, and quantity 50
@@ -146,7 +146,7 @@
                                                 then orders of 1-9 items will be $10 each, 10-49 items will be $8 each,
                                                 and 50+ items will be $6 each.
                                             </div>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </div>
                             </div>
