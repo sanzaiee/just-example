@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Brand;
+use App\Models\Product;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Url;
@@ -71,11 +72,14 @@ class BrandSetup extends Component
     {
         $data = $this->validate();
         unset($data['image']);
+        $msg='';
         if ($this->updateModelId != null) {
             $brand = Brand::findOrFail($this->updateModelId);
             $brand->update($data);
+            $msg='Brand information updated successful.';
         } else {
             $brand = Brand::create($data);
+            $msg='Brand information created successful.';
         }
         if ($this->image && $this->image->isValid()) {
             $brand->clearMediaCollection('image');
@@ -84,8 +88,12 @@ class BrandSetup extends Component
                 ->toMediaCollection('image');
         }
 
+        $this->dispatch('alert', [
+            'type' => 'success',
+            'message' => $msg,
+        ]);
         $this->resetData();
-
+        $this->updateModelId=null;
     }
 
     public function update($id)
@@ -93,14 +101,33 @@ class BrandSetup extends Component
         $this->updateModelId = $id;
         $brand = Brand::findOrFail($this->updateModelId);
         $this->fill($brand->toArray());
-
     }
 
     public function delete($id)
     {
-        $this->updateModelId = $id;
-        $brand = Brand::findOrFail($this->updateModelId)->delete();
+        $brand = Brand::find($id);
+        if (! $brand) {
+            logger()->warning("Brand with ID {$id} not found.");
+            $this->dispatch('alert', [
+                'type' => 'error',
+                'message' => 'Brand information not found.',
+            ]);
+            return;
+        }
 
+        // Check if any product is using this brand
+        $isUsed = Product::where('brand_id', $brand->id)->exists();
+        if ($isUsed) {
+            $this->dispatch('alert', [
+                'type' => 'warning',
+                'message' => 'Brand is currently used in product.',
+            ]);
+            return;
+        }
+
+        // Safe to delete
+        $brand->delete();
+        // $this->updateModelId = $id;
         $this->resetData();
     }
 }

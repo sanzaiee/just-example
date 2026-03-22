@@ -70,27 +70,53 @@ class Category extends Component
 
     public function save(){
         $data = $this->validate();
+        $msg='';
         if($this->updateModelId != NULL){
             \App\Models\Category::findOrFail($this->updateModelId)->update($data);
+            $msg='Information updated successful.';
         }else{
             \App\Models\Category::create($data);
+            $msg='Category created successful.';
         }
 
+        $this->dispatch('alert', [
+            'type' => 'success',
+            'message' => $msg,
+        ]);
         $this->resetData();
-
+        $this->updateModelId=null;
     }
 
     public function update($id){
         $this->updateModelId = $id;
         $category = \App\Models\Category::findOrFail($this->updateModelId);
         $this->fill($category->toArray());
-
     }
 
     public function delete($id){
-        $this->updateModelId = $id;
-        $category = \App\Models\Category::findOrFail($this->updateModelId)->delete();
+        $category = \App\Models\Category::find($id);
+        if (! $category) {
+            logger()->warning("Category with ID {$id} not found.");
+            $this->dispatch('alert', [
+                'type' => 'error',
+                'message' => 'Category information not found.',
+            ]);
+            return;
+        }
 
+        // Check if any product is using this brand
+        $isUsed = \App\Models\Product::where('category_id', $category->id)->exists();
+        if ($isUsed) {
+            $this->dispatch('alert', [
+                'type' => 'warning',
+                'message' => 'Category is currently used in product.',
+            ]);
+            return;
+        }
+
+        // Safe to delete
+        $category->delete();
+        // $this->updateModelId = $id;
         $this->resetData();
     }
 }
