@@ -54,7 +54,7 @@
                             </div>
                         </div> --}}
 
-                        <p>
+                        <p style="text-align: justify">
                             {{ $product->description }}
                         </p>
 

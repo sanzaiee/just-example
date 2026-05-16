@@ -154,7 +154,7 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-body py-2.5">
+                        <div class="card-body" style="padding: 1rem;">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-crown text-success me-2"></i>Best Sellers
@@ -180,7 +180,7 @@
             <div class="row mb-3">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-body py-2.5">
+                        <div class="card-body" style="padding: 1rem;">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-dark">
                                     <i class="fas fa-tags text-info me-2"></i>On Sale Products
@@ -205,7 +205,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-body py-2.5">
+                    <div class="card-body" style="padding: 1rem;">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-dark">
                                 <i class="fas fa-box text-primary me-2"></i>All Products

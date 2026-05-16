@@ -127,7 +127,7 @@
         <div class="{{ $div ?? 'col-md-6' }}">
             <label class="form-label" for="{{ $data['name'] }}">{{ $data['label'] }} @if($required) * @endif</label>
             <select wire:model.live="{{ $data['name'] }}" id="{{ $data['name'] }}" class="form-control">
-                <option value="0">-- Please Select --</option>
+                <option value="">-- Please Select --</option>
                 @foreach($arrayData as $index => $item)
                     <option value="{{$item}}"> {{ucfirst($index)}}</option>
                 @endforeach

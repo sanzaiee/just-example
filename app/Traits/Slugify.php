@@ -6,7 +6,8 @@ use Illuminate\Support\Str;
 
 trait Slugify
 {
-    protected static function booted(): void
+    // Rename 'booted' to 'bootSlugify'
+    protected static function bootSlugify(): void
     {
         static::creating(function ($model): void {
             if (empty($model->slug)) {

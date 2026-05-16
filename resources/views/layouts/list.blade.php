@@ -30,11 +30,11 @@
                 <h6 class="card-title fw-semibold">
                     {{ Str::limit($product->name, 50) }}
                 </h6>
-                @if (isset($product->description) && $product->description)
+                {{-- @if (isset($product->description) && $product->description)
                 <p class="card-text text-muted small mt-2 mb-2 flex-grow-1">
                         {{ Str::limit($product->description, 70) }}
                     </p>
-                @endif
+                @endif --}}
             </a>
 
             <div class="border-top pt-2">

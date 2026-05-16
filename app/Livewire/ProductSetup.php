@@ -176,8 +176,8 @@ class ProductSetup extends Component
             'images.*' => 'nullable|file|mimes:png,jpg,jpeg,gif',
             'strike_price' => 'required|numeric',
             'delivery_charges' => 'nullable|numeric',
-            'brand_id' => 'required|numeric',
-            'category_id' => 'required|numeric',
+            'brand_id' => 'required|exists:brands,id', //'brand_id' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id', //'category_id' => 'required|numeric',
             'status' => 'required|boolean',
             'stock' => 'required|boolean',
             'on_sale' => 'required|boolean',
@@ -361,6 +361,12 @@ class ProductSetup extends Component
 
     public function removePreviewImage($index)
     {
+        // Remove the actual file from the upload array
+        if (isset($this->images[$index])) {
+            unset($this->images[$index]);
+            $this->images = array_values($this->images);
+        }
+
         if (isset($this->preview_images[$index])) {
             unset($this->preview_images[$index]);
             $this->preview_images = array_values($this->preview_images);
