@@ -130,7 +130,7 @@
                                 @endforeach
 
 
-                                @foreach ([['position', 'Position']] as $item)
+                                {{-- @foreach ([['position', 'Position']] as $item)
                                     @include('backend.form.livewire-collection', [
                                         'data' => [
                                             'name' => $item[0],
@@ -140,7 +140,7 @@
                                         'model' => $model ?? null,
                                         'type' => 'number',
                                     ])
-                                @endforeach
+                                @endforeach --}}
 
                                 {{-- @foreach ([['status', 'Status'], ['menu', 'Menu']] as $item) --}}
                                 @foreach ([['status', 'Status']] as $item)

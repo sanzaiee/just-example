@@ -129,6 +129,7 @@
                                         'data' => [
                                             'name' => $item[0],
                                             'label' => $item[1],
+                                            'placeholder' => '+1XXXXXXXXXX'
                                         ],
                                         'required' => false,
                                         'model' => $model ?? null,
@@ -165,6 +166,20 @@
                                     @if($showInvalidPassword)
                                         <small class="text-danger">Password Mismatch</small>
                                     @endif
+
+                                    @include('backend.form.livewire-collection', [
+                                        'data' => [
+                                            'name' => 'selectedTags',
+                                            'label' => 'Product Type',
+                                        ],      
+                                        'required' => true,
+                                        'model' => $model ?? [],
+                                        'secondaryModel' => $tags ?? [],
+                                        'selected' => $tagSelected ?? [],
+                                        'type' => 'multiple-select-new',
+                                        'div' => 'col-md-12',
+                                    ])
+
                                     @foreach ([['status','Status']] as $item)
                                         @include('backend.form.livewire-collection', [
                                             'data' => [
@@ -176,7 +191,6 @@
                                             'type' => 'status'
                                         ])
                                     @endforeach
-
 
                             </div>
                         </div>

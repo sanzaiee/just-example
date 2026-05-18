@@ -435,6 +435,22 @@ class Checkout extends Component
 
             $this->validateOnly('deliveryNotes');
 
+            if (!empty($this->cartItems)) {
+                $userTagIds = auth()->user()->tags()->pluck('tags.id');
+                $cartTagIds = collect($this->cartItems)
+                    ->map(fn($item) => $this->products[$item['id']]->tag_id ?? null)
+                    ->filter() // remove nulls
+                    ->unique();
+                $unauthorized = $cartTagIds->diff($userTagIds);
+                if ($unauthorized->isNotEmpty()) {
+                    $this->dispatch('alert', [
+                        'type' => 'error',
+                        'message' => 'Your cart is invalid. Please remove all items and add them.',
+                    ]);
+                    return;
+                }
+            }
+
             // Step 1: Place the order (database transaction)
             $order = DB::transaction(function () {
                 return $this->orderStore();

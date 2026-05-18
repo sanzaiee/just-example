@@ -60,9 +60,15 @@ class Product extends Model implements HasMedia
         return $this->media ->where('collection_name', 'images') ->values();
     }
 
-    public function tags()
+    // Many to many relationship
+    // public function tags()
+    // {
+    //     return $this->belongsToMany('App\Models\Tag', 'tag_product')->withPivot('tag_id');
+    // }
+
+    public function tag()
     {
-        return $this->belongsToMany('App\Models\Tag', 'tag_product')->withPivot('tag_id');
+        return $this->belongsTo(Tag::class, 'tag_id');
     }
 
     public function user()

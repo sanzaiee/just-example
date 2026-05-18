@@ -47,8 +47,8 @@ class ProductSetup extends Component
     #[Validate('nullable|numeric')]
     public $tax = 0;
 
-    #[Validate('nullable')]
-    public $tag = [];
+    // #[Validate('nullable')]
+    // public $tag = [];
 
     public $related_product = [];
 
@@ -74,6 +74,9 @@ class ProductSetup extends Component
 
     #[Validate('required|numeric', as: 'Category')]
     public $category_id;
+
+    #[Validate('required|numeric', as: 'Product Type')]
+    public $tag_id;
 
     #[Validate('required|boolean')]
     public $status = 1;
@@ -165,11 +168,11 @@ class ProductSetup extends Component
             'name' => 'required|min:3|max:100',
             'code' => 'required|min:3|max:20',
             'short' => 'nullable|min:5|max:80',
-            'description' => 'nullable|min:5|max:200',
+            'description' => 'nullable|min:5|max:500',
             'video_url' => 'nullable|min:5|max:200',
             'price' => 'required|numeric',
             'tax' => 'nullable|numeric',
-            'tag' => 'nullable|array',
+            'tag_id' => 'required|exists:tags,id',//'nullable|array',
             'related_product' => 'nullable|array',
             'image' => 'nullable|file|mimes:png,jpg,jpeg,gif',
             'images' => 'nullable|array|max:5',
@@ -193,14 +196,22 @@ class ProductSetup extends Component
 
         if ($this->existingProduct) {
             $product = $this->existingProduct;
-            $product->update(collect($data)->except('image', 'images', 'tag', 'related_product', 'tiered_prices')->toArray());
+            $product->update(collect($data)->except('image', 'images', 'related_product', 'tiered_prices')->toArray());
         } else {
-            $product = Product::create(collect($data)->except('image', 'images', 'tag', 'related_product', 'tiered_prices')->toArray());
+            $product = Product::create(collect($data)->except('image', 'images', 'related_product', 'tiered_prices')->toArray());
         }
 
-        if (isset($this->tag)) {
-            $product->tags()->sync($this->tag);
-        }
+        // if ($this->existingProduct) {
+        //     $product = $this->existingProduct;
+        //     $product->update(collect($data)->except('image', 'images', 'tag', 'related_product', 'tiered_prices')->toArray());
+        // } else {
+        //     $product = Product::create(collect($data)->except('image', 'images', 'tag', 'related_product', 'tiered_prices')->toArray());
+        // }
+
+        // Tag is handled differently now
+        // if (isset($this->tag)) {
+        //     $product->tags()->sync($this->tag);
+        // }
 
         if (isset($this->related_product)) {
             $product->relatedProducts()->sync($this->related_product);
@@ -236,6 +247,7 @@ class ProductSetup extends Component
         $this->short = $this->existingProduct->short;
         $this->category_id = $this->existingProduct->category_id;
         $this->brand_id = $this->existingProduct->brand_id;
+        $this->tag_id = $this->existingProduct->tag_id;
         $this->description = $this->existingProduct->description;
         $this->video_url = $this->existingProduct->video_url;
         $this->price = $this->existingProduct->price;
@@ -253,7 +265,7 @@ class ProductSetup extends Component
         $this->stock = $this->existingProduct->stock;
         $this->status = $this->existingProduct->status;
         $this->preview_image = $this->existingProduct->image;
-        $this->tag = $this->existingProduct->tags->pluck('id');
+        // $this->tag = $this->existingProduct->tags->pluck('id');
         $this->related_product = $this->existingProduct->relatedProducts->pluck('id');
 
         // Load existing tiered prices

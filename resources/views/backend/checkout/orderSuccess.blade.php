@@ -43,7 +43,7 @@
 
                                         <td class="price">
                                             <h6 class="fw-bold">Price</h6>
-                                            <p>$ {{ $item->product->getPriceForQuantity($item->quantity) }}</p>
+                                            <p>${{ $item->product->getPriceForQuantity($item->quantity) }}</p>
                                         </td>
 
                                         <td class="quantity">
@@ -53,7 +53,7 @@
 
                                         <td class="subtotal">
                                             <h6 class="fw-bold">Sub Total</h6>
-                                            <p>$ {{ $item->product->getPriceForQuantity($item->quantity) * $item->quantity }}
+                                            <p>${{ $item->product->getPriceForQuantity($item->quantity) * $item->quantity }}
                                             </p>
                                         </td>
                                     </tr>
@@ -76,12 +76,12 @@
                                     <tr>
                                         <td>Shipping</td>
                                         <td>:</td>
-                                        <td>$ {{ $order->shipping_cost }}</td>
+                                        <td>${{ $order->shipping_cost }}</td>
                                     </tr>
                                     <tr>
                                         <td>Total</td>
                                         <td>:</td>
-                                        <td>$ {{ $order->amount }}</td>
+                                        <td>${{ $order->amount }}</td>
                                     </tr>
                                 </table>
                             </div>

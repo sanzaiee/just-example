@@ -51,13 +51,20 @@ class Tag extends Model
 
     }
 
-    public function blogs()
+    // public function blogs()
+    // {
+    //     return $this->belongsToMany('App\Models\Blog', 'tag_blog')->withPivot('blog_id');
+    // }
+
+    public function products()
     {
-        return $this->belongsToMany('App\Models\Blog', 'tag_blog')->withPivot('blog_id');
+        return $this->hasMany(Product::class);
+        // return $this->hasMany('App\Models\Product', 'tag_product');
     }
 
     public function users()
     {
-        return $this->belongsToMany('App\Models\User', 'tag_user')->withPivot('user_id');
+        return $this->belongsToMany('App\Models\User', 'tag_user')->withTimestamps();
+        // return $this->belongsToMany('App\Models\User', 'tag_user')->withPivot('user_id');
     }
 }

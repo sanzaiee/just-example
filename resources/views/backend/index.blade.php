@@ -39,7 +39,7 @@
                         <form method="GET" action="{{ route('user.dashboard') }}" id="searchForm">
                             <div class="row g-3">
                                 <!-- Search Bar -->
-                                <div class="col-md-6">
+                                <div class="{{ $userTags->count() > 1 ? 'col-md-3' : 'col-md-6' }}">
                                     <div class="input-group">
                                         <span class="input-group-text bg-primary text-white">
                                             <i class="fas fa-search"></i>
@@ -48,19 +48,6 @@
                                             placeholder="Search products..." value="{{ request()->get('search', '') }}"
                                             id="searchInput">
                                     </div>
-                                </div>
-
-                                <!-- Category Filter -->
-                                <div class="col-md-3">
-                                    <select class="form-select" name="category" id="categoryFilter">
-                                        <option value="">All Categories</option>
-                                        @foreach ($allCategories as $cat)
-                                            <option value="{{ $cat->slug }}"
-                                                {{ request()->get('category') == $cat->slug ? 'selected' : '' }}>
-                                                {{ $cat->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
                                 </div>
 
                                 <!-- Brand Filter -->
@@ -76,7 +63,35 @@
                                     </select>
                                 </div>
 
-                                <!-- Sort Filter -->
+                                <!-- Category Filter -->
+                                <div class="col-md-3">
+                                    <select class="form-select" name="category" id="categoryFilter">
+                                        <option value="">All Categories</option>
+                                        @foreach ($allCategories as $cat)
+                                            <option value="{{ $cat->slug }}"
+                                                {{ request()->get('category') == $cat->slug ? 'selected' : '' }}>
+                                                {{ $cat->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Product Type Filter -->
+                                @if($userTags->count() > 1)
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="productType" id="productTypeFilter">
+                                            <option value="">All Product Type</option>
+                                            @foreach ($userTags as $productType)
+                                                <option value="{{ $productType->slug }}"
+                                                    {{ request()->get('productType') == $productType->slug ? 'selected' : '' }}>
+                                                    {{ $productType->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+
+                                {{-- <!-- Sort Filter -->
                                 <div style="display: none !important;" class="col-md-2">
                                     <select class="form-select" name="sort" id="sortFilter">
                                         <option value="latest"
@@ -87,10 +102,10 @@
                                             Oldest First
                                         </option>
                                     </select>
-                                </div>
+                                </div> --}}
 
                                 <!-- Page Size Filter -->
-                                <div style="display: none !important;" class="col-md-1">
+                                {{-- <div style="display: none !important;" class="col-md-1">
                                     <select class="form-select" name="per_page" id="perPageFilter">
                                         <option value="8" {{ request()->get('per_page') == 8 ? 'selected' : '' }}>8
                                             per page</option>
@@ -99,7 +114,7 @@
                                         <option value="24" {{ request()->get('per_page') == 24 ? 'selected' : '' }}>24
                                             per page</option>
                                     </select>
-                                </div>
+                                </div> --}}
                                 <!-- Search Button -->
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-primary w-100">
@@ -133,6 +148,13 @@
                                                 <span class="badge bg-light text-dark me-2 mb-1">
                                                     Brand: {{ $allBrands->firstWhere('slug', request()->get('brand'))->name ?? '' }}
                                                     <a href="{{ request()->fullUrlWithQuery(['brand' => null]) }}"
+                                                        class="text-decoration-none ms-1">×</a>
+                                                </span>
+                                            @endif
+                                            @if (request()->get('productType'))
+                                                <span class="badge bg-light text-dark me-2 mb-1">
+                                                    Product Type: {{ $userTags->firstWhere('slug', request()->get('productType'))->name ?? '' }}
+                                                    <a href="{{ request()->fullUrlWithQuery(['productType' => null]) }}"
                                                         class="text-decoration-none ms-1">×</a>
                                                 </span>
                                             @endif

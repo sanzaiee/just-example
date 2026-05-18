@@ -4,24 +4,24 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\Tag;
+// use App\Models\Tag;
 
 class ProductController extends Controller
 {
     public $product;
 
-    public $tag;
+    // public $tag;
 
-    public function __construct(Product $product, Tag $tag)
+    public function __construct(Product $product)
     {
         $this->product = $product;
-        $this->tag = $tag;
+        // $this->tag = $tag;
     }
 
     public function index()
     {
         //TO:DO avoid fetching tierred pricing for index data
-        $products = $this->product->with('category','brand');//->with('user');
+        $products = $this->product->with('category','brand', 'tag');//->with('user');
 
         if (request()->has('query')) {
             $query = '%'.request()->input('query').'%';
@@ -34,11 +34,11 @@ class ProductController extends Controller
         }
 
         $products = $products->paginate(15);
-        $tags = $this->tag->get();
+        // $tags = $this->tag->get();
 
         return view('backend.product.index', [
             'records' => $products,
-            'tags' => $tags,
+            // 'tags' => $tags,
             'modelName' => 'Product',
         ] + getRoutes('product'));
     }

@@ -109,4 +109,9 @@ class User extends Authenticatable
 
         return $query->where('role_id', $role);
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'tag_user')->withTimestamps();
+    }
 }

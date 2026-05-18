@@ -173,7 +173,7 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Total:</h6>
-                        <p class="mb-0 fw-bold text-success">$ {{ number_format($subTotal + $shipping_cost, 2) }}</p>
+                        <p class="mb-0 fw-bold text-success">${{ number_format($subTotal + $shipping_cost, 2) }}</p>
                     </div>
 
                     <hr>

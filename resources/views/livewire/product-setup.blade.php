@@ -66,8 +66,20 @@
                                 'div' => 'col-md-4',
                             ])
 
+                            @include('backend.form.livewire-collection', [
+                                'data' => [
+                                    'name' => 'tag_id',
+                                    'label' => 'Type',
+                                ],
+                                'required' => true,
+                                'model' => $model ?? null,
+                                'type' => 'dynamic-select',
+                                'arrayData' => $tags,
+                                'div' => 'col-md-4',
+                            ])
 
-                            @foreach ([
+
+                            {{-- @foreach ([
                                     //['price', 'Price'],
                                     ['strike_price', 'Strike Price'],
                                     // ['delivery_charges','Delivery Charges'],['tax','Tax']
@@ -82,7 +94,7 @@
                                     'type' => 'number',
                                     'div' => 'col-md-4',
                                 ])
-                            @endforeach
+                            @endforeach --}}
 
                             @foreach ([
                                 ['status', 'Status'], 
@@ -122,7 +134,7 @@
                                                         placeholder="e.g., 1, 10, 50" min="1">
                                                 </div>
                                                 <div class="col-md-5">
-                                                    <label class="form-label" for="price-{{ $index }}">Price</label>
+                                                    <label class="form-label" for="price-{{ $index }}">Sub Total</label>
                                                     <input type="number" id="price-{{ $index }}" class="form-control"
                                                         wire:model.live="tiered_prices.{{ $index }}.price"
                                                         placeholder="Price for this quantity" step="0.01"
@@ -208,7 +220,7 @@
                                     <div class="card-body">
                                         <!-- Image Upload Input -->
                                         <div class="mb-3">
-                                            <label class="form-label" for="images">Upload Images</label>
+                                            <label class="form-label" for="images">Gallery Images</label>
                                             <input type="file" class="form-control" wire:model.live="images" multiple
                                                 accept="image/png,image/jpeg,image/jpg,image/gif">
                                             @error('images')
@@ -286,7 +298,7 @@
 
                                         <!-- Image Upload Input -->
                                         <div class="mb-3">
-                                            <label class="form-label" for="image">Feature Image</label>
+                                            <label class="form-label" for="image">Feature/Profile Image</label>
                                             <input type="file" class="form-control" wire:model.live="image"
                                                 accept="image/png,image/jpeg,image/jpg,image/gif">
                                             @error('image')

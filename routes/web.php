@@ -13,6 +13,7 @@ use App\Livewire\UserManagement;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +66,9 @@ Route::middleware(['auth'])->prefix('/home')->group(function () {
 });
 
 Route::middleware(['auth', 'admin.check'])->prefix('/home')->group(function () {
+    Route::get('/tag',\App\Livewire\TagSetup::class)->name('tag.index');
+    //Route::resource('/tag',TagController::class);
+    
     Route::get('/users', UserManagement::class)->name('user.index');
     Route::get('/category', Category::class)->name('category.index');
     Route::get('/brand', BrandSetup::class)->name('brand.index');

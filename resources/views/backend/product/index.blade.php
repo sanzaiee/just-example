@@ -10,6 +10,7 @@
             {{-- <th>Created By</th> --}}
             <th>Category</th>
             <th>Brand</th>
+            <th>Type</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -40,6 +41,7 @@
                 {{-- <td>{{ $item->user->name ?? '-' }}</td> --}}
                 <td>{{ $item->category->name ?? '-' }}</td>
                 <td>{{ $item->brand->name ?? '-' }}</td>
+                <td>{{ $item->tag->name ?? '-' }}</td>
 
                 {{-- <td>
                     <a href="{{ route('blog.comment',$item->slug) }}" target="_blank">

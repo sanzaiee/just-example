@@ -159,6 +159,54 @@
         </div>
     @break
 
+    @case('multiple-select-new')
+        <div class="{{ $div ?? 'col-md-6' }}">
+            <label for="{{ $data['name'] }}" class="form-label">{{ $data['label'] }}
+                <!-- Select All button -->
+                <button 
+                    type="button" 
+                    class="btn btn-sm btn-light waves-effect waves-light shadow-none"
+                    onclick="selectAllOptions('{{ $data['name'] }}')"
+                >
+                    Select All
+                </button>
+            </label>
+            <div class="input-group mb-3">
+                <select
+                    id="{{ $data['name'] }}"
+                    class="form-control"
+                    wire:model="{{ $data['name'] }}"
+                    multiple
+                >
+                    @foreach($secondaryModel as $row)
+                        {{-- <option value="{{ $row->id }}">{{ ucwords($row->name) }}</option> --}}
+                        <option value="{{ $row['id'] }}">{{ ucwords($row['name']) }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @error($data['name'])
+            <div class="text-danger small">{{ $message }}</div>
+            @enderror
+        </div>
+
+        @push('custom-scripts')
+        <script>
+        function selectAllOptions(selectId) {
+            const select = document.getElementById(selectId);
+
+            // Select all options
+            for (let i = 0; i < select.options.length; i++) {
+                select.options[i].selected = true;
+            }
+
+            // Trigger Livewire update
+            select.dispatchEvent(new Event('change'));
+        }
+        </script>
+        @endpush
+
+    @break
+
     @case('multiple-select')
         <div class="{{ $div ?? 'col-md-6' }}">
             <label for="{{ $data['name'] }}" class="form-label">{{ $data['label'] }}</label>

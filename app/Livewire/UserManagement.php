@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use App\Models\Tag;
 use Livewire\Component;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Layout;
@@ -17,10 +18,13 @@ class UserManagement extends Component
     #[Validate('required|min:3|max:20')]
     public $name = '', $lname='';
 
-    #[Validate('nullable|min:3|max:20')]
-    public $password = '', $confirm = '', $mobile='';
+    // #[Validate('nullable|min:3|max:20')]
+    public $password = '', $confirm = '';
 
-    #[Validate('nullable|email|min:5|max:200')]
+    #[Validate('required|regex:/^\+[0-9]+$/')]
+    public $mobile = '';
+
+    #[Validate('required|email|min:5|max:200')]
     public $email = '';
 
     #[Validate('required')]
@@ -50,8 +54,13 @@ class UserManagement extends Component
         ]);
 
     }
-    public function mount(){
 
+    public $tags;
+    #[Validate('required|array|min:1')]
+    public array $selectedTags = [];
+
+    public function mount(){
+        $this->tags = Tag::all();
     }
 
     public $showPasswordRequired = false, $showInvalidPassword = false;
@@ -74,20 +83,39 @@ class UserManagement extends Component
 
     public function resetData(){
         $this->name = '';
+        $this->lname = '';
         $this->email = '';
-        $this->status = 1;
+        $this->mobile = '';
+        $this->status = '';
+        $this->selectedTags = [];
+        $this->updateModelId = 0;
     }
 
     public function save(){
-        $data = $this->validate();
+        $id = $this->updateModelId ?? 'NULL';
+
+        $rules = [
+            'name'          => 'required|min:3|max:20',
+            'lname'         => 'required|min:3|max:20',
+            'email'         => 'required|email|min:5|max:200|unique:users,email,' . $id,
+            'mobile'        => 'required|regex:/^\+[0-9]+$/|unique:users,mobile,' . $id,
+            'status'        => 'required',
+            'selectedTags'  => 'required|array|min:1',
+        ];
+        $data = $this->validate($rules);
 
         $data['email'] = strtolower($data['email']);
         unset($data['confirm']);
         if($this->updateModelId != NULL){
-            User::findOrFail($this->updateModelId)->update($data);
+            $user = User::findOrFail($this->updateModelId);
+            $user->update($data);
         }else{
-            User::create($data);
+            $data['password'] = '';
+            $user = User::create($data);
         }
+
+        // Attach tags
+        $user->tags()->sync($this->selectedTags);
 
         $this->resetData();
         $this->dispatch('toastMagic',
@@ -99,20 +127,43 @@ class UserManagement extends Component
 
     public function update($id){
         $this->updateModelId = $id;
-        $user = User::findOrFail($this->updateModelId);
-        $this->fill($user->toArray());
+
+        $user = User::with('tags')->findOrFail($this->updateModelId);
+
+        //$this->fill($user->toArray()); fill($user->toArray()) overwrites $this->tags
+        $this->name = $user->name;
+        $this->lname = $user->lname;
+        $this->email = $user->email;
+        $this->mobile = $user->mobile;
+        $this->status = $user->status;
+
+        // Fill selected tags (array of tag IDs)
+        $this->selectedTags = $user->tags->pluck('id')->toArray();
+
+        // Always reload all tags for the UI
+        $this->tags = Tag::all();
     }
 
     public function delete($id){
         $this->updateModelId = $id;
-        User::findOrFail($this->updateModelId)->delete();
+        $user = User::find($this->updateModelId);
 
-        $this->resetData();
-        $this->dispatch('toastMagic',
-            status: 'success',
-            title: 'Action Success.',
-            message: 'Deleted Successfully.'
-        );
+        if ($user) {
+            $user->delete();
+
+            $this->dispatch('toastMagic',
+                status: 'success',
+                title: 'Action Success.',
+                message: 'Deleted Successfully.'
+            );
+        } else {
+            // User not found
+            $this->dispatch('toastMagic',
+                status: 'error',
+                title: 'Not Found.',
+                message: 'User does not exist.'
+            );
+        }
     }
 
 

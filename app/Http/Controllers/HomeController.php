@@ -84,11 +84,19 @@ class HomeController extends Controller
         // }
         // return dd($hideAllExcept_AllProducts);
 
+        $userTags = auth()->user()->tags()->select('tags.id', 'tags.name', 'tags.slug')->get();
+        $userTagIds = $userTags->pluck('id');
+
         // Base query with relationships
-        $baseQuery = Product::with([ 'category', 'user', 'brand', 'tieredPrices', 'media' ])
+        $baseQuery = Product::with([ 'category', 'user', 'brand', 'tieredPrices', 'media', 'tag' ])
                     ->select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id')
                     ->where('status', 1)
+                    ->whereIn('tag_id', $userTagIds)
                     ->orderBy('products.name', 'asc');
+
+        // if (!auth()->user()->is_admin) {
+        //     $baseQuery->whereIn('tag_id', $userTagIds);
+        // }
 
         // $baseQuery = Product::select('id', 'name', 'slug', 'price', 'feature', 'description', 'stock', 'best_rated', 'on_sale', 'category_id', 'brand_id', 'user_id')->with(['category', 'user', 'brand', 'tieredPrices', 'media']);
 
@@ -178,7 +186,8 @@ class HomeController extends Controller
             'allBrands',
             'featuredProducts',
             'bestSellers',
-            'onSaleProducts'
+            'onSaleProducts',
+            'userTags'
         ));
     }
 
